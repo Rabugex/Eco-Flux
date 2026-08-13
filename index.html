@@ -1,10 +1,11 @@
+cat > /home/claude/ecoflux_v4_redesign.html << 'EOFHTML'
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="description" content="EcoFlux - Sistema de Limpeza Inteligente de Rios">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#1f1535">
     <title>EcoFlux Dashboard</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,9 +28,9 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #1f1535 0%, #2d1f47 100%);
             background-attachment: fixed;
-            color: #e2e8f0;
+            color: #e8e0f0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -51,7 +52,7 @@
             left: 0;
             width: 200%;
             height: 200%;
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #0ea5e9, #06b6d4);
+            background: linear-gradient(-45deg, #1f1535, #2d1f47, #6d4fa3, #8b6bb7);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             z-index: -1;
@@ -80,20 +81,19 @@
         }
 
         .auth-container {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #2d1f47 0%, #1f1535 100%);
             border-radius: 20px;
             padding: 40px;
             max-width: 420px;
             width: 100%;
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            my-auto: center;
         }
 
         .auth-container h1 {
             font-size: 28px;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -101,7 +101,7 @@
         }
 
         .auth-container > p {
-            color: #94a3b8;
+            color: #a89bc7;
             margin-bottom: 30px;
             font-size: 14px;
         }
@@ -110,7 +110,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
             flex-wrap: wrap;
         }
 
@@ -120,7 +120,7 @@
             padding: 12px;
             background: transparent;
             border: none;
-            color: #94a3b8;
+            color: #a89bc7;
             font-weight: 600;
             cursor: pointer;
             border-bottom: 2px solid transparent;
@@ -129,8 +129,8 @@
         }
 
         .auth-tabs button.active {
-            color: #06b6d4;
-            border-bottom-color: #06b6d4;
+            color: #b8a0d6;
+            border-bottom-color: #b8a0d6;
         }
 
         .auth-form {
@@ -152,16 +152,16 @@
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #cbd5e1;
+            color: #c5b8d8;
         }
 
         .form-group input {
             width: 100%;
             padding: 11px 14px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(45, 31, 71, 0.5);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             border-radius: 8px;
-            color: #e2e8f0;
+            color: #e8e0f0;
             font-size: 14px;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
@@ -169,15 +169,15 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #06b6d4;
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+            border-color: #b8a0d6;
+            background: rgba(45, 31, 71, 0.8);
+            box-shadow: 0 0 0 3px rgba(184, 160, 214, 0.1);
         }
 
         .auth-button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -192,7 +192,7 @@
 
         .auth-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 10px 25px rgba(184, 160, 214, 0.2);
         }
 
         .auth-button:disabled {
@@ -202,7 +202,7 @@
         }
 
         .error-message {
-            color: #fca5a5;
+            color: #f5a5a5;
             font-size: 12px;
             margin-top: 10px;
             display: none;
@@ -231,9 +231,9 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(45, 31, 71, 0.4);
             border-radius: 15px;
-            border: 1px solid rgba(71, 85, 105, 0.2);
+            border: 1px solid rgba(139, 107, 183, 0.2);
             flex-wrap: wrap;
             gap: 20px;
             backdrop-filter: blur(10px);
@@ -250,26 +250,26 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #94a3b8;
+            background: #7a6a8f;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px currentColor;
             flex-shrink: 0;
         }
 
         .status-indicator.connected {
-            background: #10b981;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+            background: #4ade80;
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
         }
 
         .status-indicator.active {
-            background: #10b981;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+            background: #4ade80;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.8);
             animation: pulse 2s infinite;
         }
 
         .status-indicator.inactive {
-            background: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            background: #f87171;
+            box-shadow: 0 0 15px rgba(248, 113, 113, 0.6);
         }
 
         @keyframes pulse {
@@ -280,7 +280,7 @@
         .header-left h1 {
             font-size: 32px;
             margin: 0;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -289,7 +289,7 @@
         }
 
         .header-left p {
-            color: #94a3b8;
+            color: #a89bc7;
             font-size: 12px;
             margin: 0;
             white-space: nowrap;
@@ -298,7 +298,7 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
@@ -314,7 +314,7 @@
 
         .user-info .role {
             font-size: 12px;
-            color: #06b6d4;
+            color: #b8a0d6;
         }
 
         .header-buttons {
@@ -323,13 +323,13 @@
             flex-wrap: wrap;
         }
 
-        .settings-btn {
+        .icon-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
+            background: rgba(45, 31, 71, 0.5);
+            border: 1px solid rgba(139, 107, 183, 0.3);
+            color: #a89bc7;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -337,19 +337,39 @@
             font-size: 20px;
             transition: all 0.3s ease;
             flex-shrink: 0;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: rgba(45, 31, 71, 0.8);
+            color: #b8a0d6;
         }
 
         .settings-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
             transform: rotate(90deg);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 12px;
+            height: 12px;
+            background: #f87171;
+            border-radius: 50%;
+            border: 2px solid #1f1535;
+            display: none;
+        }
+
+        .notification-badge.show {
+            display: block;
         }
 
         .logout-btn {
             padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(248, 113, 113, 0.2);
+            color: #f5a5a5;
+            border: 1px solid rgba(248, 113, 113, 0.3);
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
@@ -361,8 +381,8 @@
         }
 
         .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.3);
-            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(248, 113, 113, 0.3);
+            border-color: rgba(248, 113, 113, 0.5);
         }
 
         /* ABAS */
@@ -377,10 +397,10 @@
 
         .tab-button {
             padding: 12px 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(45, 31, 71, 0.4);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             border-radius: 8px;
-            color: #94a3b8;
+            color: #a89bc7;
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
@@ -389,11 +409,11 @@
         }
 
         .tab-button:hover {
-            border-color: #06b6d4;
+            border-color: #b8a0d6;
         }
 
         .tab-button.active {
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
             color: white;
             border-color: transparent;
         }
@@ -419,7 +439,7 @@
             }
         }
 
-        /* CARDS COM FORMATOS DIFERENTES */
+        /* CARDS COM FORMATOS DIFERENTES - DESIGN MODERNO */
         .status-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -428,24 +448,39 @@
         }
 
         .status-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            padding: 20px;
+            background: rgba(45, 31, 71, 0.4);
+            border: 1px solid rgba(139, 107, 183, 0.3);
+            padding: 24px;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #b8a0d6 0%, #d4c5e8 100%);
         }
 
         .status-card:hover {
-            border-color: rgba(6, 182, 212, 0.3);
+            border-color: rgba(184, 160, 214, 0.5);
             transform: translateY(-5px);
+            background: rgba(45, 31, 71, 0.6);
         }
 
         .status-card:nth-child(1) {
             border-radius: 20px;
+            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(2) {
             border-radius: 15px 0 15px 0;
+            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(3) {
@@ -455,23 +490,27 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            box-shadow: inset 0 0 30px rgba(184, 160, 214, 0.15);
         }
 
         .status-card:nth-child(4) {
             border-radius: 0 15px 0 15px;
+            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(5) {
             clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(6) {
             border-radius: 15px;
-            border-left: 5px solid #06b6d4;
+            border-left: 5px solid #b8a0d6;
+            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card-label {
-            color: #94a3b8;
+            color: #a89bc7;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -483,14 +522,14 @@
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 5px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .status-card-unit {
-            color: #64748b;
+            color: #7a6a8f;
             font-size: 14px;
         }
 
@@ -501,7 +540,7 @@
         .progress-bar {
             width: 100%;
             height: 8px;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(31, 21, 53, 0.5);
             border-radius: 4px;
             overflow: hidden;
             margin-top: 8px;
@@ -509,15 +548,15 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(90deg, #b8a0d6 0%, #d4c5e8 100%);
             border-radius: 4px;
             transition: width 0.3s ease;
         }
 
         /* CONTROL PANEL */
         .control-panel {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(45, 31, 71, 0.4);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
@@ -533,7 +572,7 @@
         }
 
         .control-label {
-            color: #cbd5e1;
+            color: #c5b8d8;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 12px;
@@ -564,31 +603,31 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
             color: white;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 10px 25px rgba(74, 222, 128, 0.2);
         }
 
         .btn-primary.active {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
             color: white;
         }
 
         .btn-danger:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 10px 25px rgba(248, 113, 113, 0.2);
         }
 
         .btn-danger.active {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         }
 
         /* SETTINGS MODAL */
@@ -599,8 +638,8 @@
             width: 100%;
             max-width: 400px;
             height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(31, 21, 53, 0.95);
+            border-left: 1px solid rgba(139, 107, 183, 0.3);
             padding: 20px;
             overflow-y: auto;
             z-index: 999;
@@ -626,20 +665,20 @@
 
         .settings-header h2 {
             font-size: 18px;
-            color: #e2e8f0;
+            color: #e8e0f0;
         }
 
-        .close-settings {
+        .close-btn {
             background: none;
             border: none;
-            color: #94a3b8;
+            color: #a89bc7;
             font-size: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .close-settings:hover {
-            color: #06b6d4;
+        .close-btn:hover {
+            color: #b8a0d6;
         }
 
         .settings-group {
@@ -647,7 +686,7 @@
         }
 
         .settings-group h3 {
-            color: #cbd5e1;
+            color: #c5b8d8;
             margin-bottom: 15px;
             font-size: 14px;
             text-transform: uppercase;
@@ -659,7 +698,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
             gap: 10px;
             flex-wrap: wrap;
         }
@@ -674,22 +713,22 @@
         }
 
         .settings-item-label strong {
-            color: #e2e8f0;
+            color: #e8e0f0;
             font-size: 13px;
         }
 
         .settings-item-label p {
-            color: #94a3b8;
+            color: #a89bc7;
             font-size: 12px;
             margin-top: 3px;
         }
 
         .settings-item-control input {
             padding: 8px 10px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(31, 21, 53, 0.5);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             border-radius: 6px;
-            color: #e2e8f0;
+            color: #e8e0f0;
             text-align: center;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
@@ -699,7 +738,7 @@
         .save-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -714,13 +753,98 @@
 
         .save-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 10px 25px rgba(184, 160, 214, 0.2);
+        }
+
+        /* NOTIFICATIONS MODAL */
+        .notifications-modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background: rgba(31, 21, 53, 0.95);
+            border-left: 1px solid rgba(139, 107, 183, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 998;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .notifications-modal.active {
+            transform: translateX(0);
+        }
+
+        .notifications-modal.hidden {
+            display: none;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
+        }
+
+        .notifications-header h2 {
+            font-size: 18px;
+            color: #e8e0f0;
+        }
+
+        .notification-item {
+            background: rgba(45, 31, 71, 0.6);
+            border-left: 4px solid #b8a0d6;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(139, 107, 183, 0.2);
+        }
+
+        .notification-item.warning {
+            border-left-color: #fbbf24;
+        }
+
+        .notification-item.error {
+            border-left-color: #f87171;
+        }
+
+        .notification-item.success {
+            border-left-color: #4ade80;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: #7a6a8f;
+            margin-top: 8px;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #e8e0f0;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .notification-text {
+            color: #a89bc7;
+            font-size: 13px;
+        }
+
+        .no-notifications {
+            text-align: center;
+            color: #7a6a8f;
+            padding: 40px 20px;
         }
 
         /* ADMIN PANEL */
         .admin-panel {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(45, 31, 71, 0.4);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             border-radius: 15px;
             padding: 25px;
             backdrop-filter: blur(10px);
@@ -732,11 +856,11 @@
             align-items: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
+            border-bottom: 2px solid rgba(139, 107, 183, 0.3);
         }
 
         .admin-header h2 {
-            color: #e2e8f0;
+            color: #e8e0f0;
             font-size: 18px;
         }
 
@@ -749,27 +873,79 @@
             grid-template-columns: 1fr 1fr 1fr auto;
             gap: 15px;
             padding: 15px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
             align-items: center;
         }
 
         .account-row:hover {
-            background: rgba(30, 41, 59, 0.3);
+            background: rgba(45, 31, 71, 0.3);
         }
 
         .account-item {
             font-size: 13px;
-            color: #cbd5e1;
+            color: #c5b8d8;
         }
 
         .account-role {
             display: inline-block;
             padding: 4px 10px;
-            background: rgba(6, 182, 212, 0.2);
-            color: #06b6d4;
+            background: rgba(184, 160, 214, 0.2);
+            color: #b8a0d6;
             border-radius: 4px;
             font-size: 12px;
             font-weight: 600;
+        }
+
+        /* MAINTENANCE TABLE COM MINUTOS */
+        .maint-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .maint-table thead tr {
+            border-bottom: 2px solid rgba(139, 107, 183, 0.3);
+        }
+
+        .maint-table th {
+            padding: 12px;
+            text-align: left;
+            color: #a89bc7;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .maint-table tbody tr {
+            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
+        }
+
+        .maint-table td {
+            padding: 12px;
+            color: #c5b8d8;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.good {
+            background: rgba(74, 222, 128, 0.2);
+            color: #86efac;
+        }
+
+        .status-badge.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fcd34d;
+        }
+
+        .status-badge.critical {
+            background: rgba(248, 113, 113, 0.2);
+            color: #fca5a5;
         }
 
         /* NOTIFICAÇÕES */
@@ -778,10 +954,10 @@
             top: 20px;
             right: 20px;
             padding: 16px 20px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
             color: white;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 10px 25px rgba(74, 222, 128, 0.2);
             animation: slideIn 0.3s ease;
             z-index: 999;
             max-width: 300px;
@@ -789,8 +965,8 @@
         }
 
         .notification.error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            box-shadow: 0 10px 25px rgba(248, 113, 113, 0.2);
         }
 
         @keyframes slideIn {
@@ -818,10 +994,10 @@
 
         .timer-input input {
             padding: 11px 14px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
+            background: rgba(31, 21, 53, 0.5);
+            border: 1px solid rgba(139, 107, 183, 0.3);
             border-radius: 8px;
-            color: #e2e8f0;
+            color: #e8e0f0;
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             min-width: 120px;
@@ -829,7 +1005,7 @@
 
         .timer-input input:focus {
             outline: none;
-            border-color: #06b6d4;
+            border-color: #b8a0d6;
         }
 
         /* RESPONSIVO */
@@ -892,7 +1068,8 @@
                 min-width: unset;
             }
 
-            .settings-modal {
+            .settings-modal,
+            .notifications-modal {
                 max-width: 100%;
             }
 
@@ -918,6 +1095,15 @@
 
             .auth-tabs button {
                 width: 100%;
+            }
+
+            .maint-table {
+                font-size: 12px;
+            }
+
+            .maint-table td,
+            .maint-table th {
+                padding: 10px;
             }
         }
 
@@ -947,7 +1133,8 @@
                 padding: 15px;
             }
 
-            .settings-modal {
+            .settings-modal,
+            .notifications-modal {
                 padding: 15px;
             }
 
@@ -977,7 +1164,7 @@
             <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" required>
+                    <input type="text" id="loginEmail" placeholder="admin@gmail.com" required>
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
@@ -995,7 +1182,7 @@
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" id="registerEmail" required>
+                    <input type="text" id="registerEmail" required>
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
@@ -1028,7 +1215,11 @@
                     <div class="role" id="userRole">Usuário</div>
                 </div>
                 <div class="header-buttons">
-                    <button class="settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
+                    <button class="icon-btn" id="notificationBtn" onclick="toggleNotifications()" title="Notificações">
+                        🔔
+                        <div class="notification-badge" id="notificationBadge"></div>
+                    </button>
+                    <button class="icon-btn settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
                     <button class="logout-btn" onclick="logout()">Sair</button>
                 </div>
             </div>
@@ -1058,11 +1249,11 @@
 
                 <div class="status-card">
                     <div class="status-card-label">Nível da Bateria</div>
-                    <div class="status-card-value" id="batteryLevel">0</div>
+                    <div class="status-card-value" id="batteryLevel">50</div>
                     <div class="status-card-unit">%</div>
                     <div class="progress-container">
                         <div class="progress-bar">
-                            <div class="progress-fill" id="batteryProgress" style="width: 0%"></div>
+                            <div class="progress-fill" id="batteryProgress" style="width: 50%"></div>
                         </div>
                     </div>
                 </div>
@@ -1116,7 +1307,6 @@
                     <div class="button-group">
                         <button class="btn btn-primary" onclick="setMode('continuous')" id="modeContBtn">Contínuo</button>
                         <button class="btn btn-primary" onclick="setMode('pulse')" id="modePulseBtn">Pulsante</button>
-                        <button class="btn btn-primary" onclick="setMode('eco')" id="modeEcoBtn">Eco</button>
                     </div>
                 </div>
             </div>
@@ -1125,35 +1315,39 @@
         <!-- ABA: MANUTENÇÃO -->
         <div class="tab-content" id="maintenance">
             <div class="control-panel">
-                <h3 style="color: #cbd5e1; margin-bottom: 20px;">Status dos Componentes</h3>
+                <h3 style="color: #c5b8d8; margin-bottom: 20px;">Status dos Componentes</h3>
                 <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse;">
+                    <table class="maint-table">
                         <thead>
-                            <tr style="border-bottom: 2px solid rgba(71, 85, 105, 0.3);">
-                                <th style="padding: 12px; text-align: left; color: #94a3b8; font-size: 12px;">Componente</th>
-                                <th style="padding: 12px; text-align: left; color: #94a3b8; font-size: 12px;">Uso</th>
-                                <th style="padding: 12px; text-align: left; color: #94a3b8; font-size: 12px;">Limite</th>
-                                <th style="padding: 12px; text-align: left; color: #94a3b8; font-size: 12px;">Status</th>
+                            <tr>
+                                <th>Componente</th>
+                                <th>Uso</th>
+                                <th>Minutos</th>
+                                <th>Limite</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style="border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
-                                <td style="padding: 12px; color: #cbd5e1; font-size: 13px;">Bomba</td>
-                                <td id="pumpHours" style="padding: 12px; color: #cbd5e1; font-size: 13px;">0 h</td>
-                                <td style="padding: 12px; color: #cbd5e1; font-size: 13px;">500 h</td>
-                                <td style="padding: 12px;"><span style="padding: 4px 10px; background: rgba(16, 185, 129, 0.2); color: #86efac; border-radius: 4px; font-size: 12px; font-weight: 600;">Bom</span></td>
+                            <tr>
+                                <td><strong>Bomba</strong></td>
+                                <td id="pumpHours">0 h</td>
+                                <td id="pumpMins">0 min</td>
+                                <td>500 h</td>
+                                <td><span class="status-badge good">Bom</span></td>
                             </tr>
-                            <tr style="border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
-                                <td style="padding: 12px; color: #cbd5e1; font-size: 13px;">Bateria</td>
-                                <td id="batteryHours" style="padding: 12px; color: #cbd5e1; font-size: 13px;">0 ciclos</td>
-                                <td style="padding: 12px; color: #cbd5e1; font-size: 13px;">300 ciclos</td>
-                                <td style="padding: 12px;"><span style="padding: 4px 10px; background: rgba(16, 185, 129, 0.2); color: #86efac; border-radius: 4px; font-size: 12px; font-weight: 600;">Bom</span></td>
+                            <tr>
+                                <td><strong>Bateria</strong></td>
+                                <td id="batteryHours">0 ciclos</td>
+                                <td id="batteryMins">0 min</td>
+                                <td>300 ciclos</td>
+                                <td><span class="status-badge good">Bom</span></td>
                             </tr>
-                            <tr style="border-bottom: 1px solid rgba(71, 85, 105, 0.2);">
-                                <td style="padding: 12px; color: #cbd5e1; font-size: 13px;">Filtro</td>
-                                <td id="filterHours" style="padding: 12px; color: #cbd5e1; font-size: 13px;">0 h</td>
-                                <td style="padding: 12px; color: #cbd5e1; font-size: 13px;">100 h</td>
-                                <td style="padding: 12px;"><span style="padding: 4px 10px; background: rgba(16, 185, 129, 0.2); color: #86efac; border-radius: 4px; font-size: 12px; font-weight: 600;">Bom</span></td>
+                            <tr>
+                                <td><strong>Filtro</strong></td>
+                                <td id="filterHours">0 h</td>
+                                <td id="filterMins">0 min</td>
+                                <td>100 h</td>
+                                <td><span class="status-badge good">Bom</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -1166,7 +1360,7 @@
             <div class="admin-panel">
                 <div class="admin-header">
                     <h2>Painel Administrativo</h2>
-                    <span id="totalAccounts" style="color: #94a3b8; font-size: 14px;">0 contas</span>
+                    <span id="totalAccounts" style="color: #a89bc7; font-size: 14px;">0 contas</span>
                 </div>
                 <div class="accounts-list" id="accountsList"></div>
             </div>
@@ -1177,7 +1371,7 @@
     <div class="settings-modal" id="settingsModal">
         <div class="settings-header">
             <h2>Configurações</h2>
-            <button class="close-settings" onclick="toggleSettings()">✕</button>
+            <button class="close-btn" onclick="toggleSettings()">✕</button>
         </div>
 
         <div class="settings-group">
@@ -1240,7 +1434,16 @@
         <button class="save-btn" onclick="saveSettings()">Salvar</button>
     </div>
 
-    <!-- NOTIFICAÇÃO -->
+    <!-- NOTIFICATIONS SIDEBAR -->
+    <div class="notifications-modal" id="notificationsModal">
+        <div class="notifications-header">
+            <h2>Notificações</h2>
+            <button class="close-btn" onclick="toggleNotifications()">✕</button>
+        </div>
+        <div id="notificationsList"></div>
+    </div>
+
+    <!-- NOTIFICAÇÃO TOAST -->
     <div class="notification hidden-notification" id="notification"></div>
 
     <script>
@@ -1257,7 +1460,7 @@
 
             loadUsers() {
                 try {
-                    const data = localStorage.getItem('ecoflux_users_v3');
+                    const data = localStorage.getItem('ecoflux_users_v4');
                     return data ? JSON.parse(data) : {};
                 } catch (e) {
                     return {};
@@ -1266,29 +1469,27 @@
 
             saveUsers() {
                 try {
-                    localStorage.setItem('ecoflux_users_v3', JSON.stringify(this.users));
-                } catch (e) {
-                    console.error('Erro ao salvar usuários:', e);
-                }
+                    localStorage.setItem('ecoflux_users_v4', JSON.stringify(this.users));
+                } catch (e) {}
             }
 
             loadCurrentUser() {
-                return localStorage.getItem('ecoflux_current_user_v3');
+                return localStorage.getItem('ecoflux_current_user_v4');
             }
 
             setCurrentUser(email) {
-                localStorage.setItem('ecoflux_current_user_v3', email);
+                localStorage.setItem('ecoflux_current_user_v4', email);
                 this.currentUser = email;
             }
 
             clearCurrentUser() {
-                localStorage.removeItem('ecoflux_current_user_v3');
+                localStorage.removeItem('ecoflux_current_user_v4');
                 this.currentUser = null;
             }
 
             getUserData(email) {
                 try {
-                    const data = localStorage.getItem(`ecoflux_user_${email}_v3`);
+                    const data = localStorage.getItem(`ecoflux_user_${email}_v4`);
                     return data ? JSON.parse(data) : this.getDefaultUserData(email);
                 } catch (e) {
                     return this.getDefaultUserData(email);
@@ -1297,19 +1498,20 @@
 
             saveUserData(email, data) {
                 try {
-                    localStorage.setItem(`ecoflux_user_${email}_v3`, JSON.stringify(data));
-                } catch (e) {
-                    console.error('Erro ao salvar dados do usuário:', e);
-                }
+                    localStorage.setItem(`ecoflux_user_${email}_v4`, JSON.stringify(data));
+                } catch (e) {}
             }
 
             getDefaultUserData(email) {
-                const isAdmin = email === 'admin';
+                const isAdmin = email === 'admin@gmail.com';
                 return {
                     pumpHours: 0,
+                    pumpMinutes: 0,
                     batteryHours: 0,
+                    batteryMinutes: 0,
                     filterHours: 0,
-                    maintenanceHistory: [],
+                    filterMinutes: 0,
+                    notifications: [],
                     settings: {
                         pumpOnTime: 1000,
                         pumpOffTime: 2000,
@@ -1317,7 +1519,6 @@
                         pumpWarning: 400,
                         filterWarning: 80
                     },
-                    lastSync: new Date().toISOString(),
                     role: isAdmin ? 'admin' : 'user',
                     isAdmin: isAdmin
                 };
@@ -1350,11 +1551,10 @@
             login(email, password) {
                 this.loadAllData();
                 
-                // Verificar se é admin
-                if (email === 'admin' && password === 'admin') {
-                    this.setCurrentUser('admin');
-                    const adminData = this.getDefaultUserData('admin');
-                    this.saveUserData('admin', adminData);
+                if (email === 'admin@gmail.com' && password === 'admin') {
+                    this.setCurrentUser('admin@gmail.com');
+                    const adminData = this.getDefaultUserData('admin@gmail.com');
+                    this.saveUserData('admin@gmail.com', adminData);
                     return { success: true, isAdmin: true };
                 }
                 
@@ -1386,17 +1586,16 @@
             bucketLevel: Math.random() * 30,
             batteryVoltage: 12.0,
             batteryPercentage: 50,
-            estimatedRuntime: 0,
+            runtime: 0,
             pumpActive: false,
-            pumpEnabled: false,
             timerRunning: false,
-            connectionStatus: false,
-            currentMode: 'pulse'
+            currentMode: 'pulse',
+            unreadNotifications: 0
         };
 
+        let notificationsList = [];
         let dataRefreshInterval = null;
 
-        // ========== INICIALIZAÇÃO ==========
         window.addEventListener('load', () => {
             if (storage.currentUser) {
                 showMainApp();
@@ -1520,9 +1719,8 @@
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('mainContainer').classList.add('active');
 
-            const isAdmin = storage.currentUser === 'admin';
+            const isAdmin = storage.currentUser === 'admin@gmail.com';
             const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
-            const userData = storage.getUserData(storage.currentUser);
             
             document.getElementById('currentUser').textContent = user ? user.username : 'Usuário';
             document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Usuário';
@@ -1537,6 +1735,7 @@
             loadUserData();
             startDataRefresh();
             updateStatusIndicator();
+            addNotification('Sistema iniciado', 'Sistema EcoFlux iniciado com sucesso', 'success');
         }
 
         function logout() {
@@ -1545,14 +1744,9 @@
                 dataRefreshInterval = null;
             }
             storage.logout();
+            notificationsList = [];
+            systemData.unreadNotifications = 0;
             showAuthModal();
-            document.getElementById('loginForm').classList.add('active');
-            document.getElementById('registerForm').classList.remove('active');
-            document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
-            document.querySelectorAll('.auth-tab-btn')[1].classList.remove('active');
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.remove('show');
         }
 
         // ========== ABAS ==========
@@ -1569,10 +1763,46 @@
             document.getElementById('settingsModal').classList.toggle('active');
         }
 
+        // ========== NOTIFICATIONS ==========
+        function toggleNotifications() {
+            document.getElementById('notificationsModal').classList.toggle('active');
+            document.getElementById('notificationBadge').classList.remove('show');
+            systemData.unreadNotifications = 0;
+        }
+
+        function addNotification(title, text, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            notificationsList.unshift({ title, text, type, timestamp });
+            if (notificationsList.length > 50) notificationsList.pop();
+            
+            systemData.unreadNotifications++;
+            if (systemData.unreadNotifications > 0) {
+                document.getElementById('notificationBadge').classList.add('show');
+            }
+
+            updateNotificationsList();
+        }
+
+        function updateNotificationsList() {
+            const list = document.getElementById('notificationsList');
+            
+            if (notificationsList.length === 0) {
+                list.innerHTML = '<div class="no-notifications">Nenhuma notificação</div>';
+                return;
+            }
+
+            list.innerHTML = notificationsList.map(n => `
+                <div class="notification-item ${n.type}">
+                    <div class="notification-title">${n.title}</div>
+                    <div class="notification-text">${n.text}</div>
+                    <div class="notification-time">${n.timestamp}</div>
+                </div>
+            `).join('');
+        }
+
         // ========== DADOS ==========
         function loadUserData() {
             const userData = storage.getUserData(storage.currentUser);
-
             document.getElementById('pumpOnTime').value = userData.settings.pumpOnTime;
             document.getElementById('pumpOffTime').value = userData.settings.pumpOffTime;
             document.getElementById('maxBucketHeight').value = userData.settings.maxBucketHeight;
@@ -1581,13 +1811,19 @@
         }
 
         function startDataRefresh() {
-            if (dataRefreshInterval) {
-                clearInterval(dataRefreshInterval);
-            }
+            if (dataRefreshInterval) clearInterval(dataRefreshInterval);
 
             dataRefreshInterval = setInterval(() => {
                 if (systemData.pumpActive) {
                     systemData.bucketLevel = Math.min(100, systemData.bucketLevel + Math.random() * 2);
+                    
+                    const userData = storage.getUserData(storage.currentUser);
+                    userData.pumpMinutes += 1;
+                    if (userData.pumpMinutes >= 60) {
+                        userData.pumpHours += 1;
+                        userData.pumpMinutes = 0;
+                    }
+                    storage.saveUserData(storage.currentUser, userData);
                 } else {
                     systemData.bucketLevel = Math.max(0, systemData.bucketLevel - Math.random() * 0.5);
                 }
@@ -1597,6 +1833,8 @@
         }
 
         function updateDashboard() {
+            const userData = storage.getUserData(storage.currentUser);
+            
             document.getElementById('bucketLevel').textContent = Math.round(systemData.bucketLevel);
             document.getElementById('bucketProgress').style.width = systemData.bucketLevel + '%';
 
@@ -1608,61 +1846,58 @@
 
             document.getElementById('pumpStatus').textContent = systemData.pumpActive ? 'Ligada' : 'Desligada';
 
+            // Manutenção
+            document.getElementById('pumpHours').textContent = userData.pumpHours + ' h';
+            document.getElementById('pumpMins').textContent = userData.pumpMinutes + ' min';
+            document.getElementById('batteryHours').textContent = userData.batteryHours + ' ciclos';
+            document.getElementById('batteryMins').textContent = userData.batteryMinutes + ' min';
+            document.getElementById('filterHours').textContent = userData.filterHours + ' h';
+            document.getElementById('filterMins').textContent = userData.filterMinutes + ' min';
+
             updateStatusIndicator();
         }
 
         function updateStatusIndicator() {
             const indicator = document.getElementById('statusIndicator');
             indicator.classList.remove('connected', 'active', 'inactive');
-            
-            if (systemData.pumpActive) {
-                indicator.classList.add('active');
-            } else if (systemData.pumpEnabled) {
-                indicator.classList.add('connected');
-            } else {
-                indicator.classList.add('inactive');
-            }
+            indicator.classList.add(systemData.pumpActive ? 'active' : (systemData.pumpActive ? 'connected' : 'inactive'));
         }
 
         // ========== CONTROLES ==========
         function turnPumpOn() {
-            systemData.pumpEnabled = true;
             systemData.pumpActive = true;
             systemData.timerRunning = false;
             document.getElementById('pumpOnBtn').classList.add('active');
             document.getElementById('pumpOffBtn').classList.remove('active');
-            showNotification('Bomba ligada!');
+            addNotification('Bomba Ligada', 'Bomba iniciou funcionamento', 'success');
             updateDashboard();
         }
 
         function turnPumpOff() {
-            systemData.pumpEnabled = false;
             systemData.pumpActive = false;
             systemData.timerRunning = false;
             document.getElementById('pumpOnBtn').classList.remove('active');
             document.getElementById('pumpOffBtn').classList.add('active');
-            showNotification('Bomba desligada');
+            addNotification('Bomba Desligada', 'Bomba parou de funcionar', 'info');
             updateDashboard();
         }
 
         function startTimer() {
             const minutes = parseInt(document.getElementById('timerMinutes').value);
             if (!minutes || minutes < 1) {
-                showNotification('Defina um tempo válido', 'error');
+                addNotification('Timer Inválido', 'Defina um tempo válido', 'error');
                 return;
             }
 
-            systemData.pumpEnabled = true;
             systemData.pumpActive = true;
             systemData.timerRunning = true;
 
-            showNotification(`Timer iniciado por ${minutes} minutos`);
+            addNotification('Timer Iniciado', `Timer iniciado por ${minutes} minutos`, 'success');
 
             setTimeout(() => {
-                systemData.pumpEnabled = false;
                 systemData.pumpActive = false;
                 systemData.timerRunning = false;
-                showNotification('Timer expirou');
+                addNotification('Timer Finalizado', `Timer de ${minutes} minutos foi concluído`, 'success');
                 updateDashboard();
             }, minutes * 60 * 1000);
 
@@ -1673,23 +1908,18 @@
             systemData.currentMode = mode;
             document.getElementById('modeContBtn').classList.remove('active');
             document.getElementById('modePulseBtn').classList.remove('active');
-            document.getElementById('modeEcoBtn').classList.remove('active');
 
             if (mode === 'continuous') {
                 document.getElementById('modeContBtn').classList.add('active');
-                showNotification('Modo Contínuo');
+                addNotification('Modo Alterado', 'Modo alterado para Contínuo', 'info');
             } else if (mode === 'pulse') {
                 document.getElementById('modePulseBtn').classList.add('active');
-                showNotification('Modo Pulsante');
-            } else if (mode === 'eco') {
-                document.getElementById('modeEcoBtn').classList.add('active');
-                showNotification('Modo Eco');
+                addNotification('Modo Alterado', 'Modo alterado para Pulsante', 'info');
             }
         }
 
         function saveSettings() {
             const userData = storage.getUserData(storage.currentUser);
-
             userData.settings.pumpOnTime = parseInt(document.getElementById('pumpOnTime').value);
             userData.settings.pumpOffTime = parseInt(document.getElementById('pumpOffTime').value);
             userData.settings.maxBucketHeight = parseInt(document.getElementById('maxBucketHeight').value);
@@ -1697,7 +1927,7 @@
             userData.settings.filterWarning = parseInt(document.getElementById('filterWarning').value);
 
             storage.saveUserData(storage.currentUser, userData);
-            showNotification('Configurações salvas!');
+            addNotification('Configurações Salvas', 'Suas configurações foram atualizadas', 'success');
             toggleSettings();
         }
 
@@ -1711,7 +1941,7 @@
             accountsList.innerHTML = '';
             
             if (Object.keys(allUsers).length === 0) {
-                accountsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
+                accountsList.innerHTML = '<p style="color: #7a6a8f; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
                 return;
             }
             
@@ -1728,7 +1958,7 @@
             });
         }
 
-        // ========== NOTIFICAÇÕES ==========
+        // ========== NOTIFICAÇÕES TOAST ==========
         function showNotification(message, type = 'success') {
             const notif = document.getElementById('notification');
             notif.textContent = message;
@@ -1740,8 +1970,10 @@
             }, 3000);
         }
 
-        // Inicializar
         updateDashboard();
     </script>
 </body>
 </html>
+EOFHTML
+cp /home/claude/ecoflux_v4_redesign.html /mnt/user-data/outputs/index.html
+echo "✅ Versão V4 criada com sucesso!"
