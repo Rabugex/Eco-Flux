@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="description" content="EcoFlux - Sistema de Limpeza Inteligente de Rios">
-    <meta name="theme-color" content="#1f1535">
+    <meta name="theme-color" content="#0f172a">
     <title>EcoFlux Dashboard</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,9 +27,9 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1f1535 0%, #2d1f47 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             background-attachment: fixed;
-            color: #e8e0f0;
+            color: #e2e8f0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -51,7 +51,7 @@
             left: 0;
             width: 200%;
             height: 200%;
-            background: linear-gradient(-45deg, #1f1535, #2d1f47, #6d4fa3, #8b6bb7);
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #0ea5e9, #06b6d4);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             z-index: -1;
@@ -80,19 +80,19 @@
         }
 
         .auth-container {
-            background: linear-gradient(135deg, #2d1f47 0%, #1f1535 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border-radius: 20px;
             padding: 40px;
             max-width: 420px;
             width: 100%;
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
 
         .auth-container h1 {
             font-size: 28px;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -100,7 +100,7 @@
         }
 
         .auth-container > p {
-            color: #a89bc7;
+            color: #94a3b8;
             margin-bottom: 30px;
             font-size: 14px;
         }
@@ -109,7 +109,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
-            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
             flex-wrap: wrap;
         }
 
@@ -119,7 +119,7 @@
             padding: 12px;
             background: transparent;
             border: none;
-            color: #a89bc7;
+            color: #94a3b8;
             font-weight: 600;
             cursor: pointer;
             border-bottom: 2px solid transparent;
@@ -128,8 +128,8 @@
         }
 
         .auth-tabs button.active {
-            color: #b8a0d6;
-            border-bottom-color: #b8a0d6;
+            color: #06b6d4;
+            border-bottom-color: #06b6d4;
         }
 
         .auth-form {
@@ -151,16 +151,16 @@
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #c5b8d8;
+            color: #cbd5e1;
         }
 
         .form-group input {
             width: 100%;
             padding: 11px 14px;
-            background: rgba(45, 31, 71, 0.5);
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
             border-radius: 8px;
-            color: #e8e0f0;
+            color: #e2e8f0;
             font-size: 14px;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
@@ -168,15 +168,15 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #b8a0d6;
-            background: rgba(45, 31, 71, 0.8);
-            box-shadow: 0 0 0 3px rgba(184, 160, 214, 0.1);
+            border-color: #06b6d4;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
         }
 
         .auth-button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -191,7 +191,7 @@
 
         .auth-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(184, 160, 214, 0.2);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
         }
 
         .auth-button:disabled {
@@ -201,7 +201,7 @@
         }
 
         .error-message {
-            color: #f5a5a5;
+            color: #fca5a5;
             font-size: 12px;
             margin-top: 10px;
             display: none;
@@ -230,9 +230,9 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(45, 31, 71, 0.4);
+            background: rgba(15, 23, 42, 0.7);
             border-radius: 15px;
-            border: 1px solid rgba(139, 107, 183, 0.2);
+            border: 1px solid rgba(71, 85, 105, 0.2);
             flex-wrap: wrap;
             gap: 20px;
             backdrop-filter: blur(10px);
@@ -249,26 +249,26 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #7a6a8f;
+            background: #94a3b8;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px currentColor;
             flex-shrink: 0;
         }
 
         .status-indicator.connected {
-            background: #4ade80;
-            box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+            background: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
         }
 
         .status-indicator.active {
-            background: #4ade80;
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.8);
+            background: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
             animation: pulse 2s infinite;
         }
 
         .status-indicator.inactive {
-            background: #f87171;
-            box-shadow: 0 0 15px rgba(248, 113, 113, 0.6);
+            background: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
         }
 
         @keyframes pulse {
@@ -279,7 +279,7 @@
         .header-left h1 {
             font-size: 32px;
             margin: 0;
-            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -288,7 +288,7 @@
         }
 
         .header-left p {
-            color: #a89bc7;
+            color: #94a3b8;
             font-size: 12px;
             margin: 0;
             white-space: nowrap;
@@ -297,7 +297,7 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
         }
 
@@ -313,22 +313,23 @@
 
         .user-info .role {
             font-size: 12px;
-            color: #b8a0d6;
+            color: #06b6d4;
         }
 
         .header-buttons {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            position: relative;
         }
 
-        .icon-btn {
+        .notification-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(45, 31, 71, 0.5);
-            border: 1px solid rgba(139, 107, 183, 0.3);
-            color: #a89bc7;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            color: #94a3b8;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -339,36 +340,53 @@
             position: relative;
         }
 
-        .icon-btn:hover {
-            background: rgba(45, 31, 71, 0.8);
-            color: #b8a0d6;
-        }
-
-        .settings-btn:hover {
-            transform: rotate(90deg);
+        .notification-btn:hover {
+            background: rgba(30, 41, 59, 0.8);
+            color: #06b6d4;
         }
 
         .notification-badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -5px;
+            right: -5px;
             width: 12px;
             height: 12px;
-            background: #f87171;
+            background: #ef4444;
             border-radius: 50%;
-            border: 2px solid #1f1535;
             display: none;
         }
 
-        .notification-badge.show {
+        .notification-badge.active {
             display: block;
+        }
+
+        .settings-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            color: #94a3b8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .settings-btn:hover {
+            background: rgba(30, 41, 59, 0.8);
+            color: #06b6d4;
+            transform: rotate(90deg);
         }
 
         .logout-btn {
             padding: 8px 16px;
-            background: rgba(248, 113, 113, 0.2);
-            color: #f5a5a5;
-            border: 1px solid rgba(248, 113, 113, 0.3);
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
@@ -380,8 +398,8 @@
         }
 
         .logout-btn:hover {
-            background: rgba(248, 113, 113, 0.3);
-            border-color: rgba(248, 113, 113, 0.5);
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
         }
 
         /* ABAS */
@@ -396,10 +414,10 @@
 
         .tab-button {
             padding: 12px 20px;
-            background: rgba(45, 31, 71, 0.4);
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
             border-radius: 8px;
-            color: #a89bc7;
+            color: #94a3b8;
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
@@ -408,11 +426,11 @@
         }
 
         .tab-button:hover {
-            border-color: #b8a0d6;
+            border-color: #06b6d4;
         }
 
         .tab-button.active {
-            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             color: white;
             border-color: transparent;
         }
@@ -438,7 +456,7 @@
             }
         }
 
-        /* CARDS COM FORMATOS DIFERENTES - DESIGN MODERNO */
+        /* CARDS COM FORMATOS DIFERENTES */
         .status-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -447,9 +465,9 @@
         }
 
         .status-card {
-            background: rgba(45, 31, 71, 0.4);
-            border: 1px solid rgba(139, 107, 183, 0.3);
-            padding: 24px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 25px;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             position: relative;
@@ -462,24 +480,22 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #b8a0d6 0%, #d4c5e8 100%);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #06b6d4, transparent);
         }
 
         .status-card:hover {
-            border-color: rgba(184, 160, 214, 0.5);
+            border-color: rgba(6, 182, 212, 0.5);
             transform: translateY(-5px);
-            background: rgba(45, 31, 71, 0.6);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.15);
         }
 
         .status-card:nth-child(1) {
             border-radius: 20px;
-            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(2) {
             border-radius: 15px 0 15px 0;
-            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(3) {
@@ -489,27 +505,24 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 30px rgba(184, 160, 214, 0.15);
+            padding: 20px;
         }
 
         .status-card:nth-child(4) {
             border-radius: 0 15px 0 15px;
-            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(5) {
             clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
-            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
         }
 
         .status-card:nth-child(6) {
             border-radius: 15px;
-            border-left: 5px solid #b8a0d6;
-            box-shadow: inset 0 0 20px rgba(184, 160, 214, 0.1);
+            border-left: 5px solid #a855f7;
         }
 
         .status-card-label {
-            color: #a89bc7;
+            color: #94a3b8;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -521,14 +534,14 @@
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 5px;
-            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .status-card-unit {
-            color: #7a6a8f;
+            color: #64748b;
             font-size: 14px;
         }
 
@@ -539,7 +552,7 @@
         .progress-bar {
             width: 100%;
             height: 8px;
-            background: rgba(31, 21, 53, 0.5);
+            background: rgba(15, 23, 42, 0.5);
             border-radius: 4px;
             overflow: hidden;
             margin-top: 8px;
@@ -547,15 +560,15 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
             border-radius: 4px;
             transition: width 0.3s ease;
         }
 
         /* CONTROL PANEL */
         .control-panel {
-            background: rgba(45, 31, 71, 0.4);
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
+            border: 1px solid rgba(6, 182, 212, 0.2);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
@@ -571,7 +584,7 @@
         }
 
         .control-label {
-            color: #c5b8d8;
+            color: #cbd5e1;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 12px;
@@ -602,31 +615,113 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(74, 222, 128, 0.2);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
         }
 
         .btn-primary.active {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
         }
 
         .btn-danger:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(248, 113, 113, 0.2);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
         }
 
         .btn-danger.active {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        /* NOTIFICATIONS MODAL */
+        .notifications-modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            border-left: 1px solid rgba(71, 85, 105, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 998;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .notifications-modal.active {
+            transform: translateX(0);
+        }
+
+        .notifications-modal.hidden {
+            display: none;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .notifications-header h2 {
+            font-size: 18px;
+            color: #e2e8f0;
+        }
+
+        .close-notifications {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-notifications:hover {
+            color: #06b6d4;
+        }
+
+        .notification-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #06b6d4;
+            background: rgba(30, 41, 59, 0.5);
+            font-size: 13px;
+        }
+
+        .notification-item.success {
+            border-left-color: #10b981;
+        }
+
+        .notification-item.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .notification-item.error {
+            border-left-color: #ef4444;
+        }
+
+        .notification-item.info {
+            border-left-color: #a855f7;
+        }
+
+        .notification-time {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 5px;
         }
 
         /* SETTINGS MODAL */
@@ -637,8 +732,8 @@
             width: 100%;
             max-width: 400px;
             height: 100vh;
-            background: rgba(31, 21, 53, 0.95);
-            border-left: 1px solid rgba(139, 107, 183, 0.3);
+            background: rgba(15, 23, 42, 0.95);
+            border-left: 1px solid rgba(71, 85, 105, 0.3);
             padding: 20px;
             overflow-y: auto;
             z-index: 999;
@@ -664,20 +759,20 @@
 
         .settings-header h2 {
             font-size: 18px;
-            color: #e8e0f0;
+            color: #e2e8f0;
         }
 
-        .close-btn {
+        .close-settings {
             background: none;
             border: none;
-            color: #a89bc7;
+            color: #94a3b8;
             font-size: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .close-btn:hover {
-            color: #b8a0d6;
+        .close-settings:hover {
+            color: #06b6d4;
         }
 
         .settings-group {
@@ -685,7 +780,7 @@
         }
 
         .settings-group h3 {
-            color: #c5b8d8;
+            color: #cbd5e1;
             margin-bottom: 15px;
             font-size: 14px;
             text-transform: uppercase;
@@ -697,7 +792,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
             gap: 10px;
             flex-wrap: wrap;
         }
@@ -712,22 +807,22 @@
         }
 
         .settings-item-label strong {
-            color: #e8e0f0;
+            color: #e2e8f0;
             font-size: 13px;
         }
 
         .settings-item-label p {
-            color: #a89bc7;
+            color: #94a3b8;
             font-size: 12px;
             margin-top: 3px;
         }
 
         .settings-item-control input {
             padding: 8px 10px;
-            background: rgba(31, 21, 53, 0.5);
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
             border-radius: 6px;
-            color: #e8e0f0;
+            color: #e2e8f0;
             text-align: center;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
@@ -737,7 +832,7 @@
         .save-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #b8a0d6 0%, #d4c5e8 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -752,98 +847,13 @@
 
         .save-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(184, 160, 214, 0.2);
-        }
-
-        /* NOTIFICATIONS MODAL */
-        .notifications-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 450px;
-            height: 100vh;
-            background: rgba(31, 21, 53, 0.95);
-            border-left: 1px solid rgba(139, 107, 183, 0.3);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 998;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .notifications-modal.active {
-            transform: translateX(0);
-        }
-
-        .notifications-modal.hidden {
-            display: none;
-        }
-
-        .notifications-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
-        }
-
-        .notifications-header h2 {
-            font-size: 18px;
-            color: #e8e0f0;
-        }
-
-        .notification-item {
-            background: rgba(45, 31, 71, 0.6);
-            border-left: 4px solid #b8a0d6;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(139, 107, 183, 0.2);
-        }
-
-        .notification-item.warning {
-            border-left-color: #fbbf24;
-        }
-
-        .notification-item.error {
-            border-left-color: #f87171;
-        }
-
-        .notification-item.success {
-            border-left-color: #4ade80;
-        }
-
-        .notification-time {
-            font-size: 11px;
-            color: #7a6a8f;
-            margin-top: 8px;
-        }
-
-        .notification-title {
-            font-weight: 600;
-            color: #e8e0f0;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-
-        .notification-text {
-            color: #a89bc7;
-            font-size: 13px;
-        }
-
-        .no-notifications {
-            text-align: center;
-            color: #7a6a8f;
-            padding: 40px 20px;
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
         }
 
         /* ADMIN PANEL */
         .admin-panel {
-            background: rgba(45, 31, 71, 0.4);
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
+            border: 1px solid rgba(6, 182, 212, 0.2);
             border-radius: 15px;
             padding: 25px;
             backdrop-filter: blur(10px);
@@ -855,11 +865,11 @@
             align-items: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(139, 107, 183, 0.3);
+            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
         }
 
         .admin-header h2 {
-            color: #e8e0f0;
+            color: #e2e8f0;
             font-size: 18px;
         }
 
@@ -872,79 +882,27 @@
             grid-template-columns: 1fr 1fr 1fr auto;
             gap: 15px;
             padding: 15px;
-            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
             align-items: center;
         }
 
         .account-row:hover {
-            background: rgba(45, 31, 71, 0.3);
+            background: rgba(30, 41, 59, 0.3);
         }
 
         .account-item {
             font-size: 13px;
-            color: #c5b8d8;
+            color: #cbd5e1;
         }
 
         .account-role {
             display: inline-block;
             padding: 4px 10px;
-            background: rgba(184, 160, 214, 0.2);
-            color: #b8a0d6;
+            background: rgba(6, 182, 212, 0.2);
+            color: #06b6d4;
             border-radius: 4px;
             font-size: 12px;
             font-weight: 600;
-        }
-
-        /* MAINTENANCE TABLE COM MINUTOS */
-        .maint-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .maint-table thead tr {
-            border-bottom: 2px solid rgba(139, 107, 183, 0.3);
-        }
-
-        .maint-table th {
-            padding: 12px;
-            text-align: left;
-            color: #a89bc7;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .maint-table tbody tr {
-            border-bottom: 1px solid rgba(139, 107, 183, 0.2);
-        }
-
-        .maint-table td {
-            padding: 12px;
-            color: #c5b8d8;
-            font-size: 13px;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-badge.good {
-            background: rgba(74, 222, 128, 0.2);
-            color: #86efac;
-        }
-
-        .status-badge.warning {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fcd34d;
-        }
-
-        .status-badge.critical {
-            background: rgba(248, 113, 113, 0.2);
-            color: #fca5a5;
         }
 
         /* NOTIFICAÇÕES */
@@ -953,19 +911,19 @@
             top: 20px;
             right: 20px;
             padding: 16px 20px;
-            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(74, 222, 128, 0.2);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
             animation: slideIn 0.3s ease;
-            z-index: 999;
+            z-index: 997;
             max-width: 300px;
             font-size: 14px;
         }
 
         .notification.error {
-            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-            box-shadow: 0 10px 25px rgba(248, 113, 113, 0.2);
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
         }
 
         @keyframes slideIn {
@@ -993,10 +951,10 @@
 
         .timer-input input {
             padding: 11px 14px;
-            background: rgba(31, 21, 53, 0.5);
-            border: 1px solid rgba(139, 107, 183, 0.3);
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
             border-radius: 8px;
-            color: #e8e0f0;
+            color: #e2e8f0;
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             min-width: 120px;
@@ -1004,7 +962,54 @@
 
         .timer-input input:focus {
             outline: none;
-            border-color: #b8a0d6;
+            border-color: #06b6d4;
+        }
+
+        /* MAINTENANCE TABLE */
+        .maintenance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .maintenance-table th {
+            padding: 12px;
+            text-align: left;
+            color: #94a3b8;
+            font-size: 12px;
+            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .maintenance-table td {
+            padding: 12px;
+            color: #cbd5e1;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+        }
+
+        .maintenance-table tr:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #86efac;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        .status-badge.critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
         }
 
         /* RESPONSIVO */
@@ -1095,15 +1100,6 @@
             .auth-tabs button {
                 width: 100%;
             }
-
-            .maint-table {
-                font-size: 12px;
-            }
-
-            .maint-table td,
-            .maint-table th {
-                padding: 10px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -1163,7 +1159,7 @@
             <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" id="loginEmail" placeholder="admin@gmail.com" required>
+                    <input type="text" id="loginEmail" placeholder="admin@gmail.com ou seu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
@@ -1181,7 +1177,7 @@
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" id="registerEmail" required>
+                    <input type="text" id="registerEmail" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
@@ -1214,11 +1210,11 @@
                     <div class="role" id="userRole">Usuário</div>
                 </div>
                 <div class="header-buttons">
-                    <button class="icon-btn" id="notificationBtn" onclick="toggleNotifications()" title="Notificações">
+                    <button class="notification-btn" onclick="toggleNotifications()" title="Notificações">
                         🔔
                         <div class="notification-badge" id="notificationBadge"></div>
                     </button>
-                    <button class="icon-btn settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
+                    <button class="settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
                     <button class="logout-btn" onclick="logout()">Sair</button>
                 </div>
             </div>
@@ -1248,11 +1244,11 @@
 
                 <div class="status-card">
                     <div class="status-card-label">Nível da Bateria</div>
-                    <div class="status-card-value" id="batteryLevel">50</div>
+                    <div class="status-card-value" id="batteryLevel">0</div>
                     <div class="status-card-unit">%</div>
                     <div class="progress-container">
                         <div class="progress-bar">
-                            <div class="progress-fill" id="batteryProgress" style="width: 50%"></div>
+                            <div class="progress-fill" id="batteryProgress" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -1314,9 +1310,9 @@
         <!-- ABA: MANUTENÇÃO -->
         <div class="tab-content" id="maintenance">
             <div class="control-panel">
-                <h3 style="color: #c5b8d8; margin-bottom: 20px;">Status dos Componentes</h3>
+                <h3 style="color: #cbd5e1; margin-bottom: 20px;">Status dos Componentes</h3>
                 <div style="overflow-x: auto;">
-                    <table class="maint-table">
+                    <table class="maintenance-table">
                         <thead>
                             <tr>
                                 <th>Componente</th>
@@ -1328,25 +1324,25 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Bomba</strong></td>
+                                <td>Bomba</td>
                                 <td id="pumpHours">0 h</td>
-                                <td id="pumpMins">0 min</td>
+                                <td id="pumpMinutes">0 min</td>
                                 <td>500 h</td>
-                                <td><span class="status-badge good">Bom</span></td>
+                                <td><span class="status-badge">Bom</span></td>
                             </tr>
                             <tr>
-                                <td><strong>Bateria</strong></td>
+                                <td>Bateria</td>
                                 <td id="batteryHours">0 ciclos</td>
-                                <td id="batteryMins">0 min</td>
+                                <td id="batteryMinutes">0 min</td>
                                 <td>300 ciclos</td>
-                                <td><span class="status-badge good">Bom</span></td>
+                                <td><span class="status-badge">Bom</span></td>
                             </tr>
                             <tr>
-                                <td><strong>Filtro</strong></td>
+                                <td>Filtro</td>
                                 <td id="filterHours">0 h</td>
-                                <td id="filterMins">0 min</td>
+                                <td id="filterMinutes">0 min</td>
                                 <td>100 h</td>
-                                <td><span class="status-badge good">Bom</span></td>
+                                <td><span class="status-badge">Bom</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -1359,18 +1355,27 @@
             <div class="admin-panel">
                 <div class="admin-header">
                     <h2>Painel Administrativo</h2>
-                    <span id="totalAccounts" style="color: #a89bc7; font-size: 14px;">0 contas</span>
+                    <span id="totalAccounts" style="color: #94a3b8; font-size: 14px;">0 contas</span>
                 </div>
                 <div class="accounts-list" id="accountsList"></div>
             </div>
         </div>
     </div>
 
+    <!-- NOTIFICATIONS SIDEBAR -->
+    <div class="notifications-modal" id="notificationsModal">
+        <div class="notifications-header">
+            <h2>Notificações</h2>
+            <button class="close-notifications" onclick="toggleNotifications()">✕</button>
+        </div>
+        <div id="notificationsList"></div>
+    </div>
+
     <!-- SETTINGS SIDEBAR -->
     <div class="settings-modal" id="settingsModal">
         <div class="settings-header">
             <h2>Configurações</h2>
-            <button class="close-btn" onclick="toggleSettings()">✕</button>
+            <button class="close-settings" onclick="toggleSettings()">✕</button>
         </div>
 
         <div class="settings-group">
@@ -1433,16 +1438,7 @@
         <button class="save-btn" onclick="saveSettings()">Salvar</button>
     </div>
 
-    <!-- NOTIFICATIONS SIDEBAR -->
-    <div class="notifications-modal" id="notificationsModal">
-        <div class="notifications-header">
-            <h2>Notificações</h2>
-            <button class="close-btn" onclick="toggleNotifications()">✕</button>
-        </div>
-        <div id="notificationsList"></div>
-    </div>
-
-    <!-- NOTIFICAÇÃO TOAST -->
+    <!-- NOTIFICAÇÃO FLUTUANTE -->
     <div class="notification hidden-notification" id="notification"></div>
 
     <script>
@@ -1469,7 +1465,9 @@
             saveUsers() {
                 try {
                     localStorage.setItem('ecoflux_users_v4', JSON.stringify(this.users));
-                } catch (e) {}
+                } catch (e) {
+                    console.error('Erro ao salvar usuários:', e);
+                }
             }
 
             loadCurrentUser() {
@@ -1498,7 +1496,9 @@
             saveUserData(email, data) {
                 try {
                     localStorage.setItem(`ecoflux_user_${email}_v4`, JSON.stringify(data));
-                } catch (e) {}
+                } catch (e) {
+                    console.error('Erro ao salvar dados do usuário:', e);
+                }
             }
 
             getDefaultUserData(email) {
@@ -1518,6 +1518,7 @@
                         pumpWarning: 400,
                         filterWarning: 80
                     },
+                    lastSync: new Date().toISOString(),
                     role: isAdmin ? 'admin' : 'user',
                     isAdmin: isAdmin
                 };
@@ -1577,6 +1578,24 @@
                 this.loadAllData();
                 return this.users;
             }
+
+            addNotification(email, message, type = 'info') {
+                const userData = this.getUserData(email);
+                userData.notifications.push({
+                    message,
+                    type,
+                    timestamp: new Date().toISOString()
+                });
+                if (userData.notifications.length > 50) {
+                    userData.notifications = userData.notifications.slice(-50);
+                }
+                this.saveUserData(email, userData);
+            }
+
+            getNotifications(email) {
+                const userData = this.getUserData(email);
+                return userData.notifications || [];
+            }
         }
 
         // ========== INSTÂNCIAS GLOBAIS ==========
@@ -1585,16 +1604,25 @@
             bucketLevel: Math.random() * 30,
             batteryVoltage: 12.0,
             batteryPercentage: 50,
-            runtime: 0,
+            estimatedRuntime: 0,
             pumpActive: false,
+            pumpEnabled: false,
             timerRunning: false,
+            connectionStatus: false,
             currentMode: 'pulse',
-            unreadNotifications: 0
+            pumpHours: 0,
+            pumpMinutes: 0,
+            batteryHours: 0,
+            batteryMinutes: 0,
+            filterHours: 0,
+            filterMinutes: 0
         };
 
-        let notificationsList = [];
         let dataRefreshInterval = null;
+        let componentUpdateInterval = null;
+        let timerInterval = null;
 
+        // ========== INICIALIZAÇÃO ==========
         window.addEventListener('load', () => {
             if (storage.currentUser) {
                 showMainApp();
@@ -1720,6 +1748,7 @@
 
             const isAdmin = storage.currentUser === 'admin@gmail.com';
             const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
+            const userData = storage.getUserData(storage.currentUser);
             
             document.getElementById('currentUser').textContent = user ? user.username : 'Usuário';
             document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Usuário';
@@ -1733,8 +1762,9 @@
 
             loadUserData();
             startDataRefresh();
+            startComponentUpdate();
             updateStatusIndicator();
-            addNotification('Sistema iniciado', 'Sistema EcoFlux iniciado com sucesso', 'success');
+            displayNotifications();
         }
 
         function logout() {
@@ -1742,10 +1772,23 @@
                 clearInterval(dataRefreshInterval);
                 dataRefreshInterval = null;
             }
+            if (componentUpdateInterval) {
+                clearInterval(componentUpdateInterval);
+                componentUpdateInterval = null;
+            }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
             storage.logout();
-            notificationsList = [];
-            systemData.unreadNotifications = 0;
             showAuthModal();
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
+            document.querySelectorAll('.auth-tab-btn')[1].classList.remove('active');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.remove('show');
         }
 
         // ========== ABAS ==========
@@ -1757,72 +1800,85 @@
             event.target.classList.add('active');
         }
 
+        // ========== NOTIFICAÇÕES ==========
+        function toggleNotifications() {
+            const modal = document.getElementById('notificationsModal');
+            modal.classList.toggle('active');
+            if (modal.classList.contains('active')) {
+                document.getElementById('notificationBadge').classList.remove('active');
+            }
+        }
+
+        function addNotification(message, type = 'info') {
+            storage.addNotification(storage.currentUser, message, type);
+            
+            const notifList = document.getElementById('notificationsList');
+            const item = document.createElement('div');
+            item.className = `notification-item ${type}`;
+            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            item.innerHTML = `
+                <div style="color: #e2e8f0;">${message}</div>
+                <div class="notification-time">${time}</div>
+            `;
+            notifList.insertBefore(item, notifList.firstChild);
+
+            const badge = document.getElementById('notificationBadge');
+            badge.classList.add('active');
+        }
+
+        function displayNotifications() {
+            const notifications = storage.getNotifications(storage.currentUser);
+            const notifList = document.getElementById('notificationsList');
+            notifList.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                notifList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma notificação</p>';
+                return;
+            }
+
+            notifications.slice().reverse().forEach(notif => {
+                const item = document.createElement('div');
+                item.className = `notification-item ${notif.type}`;
+                const time = new Date(notif.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                item.innerHTML = `
+                    <div style="color: #e2e8f0;">${notif.message}</div>
+                    <div class="notification-time">${time}</div>
+                `;
+                notifList.appendChild(item);
+            });
+        }
+
         // ========== SETTINGS ==========
         function toggleSettings() {
             document.getElementById('settingsModal').classList.toggle('active');
         }
 
-        // ========== NOTIFICATIONS ==========
-        function toggleNotifications() {
-            document.getElementById('notificationsModal').classList.toggle('active');
-            document.getElementById('notificationBadge').classList.remove('show');
-            systemData.unreadNotifications = 0;
-        }
-
-        function addNotification(title, text, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString('pt-BR');
-            notificationsList.unshift({ title, text, type, timestamp });
-            if (notificationsList.length > 50) notificationsList.pop();
-            
-            systemData.unreadNotifications++;
-            if (systemData.unreadNotifications > 0) {
-                document.getElementById('notificationBadge').classList.add('show');
-            }
-
-            updateNotificationsList();
-        }
-
-        function updateNotificationsList() {
-            const list = document.getElementById('notificationsList');
-            
-            if (notificationsList.length === 0) {
-                list.innerHTML = '<div class="no-notifications">Nenhuma notificação</div>';
-                return;
-            }
-
-            list.innerHTML = notificationsList.map(n => `
-                <div class="notification-item ${n.type}">
-                    <div class="notification-title">${n.title}</div>
-                    <div class="notification-text">${n.text}</div>
-                    <div class="notification-time">${n.timestamp}</div>
-                </div>
-            `).join('');
-        }
-
         // ========== DADOS ==========
         function loadUserData() {
             const userData = storage.getUserData(storage.currentUser);
+
             document.getElementById('pumpOnTime').value = userData.settings.pumpOnTime;
             document.getElementById('pumpOffTime').value = userData.settings.pumpOffTime;
             document.getElementById('maxBucketHeight').value = userData.settings.maxBucketHeight;
             document.getElementById('pumpWarning').value = userData.settings.pumpWarning;
             document.getElementById('filterWarning').value = userData.settings.filterWarning;
+
+            systemData.pumpHours = userData.pumpHours || 0;
+            systemData.pumpMinutes = userData.pumpMinutes || 0;
+            systemData.batteryHours = userData.batteryHours || 0;
+            systemData.batteryMinutes = userData.batteryMinutes || 0;
+            systemData.filterHours = userData.filterHours || 0;
+            systemData.filterMinutes = userData.filterMinutes || 0;
         }
 
         function startDataRefresh() {
-            if (dataRefreshInterval) clearInterval(dataRefreshInterval);
+            if (dataRefreshInterval) {
+                clearInterval(dataRefreshInterval);
+            }
 
             dataRefreshInterval = setInterval(() => {
                 if (systemData.pumpActive) {
                     systemData.bucketLevel = Math.min(100, systemData.bucketLevel + Math.random() * 2);
-                    
-                    const userData = storage.getUserData(storage.currentUser);
-                    userData.pumpMinutes += 1;
-                    if (userData.pumpMinutes >= 60) {
-                        userData.pumpHours += 1;
-                        userData.pumpMinutes = 0;
-                    }
-                    storage.saveUserData(storage.currentUser, userData);
                 } else {
                     systemData.bucketLevel = Math.max(0, systemData.bucketLevel - Math.random() * 0.5);
                 }
@@ -1831,9 +1887,58 @@
             }, 1000);
         }
 
-        function updateDashboard() {
+        function startComponentUpdate() {
+            if (componentUpdateInterval) {
+                clearInterval(componentUpdateInterval);
+            }
+
+            componentUpdateInterval = setInterval(() => {
+                if (systemData.pumpActive) {
+                    systemData.pumpMinutes += 1;
+                    if (systemData.pumpMinutes >= 60) {
+                        systemData.pumpHours += 1;
+                        systemData.pumpMinutes = 0;
+                    }
+                    
+                    systemData.batteryMinutes += 1;
+                    if (systemData.batteryMinutes >= 60) {
+                        systemData.batteryHours += 1;
+                        systemData.batteryMinutes = 0;
+                    }
+
+                    systemData.filterMinutes += 1;
+                    if (systemData.filterMinutes >= 60) {
+                        systemData.filterHours += 1;
+                        systemData.filterMinutes = 0;
+                    }
+
+                    saveComponentHours();
+                    updateMaintenanceTable();
+                }
+            }, 60000); // A cada minuto
+        }
+
+        function saveComponentHours() {
             const userData = storage.getUserData(storage.currentUser);
-            
+            userData.pumpHours = systemData.pumpHours;
+            userData.pumpMinutes = systemData.pumpMinutes;
+            userData.batteryHours = systemData.batteryHours;
+            userData.batteryMinutes = systemData.batteryMinutes;
+            userData.filterHours = systemData.filterHours;
+            userData.filterMinutes = systemData.filterMinutes;
+            storage.saveUserData(storage.currentUser, userData);
+        }
+
+        function updateMaintenanceTable() {
+            document.getElementById('pumpHours').textContent = `${systemData.pumpHours} h`;
+            document.getElementById('pumpMinutes').textContent = `${systemData.pumpMinutes} min`;
+            document.getElementById('batteryHours').textContent = `${systemData.batteryHours} ciclos`;
+            document.getElementById('batteryMinutes').textContent = `${systemData.batteryMinutes} min`;
+            document.getElementById('filterHours').textContent = `${systemData.filterHours} h`;
+            document.getElementById('filterMinutes').textContent = `${systemData.filterMinutes} min`;
+        }
+
+        function updateDashboard() {
             document.getElementById('bucketLevel').textContent = Math.round(systemData.bucketLevel);
             document.getElementById('bucketProgress').style.width = systemData.bucketLevel + '%';
 
@@ -1845,58 +1950,65 @@
 
             document.getElementById('pumpStatus').textContent = systemData.pumpActive ? 'Ligada' : 'Desligada';
 
-            // Manutenção
-            document.getElementById('pumpHours').textContent = userData.pumpHours + ' h';
-            document.getElementById('pumpMins').textContent = userData.pumpMinutes + ' min';
-            document.getElementById('batteryHours').textContent = userData.batteryHours + ' ciclos';
-            document.getElementById('batteryMins').textContent = userData.batteryMinutes + ' min';
-            document.getElementById('filterHours').textContent = userData.filterHours + ' h';
-            document.getElementById('filterMins').textContent = userData.filterMinutes + ' min';
-
             updateStatusIndicator();
         }
 
         function updateStatusIndicator() {
             const indicator = document.getElementById('statusIndicator');
             indicator.classList.remove('connected', 'active', 'inactive');
-            indicator.classList.add(systemData.pumpActive ? 'active' : (systemData.pumpActive ? 'connected' : 'inactive'));
+            
+            if (systemData.pumpActive) {
+                indicator.classList.add('active');
+            } else if (systemData.pumpEnabled) {
+                indicator.classList.add('connected');
+            } else {
+                indicator.classList.add('inactive');
+            }
         }
 
         // ========== CONTROLES ==========
         function turnPumpOn() {
+            systemData.pumpEnabled = true;
             systemData.pumpActive = true;
             systemData.timerRunning = false;
             document.getElementById('pumpOnBtn').classList.add('active');
             document.getElementById('pumpOffBtn').classList.remove('active');
-            addNotification('Bomba Ligada', 'Bomba iniciou funcionamento', 'success');
+            addNotification('Bomba ligada', 'success');
+            showNotification('Bomba ligada!');
             updateDashboard();
         }
 
         function turnPumpOff() {
+            systemData.pumpEnabled = false;
             systemData.pumpActive = false;
             systemData.timerRunning = false;
             document.getElementById('pumpOnBtn').classList.remove('active');
             document.getElementById('pumpOffBtn').classList.add('active');
-            addNotification('Bomba Desligada', 'Bomba parou de funcionar', 'info');
+            addNotification('Bomba desligada', 'info');
+            showNotification('Bomba desligada');
             updateDashboard();
         }
 
         function startTimer() {
             const minutes = parseInt(document.getElementById('timerMinutes').value);
             if (!minutes || minutes < 1) {
-                addNotification('Timer Inválido', 'Defina um tempo válido', 'error');
+                showNotification('Defina um tempo válido', 'error');
                 return;
             }
 
+            systemData.pumpEnabled = true;
             systemData.pumpActive = true;
             systemData.timerRunning = true;
 
-            addNotification('Timer Iniciado', `Timer iniciado por ${minutes} minutos`, 'success');
+            addNotification(`Timer iniciado por ${minutes} minuto${minutes > 1 ? 's' : ''}`, 'info');
+            showNotification(`Timer iniciado por ${minutes} minutos`);
 
             setTimeout(() => {
+                systemData.pumpEnabled = false;
                 systemData.pumpActive = false;
                 systemData.timerRunning = false;
-                addNotification('Timer Finalizado', `Timer de ${minutes} minutos foi concluído`, 'success');
+                addNotification('Timer concluído', 'success');
+                showNotification('Timer expirou');
                 updateDashboard();
             }, minutes * 60 * 1000);
 
@@ -1910,15 +2022,18 @@
 
             if (mode === 'continuous') {
                 document.getElementById('modeContBtn').classList.add('active');
-                addNotification('Modo Alterado', 'Modo alterado para Contínuo', 'info');
+                addNotification('Modo Contínuo ativado', 'info');
+                showNotification('Modo Contínuo');
             } else if (mode === 'pulse') {
                 document.getElementById('modePulseBtn').classList.add('active');
-                addNotification('Modo Alterado', 'Modo alterado para Pulsante', 'info');
+                addNotification('Modo Pulsante ativado', 'info');
+                showNotification('Modo Pulsante');
             }
         }
 
         function saveSettings() {
             const userData = storage.getUserData(storage.currentUser);
+
             userData.settings.pumpOnTime = parseInt(document.getElementById('pumpOnTime').value);
             userData.settings.pumpOffTime = parseInt(document.getElementById('pumpOffTime').value);
             userData.settings.maxBucketHeight = parseInt(document.getElementById('maxBucketHeight').value);
@@ -1926,7 +2041,8 @@
             userData.settings.filterWarning = parseInt(document.getElementById('filterWarning').value);
 
             storage.saveUserData(storage.currentUser, userData);
-            addNotification('Configurações Salvas', 'Suas configurações foram atualizadas', 'success');
+            addNotification('Configurações salvas', 'success');
+            showNotification('Configurações salvas!');
             toggleSettings();
         }
 
@@ -1940,7 +2056,7 @@
             accountsList.innerHTML = '';
             
             if (Object.keys(allUsers).length === 0) {
-                accountsList.innerHTML = '<p style="color: #7a6a8f; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
+                accountsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
                 return;
             }
             
@@ -1957,7 +2073,7 @@
             });
         }
 
-        // ========== NOTIFICAÇÕES TOAST ==========
+        // ========== NOTIFICAÇÕES FLUTUANTES ==========
         function showNotification(message, type = 'success') {
             const notif = document.getElementById('notification');
             notif.textContent = message;
@@ -1969,7 +2085,9 @@
             }, 3000);
         }
 
+        // Inicializar
         updateDashboard();
+        updateMaintenanceTable();
     </script>
 </body>
 </html>
