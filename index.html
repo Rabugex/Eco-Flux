@@ -38,22 +38,14 @@
             position: relative;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         body::before {
             content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #0ea5e9, #06b6d4);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1a2540 50%, #0f172a 100%);
             z-index: -1;
             pointer-events: none;
         }
@@ -459,7 +451,8 @@
         /* CARDS COM FORMATOS DIFERENTES */
         .status-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: 200px 1fr 200px 200px;
+            grid-template-rows: auto auto;
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -491,11 +484,13 @@
         }
 
         .status-card:nth-child(1) {
-            border-radius: 20px;
+            border-radius: 15px;
+            grid-column: 1;
         }
 
         .status-card:nth-child(2) {
-            border-radius: 15px 0 15px 0;
+            border-radius: 15px;
+            grid-column: 1 / -1;
         }
 
         .status-card:nth-child(3) {
@@ -506,19 +501,29 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            grid-column: 2;
         }
 
         .status-card:nth-child(4) {
-            border-radius: 0 15px 0 15px;
+            border-radius: 15px;
+            grid-column: 3;
         }
 
         .status-card:nth-child(5) {
-            clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+            border-radius: 50%;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            grid-column: 4;
         }
 
         .status-card:nth-child(6) {
             border-radius: 15px;
             border-left: 5px solid #a855f7;
+            grid-column: auto;
         }
 
         .status-card-label {
@@ -1053,13 +1058,18 @@
                 gap: 15px;
             }
 
-            .status-card:nth-child(3) {
-                aspect-ratio: auto;
-                border-radius: 20px;
+            .status-card:nth-child(1),
+            .status-card:nth-child(2),
+            .status-card:nth-child(3),
+            .status-card:nth-child(4),
+            .status-card:nth-child(5),
+            .status-card:nth-child(6) {
+                grid-column: auto !important;
             }
 
+            .status-card:nth-child(3),
             .status-card:nth-child(5) {
-                clip-path: none;
+                aspect-ratio: auto;
                 border-radius: 15px;
             }
 
@@ -1159,7 +1169,7 @@
             <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" id="loginEmail" placeholder="admin@gmail.com ou seu@email.com" required>
+                    <input type="text" id="loginEmail" required>
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
@@ -1231,6 +1241,7 @@
         <!-- ABA: DASHBOARD -->
         <div class="tab-content active" id="dashboard">
             <div class="status-grid">
+                <!-- Nível do Balde - Retangular vertical esquerda -->
                 <div class="status-card">
                     <div class="status-card-label">Nível do Balde</div>
                     <div class="status-card-value" id="bucketLevel">0</div>
@@ -1242,6 +1253,7 @@
                     </div>
                 </div>
 
+                <!-- Nível da Bateria - Retangular horizontal topo -->
                 <div class="status-card">
                     <div class="status-card-label">Nível da Bateria</div>
                     <div class="status-card-value" id="batteryLevel">0</div>
@@ -1253,23 +1265,27 @@
                     </div>
                 </div>
 
+                <!-- Tensão - Circular -->
                 <div class="status-card">
                     <div class="status-card-label">Tensão</div>
                     <div class="status-card-value" id="batteryVoltage">0</div>
                     <div class="status-card-unit">V</div>
                 </div>
 
+                <!-- Bomba - Retangular -->
+                <div class="status-card">
+                    <div class="status-card-label">Bomba</div>
+                    <div class="status-card-value" id="pumpStatus">Off</div>
+                </div>
+
+                <!-- Tempo - Circular -->
                 <div class="status-card">
                     <div class="status-card-label">Tempo</div>
                     <div class="status-card-value" id="runtime">0</div>
                     <div class="status-card-unit">h</div>
                 </div>
 
-                <div class="status-card">
-                    <div class="status-card-label">Bomba</div>
-                    <div class="status-card-value" id="pumpStatus">Off</div>
-                </div>
-
+                <!-- Próxima Manutenção - Retangular -->
                 <div class="status-card">
                     <div class="status-card-label">Próxima Manutenção</div>
                     <div class="status-card-value" id="nextMaintenance">-</div>
@@ -1894,28 +1910,29 @@
 
             componentUpdateInterval = setInterval(() => {
                 if (systemData.pumpActive) {
-                    systemData.pumpMinutes += 1;
-                    if (systemData.pumpMinutes >= 60) {
-                        systemData.pumpHours += 1;
-                        systemData.pumpMinutes = 0;
-                    }
+                    // Incrementar segundos
+                    let pumpSeconds = (systemData.pumpHours * 3600) + (systemData.pumpMinutes * 60);
+                    let batterySeconds = (systemData.batteryHours * 3600) + (systemData.batteryMinutes * 60);
+                    let filterSeconds = (systemData.filterHours * 3600) + (systemData.filterMinutes * 60);
                     
-                    systemData.batteryMinutes += 1;
-                    if (systemData.batteryMinutes >= 60) {
-                        systemData.batteryHours += 1;
-                        systemData.batteryMinutes = 0;
-                    }
-
-                    systemData.filterMinutes += 1;
-                    if (systemData.filterMinutes >= 60) {
-                        systemData.filterHours += 1;
-                        systemData.filterMinutes = 0;
-                    }
+                    pumpSeconds += 1;
+                    batterySeconds += 1;
+                    filterSeconds += 1;
+                    
+                    // Converter de volta
+                    systemData.pumpHours = Math.floor(pumpSeconds / 3600);
+                    systemData.pumpMinutes = Math.floor((pumpSeconds % 3600) / 60);
+                    
+                    systemData.batteryHours = Math.floor(batterySeconds / 3600);
+                    systemData.batteryMinutes = Math.floor((batterySeconds % 3600) / 60);
+                    
+                    systemData.filterHours = Math.floor(filterSeconds / 3600);
+                    systemData.filterMinutes = Math.floor((filterSeconds % 3600) / 60);
 
                     saveComponentHours();
                     updateMaintenanceTable();
                 }
-            }, 60000); // A cada minuto
+            }, 1000); // A cada segundo
         }
 
         function saveComponentHours() {
