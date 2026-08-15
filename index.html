@@ -510,7 +510,6 @@
 
         .status-card:nth-child(6) {
             border-radius: 15px;
-            border-left: 5px solid #a855f7;
             grid-column: 3;
         }
 
@@ -635,7 +634,49 @@
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
         }
 
-        /* NOTIFICATIONS MODAL */
+        .btn-mode {
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            color: white;
+        }
+
+        .btn-mode:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-mode.active {
+            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+        }
+
+        .btn-timer {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .btn-timer:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(107, 114, 128, 0.2);
+        }
+
+        .timer-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(6, 182, 212, 0.2);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #06b6d4;
+            font-weight: 600;
+            display: none;
+            white-space: nowrap;
+        }
+
+        .timer-popup.active {
+            display: block;
+        }
+
         .notifications-modal {
             position: fixed;
             top: 0;
@@ -1253,6 +1294,7 @@
 
                 <!-- Tempo - Circular -->
                 <div class="status-card">
+                    <div class="timer-popup" id="timerPopup"></div>
                     <div class="status-card-label">Tempo</div>
                     <div class="status-card-value" id="runtime">0</div>
                     <div class="status-card-unit">h</div>
@@ -1282,15 +1324,15 @@
                     <label class="control-label">Timer (minutos)</label>
                     <div class="timer-input">
                         <input type="number" id="timerMinutes" placeholder="Minutos" min="1" max="1440" value="30">
-                        <button class="btn btn-primary" onclick="startTimer()">Iniciar</button>
+                        <button class="btn btn-timer" onclick="startTimer()">Iniciar</button>
                     </div>
                 </div>
 
                 <div class="control-group">
                     <label class="control-label">Modo</label>
                     <div class="button-group">
-                        <button class="btn btn-primary" onclick="setMode('continuous')" id="modeContBtn">Contínuo</button>
-                        <button class="btn btn-primary" onclick="setMode('pulse')" id="modePulseBtn">Pulsante</button>
+                        <button class="btn btn-mode" onclick="setMode('continuous')" id="modeContBtn">Contínuo</button>
+                        <button class="btn btn-mode" onclick="setMode('pulse')" id="modePulseBtn">Pulsante</button>
                     </div>
                 </div>
             </div>
@@ -1306,30 +1348,26 @@
                             <tr>
                                 <th>Componente</th>
                                 <th>Uso</th>
-                                <th>Minutos</th>
                                 <th>Limite</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Bomba</td>
-                                <td id="pumpHours">0 h</td>
-                                <td id="pumpMinutes">0 min</td>
+                                <td>Bompa</td>
+                                <td id="pumpHours">0.00 h</td>
                                 <td>500 h</td>
                                 <td><span class="status-badge">Bom</span></td>
                             </tr>
                             <tr>
                                 <td>Bateria</td>
-                                <td id="batteryHours">0 ciclos</td>
-                                <td id="batteryMinutes">0 min</td>
+                                <td id="batteryHours">0.00 ciclos</td>
                                 <td>300 ciclos</td>
                                 <td><span class="status-badge">Bom</span></td>
                             </tr>
                             <tr>
                                 <td>Filtro</td>
-                                <td id="filterHours">0 h</td>
-                                <td id="filterMinutes">0 min</td>
+                                <td id="filterHours">0.00 h</td>
                                 <td>100 h</td>
                                 <td><span class="status-badge">Bom</span></td>
                             </tr>
@@ -1920,12 +1958,13 @@
         }
 
         function updateMaintenanceTable() {
-            document.getElementById('pumpHours').textContent = `${systemData.pumpHours} h`;
-            document.getElementById('pumpMinutes').textContent = `${systemData.pumpMinutes} min`;
-            document.getElementById('batteryHours').textContent = `${systemData.batteryHours} ciclos`;
-            document.getElementById('batteryMinutes').textContent = `${systemData.batteryMinutes} min`;
-            document.getElementById('filterHours').textContent = `${systemData.filterHours} h`;
-            document.getElementById('filterMinutes').textContent = `${systemData.filterMinutes} min`;
+            const pumpHoursDecimal = (systemData.pumpHours + systemData.pumpMinutes / 60).toFixed(2);
+            const batteryHoursDecimal = (systemData.batteryHours + systemData.batteryMinutes / 60).toFixed(2);
+            const filterHoursDecimal = (systemData.filterHours + systemData.filterMinutes / 60).toFixed(2);
+
+            document.getElementById('pumpHours').textContent = `${pumpHoursDecimal} h`;
+            document.getElementById('batteryHours').textContent = `${batteryHoursDecimal} ciclos`;
+            document.getElementById('filterHours').textContent = `${filterHoursDecimal} h`;
         }
 
         function updateDashboard() {
@@ -1989,17 +2028,37 @@
             systemData.pumpEnabled = true;
             systemData.pumpActive = true;
             systemData.timerRunning = true;
+            systemData.timerEndTime = Date.now() + (minutes * 60 * 1000);
 
             addNotification(`Timer iniciado por ${minutes} minuto${minutes > 1 ? 's' : ''}`, 'info');
             showNotification(`Timer iniciado por ${minutes} minutos`);
+
+            // Atualizar popup a cada segundo
+            const timerPopupInterval = setInterval(() => {
+                if (!systemData.timerRunning) {
+                    clearInterval(timerPopupInterval);
+                    document.getElementById('timerPopup').classList.remove('active');
+                    return;
+                }
+
+                const remaining = systemData.timerEndTime - Date.now();
+                if (remaining > 0) {
+                    const mins = Math.floor(remaining / 60000);
+                    const secs = Math.floor((remaining % 60000) / 1000);
+                    document.getElementById('timerPopup').textContent = `${mins}m ${secs}s`;
+                    document.getElementById('timerPopup').classList.add('active');
+                }
+            }, 1000);
 
             setTimeout(() => {
                 systemData.pumpEnabled = false;
                 systemData.pumpActive = false;
                 systemData.timerRunning = false;
+                document.getElementById('timerPopup').classList.remove('active');
                 addNotification('Timer concluído', 'success');
                 showNotification('Timer expirou');
                 updateDashboard();
+                clearInterval(timerPopupInterval);
             }, minutes * 60 * 1000);
 
             updateDashboard();
