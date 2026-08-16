@@ -666,7 +666,7 @@
         }
 
         .btn-mode.active {
-            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         }
 
         .btn-timer {
@@ -746,41 +746,7 @@
         }
 
         .mode-line {
-            display: inline-block;
-            width: 20px;
-            height: 2px;
-            background: #a855f7;
-            position: relative;
-        }
-
-        .mode-line.continuous::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: #a855f7;
-            animation: draw-line 2s infinite;
-        }
-
-        .mode-line.pulse::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: #a855f7;
-            animation: draw-line-pulse 1.5s infinite;
-        }
-
-        @keyframes draw-line {
-            0%, 100% { width: 0; }
-            50% { width: 100%; }
-        }
-
-        @keyframes draw-line-pulse {
-            0%, 100% { width: 0; }
-            50% { width: 100%; }
+            display: none;
         }
 
         .notifications-modal {
@@ -1473,7 +1439,7 @@
 
                 <!-- Bomba - Retangular -->
                 <div class="status-card pump-status-card" id="pumpCard">
-                    <div class="mode-popup" id="modePopup"><span class="mode-line" id="modeLine"></span></div>
+                    <div class="mode-popup" id="modePopup"></div>
                     <div class="timer-popup" id="pumpTimerPopup"></div>
                     <div class="status-card-label">Bomba</div>
                     <div class="status-card-value" id="pumpStatus">Off</div>
@@ -2263,7 +2229,8 @@
         // ========== CONTROLES ==========
         function turnPumpOn() {
             if (systemData.currentMode === null || systemData.currentMode === undefined) {
-                showNotification('Selecione um modo de funcionamento primeiro!', 'error');
+                showNotification('Ativando modo Contínuo...', 'info');
+                document.getElementById('modeContBtn').click();
                 return;
             }
             systemData.pumpEnabled = true;
@@ -2359,17 +2326,16 @@
             document.getElementById('modeContBtn').classList.remove('active');
             document.getElementById('modePulseBtn').classList.remove('active');
             
-            const pumpCard = document.getElementById('pumpCard');
             const modePopup = document.getElementById('modePopup');
             
             if (mode === 'continuous') {
                 document.getElementById('modeContBtn').classList.add('active');
-                modePopup.innerHTML = '<span class="mode-text">Contínuo</span><span class="mode-line continuous"></span>';
+                modePopup.textContent = 'Contínuo';
                 addNotification('Modo Contínuo ativado', 'info');
                 showNotification('Modo Contínuo');
             } else if (mode === 'pulse') {
                 document.getElementById('modePulseBtn').classList.add('active');
-                modePopup.innerHTML = '<span class="mode-text">Pulsante</span><span class="mode-line pulse"></span>';
+                modePopup.textContent = 'Pulsante';
                 addNotification('Modo Pulsante ativado', 'info');
                 showNotification('Modo Pulsante');
             }
