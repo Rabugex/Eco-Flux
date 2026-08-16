@@ -698,10 +698,33 @@
             display: block;
         }
 
+        .timer-close {
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .timer-close:hover {
+            opacity: 1;
+        }
+
+        .timer-close {
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .timer-close:hover {
+            color: #ef4444;
+        }
+
         .mode-popup {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            top: 10px;
+            right: 10px;
             background: rgba(168, 85, 247, 0.2);
             border: 1px solid rgba(168, 85, 247, 0.5);
             border-radius: 8px;
@@ -717,30 +740,47 @@
             display: block;
         }
 
+        .mode-text {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
         .mode-line {
             display: inline-block;
-            margin-left: 8px;
-            font-size: 16px;
-            font-weight: 700;
-            animation: none;
+            width: 20px;
+            height: 2px;
+            background: #a855f7;
+            position: relative;
         }
 
-        .mode-line.continuous {
-            animation: line-continuous 2s infinite;
+        .mode-line.continuous::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #a855f7;
+            animation: draw-line 2s infinite;
         }
 
-        .mode-line.pulse {
-            animation: line-pulse 1.5s infinite;
+        .mode-line.pulse::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #a855f7;
+            animation: draw-line-pulse 1.5s infinite;
         }
 
-        @keyframes line-continuous {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes draw-line {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
         }
 
-        @keyframes line-pulse {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.6); }
+        @keyframes draw-line-pulse {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
         }
 
         .notifications-modal {
@@ -1378,18 +1418,13 @@
                 </div>
             </div>
             <div class="header-right">
-                <div class="user-info">
-                    <div class="username" id="currentUser">Usuário</div>
-                    <div class="role" id="userRole">Usuário</div>
-                </div>
                 <div class="header-buttons">
                     <button class="notification-btn" onclick="toggleNotifications()" title="Notificações">
                         🔔
                         <div class="notification-badge" id="notificationBadge"></div>
                     </button>
-                    <button class="menu-btn" onclick="toggleUserMenu()" title="Perfil">☰</button>
                     <button class="settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
-                    <button class="logout-btn" onclick="logout()">Sair</button>
+                    <button class="menu-btn" onclick="toggleUserMenu()" title="Perfil">☰</button>
                 </div>
             </div>
         </div>
@@ -1446,7 +1481,6 @@
 
                 <!-- Tempo - Circular -->
                 <div class="status-card">
-                    <div class="timer-popup" id="timerPopup"></div>
                     <div class="status-card-label">Tempo</div>
                     <div class="status-card-value" id="runtime">0</div>
                     <div class="status-card-unit">h</div>
@@ -1657,6 +1691,8 @@
                 <span class="user-info-value" id="userFilterHours">0.00 h</span>
             </div>
         </div>
+
+        <button class="save-btn" onclick="logout()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); margin-top: 30px;">Sair</button>
     </div>
 
     <!-- NOTIFICAÇÃO FLUTUANTE -->
@@ -2091,6 +2127,7 @@
             document.getElementById('userUsername').textContent = user ? user.username : '-';
             document.getElementById('userEmail').textContent = storage.currentUser;
             document.getElementById('userType').textContent = isAdmin ? 'Administrador' : 'Usuário';
+            document.getElementById('userTypeModal').textContent = isAdmin ? 'Administrador' : 'Usuário';
             document.getElementById('userCreatedDate').textContent = user ? new Date(user.createdAt).toLocaleDateString('pt-BR') : '-';
             
             const pumpHoursDecimal = (userData.pumpHours + userData.pumpMinutes / 60).toFixed(2);
@@ -2265,15 +2302,19 @@
             systemData.pumpActive = true;
             systemData.timerRunning = true;
             systemData.timerEndTime = Date.now() + (minutes * 60 * 1000);
+            systemData.timerIntervalId = null;
 
             addNotification(`Timer iniciado por ${minutes} minuto${minutes > 1 ? 's' : ''}`, 'info');
             showNotification(`Timer iniciado por ${minutes} minutos`);
+            
+            // Clicar automaticamente em ligar
+            document.getElementById('pumpOnBtn').click();
 
             // Atualizar popup a cada segundo
-            const timerPopupInterval = setInterval(() => {
+            systemData.timerIntervalId = setInterval(() => {
                 if (!systemData.timerRunning) {
-                    clearInterval(timerPopupInterval);
-                    document.getElementById('timerPopup').classList.remove('active');
+                    clearInterval(systemData.timerIntervalId);
+                    document.getElementById('pumpTimerPopup').classList.remove('active');
                     return;
                 }
 
@@ -2281,8 +2322,8 @@
                 if (remaining > 0) {
                     const mins = Math.floor(remaining / 60000);
                     const secs = Math.floor((remaining % 60000) / 1000);
-                    document.getElementById('timerPopup').textContent = `${mins}m ${secs}s`;
-                    document.getElementById('timerPopup').classList.add('active');
+                    document.getElementById('pumpTimerPopup').innerHTML = `${mins}m ${secs}s <span class="timer-close" onclick="cancelTimer()">✕</span>`;
+                    document.getElementById('pumpTimerPopup').classList.add('active');
                 }
             }, 1000);
 
@@ -2290,13 +2331,26 @@
                 systemData.pumpEnabled = false;
                 systemData.pumpActive = false;
                 systemData.timerRunning = false;
-                document.getElementById('timerPopup').classList.remove('active');
+                document.getElementById('pumpTimerPopup').classList.remove('active');
                 addNotification('Timer concluído', 'success');
                 showNotification('Timer expirou');
+                document.getElementById('pumpOffBtn').click();
                 updateDashboard();
-                clearInterval(timerPopupInterval);
+                clearInterval(systemData.timerIntervalId);
             }, minutes * 60 * 1000);
 
+            updateDashboard();
+        }
+
+        function cancelTimer() {
+            systemData.timerRunning = false;
+            systemData.pumpEnabled = false;
+            systemData.pumpActive = false;
+            document.getElementById('pumpTimerPopup').classList.remove('active');
+            clearInterval(systemData.timerIntervalId);
+            addNotification('Timer cancelado', 'info');
+            showNotification('Timer cancelado');
+            document.getElementById('pumpOffBtn').click();
             updateDashboard();
         }
 
@@ -2307,21 +2361,15 @@
             
             const pumpCard = document.getElementById('pumpCard');
             const modePopup = document.getElementById('modePopup');
-            const modeLine = document.getElementById('modeLine');
             
-            pumpCard.classList.remove('mode-continuous', 'mode-pulse');
-            modeLine.classList.remove('continuous', 'pulse');
-
             if (mode === 'continuous') {
                 document.getElementById('modeContBtn').classList.add('active');
-                modePopup.innerHTML = 'Contínuo <span class="mode-line continuous">―</span>';
-                modeLine.classList.add('continuous');
+                modePopup.innerHTML = '<span class="mode-text">Contínuo</span><span class="mode-line continuous"></span>';
                 addNotification('Modo Contínuo ativado', 'info');
                 showNotification('Modo Contínuo');
             } else if (mode === 'pulse') {
                 document.getElementById('modePulseBtn').classList.add('active');
-                modePopup.innerHTML = 'Pulsante <span class="mode-line pulse">˅</span>';
-                modeLine.classList.add('pulse');
+                modePopup.innerHTML = '<span class="mode-text">Pulsante</span><span class="mode-line pulse"></span>';
                 addNotification('Modo Pulsante ativado', 'info');
                 showNotification('Modo Pulsante');
             }
