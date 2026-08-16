@@ -1983,6 +1983,11 @@
                 document.querySelector('.admin-tab').style.display = 'none';
             }
 
+            // Inicializar modo como Contínuo por padrão
+            if (!systemData.currentMode) {
+                setMode('continuous');
+            }
+
             loadUserData();
             startDataRefresh();
             startComponentUpdate();
@@ -2231,6 +2236,18 @@
             if (systemData.currentMode === null || systemData.currentMode === undefined) {
                 showNotification('Ativando modo Contínuo...', 'info');
                 document.getElementById('modeContBtn').click();
+                
+                // Dar um pequeno delay antes de ligar
+                setTimeout(() => {
+                    systemData.pumpEnabled = true;
+                    systemData.pumpActive = true;
+                    systemData.timerRunning = false;
+                    document.getElementById('pumpOnBtn').classList.add('active');
+                    document.getElementById('pumpOffBtn').classList.remove('active');
+                    addNotification('Bomba ligada', 'success');
+                    showNotification('Bomba ligada!');
+                    updateDashboard();
+                }, 100);
                 return;
             }
             systemData.pumpEnabled = true;
@@ -2255,27 +2272,23 @@
         }
 
         function startTimer() {
-            if (systemData.currentMode === null || systemData.currentMode === undefined) {
-                showNotification('Selecione um modo de funcionamento primeiro!', 'error');
+            if (!systemData.pumpActive) {
+                showNotification('Ligue a bomba primeiro!', 'error');
                 return;
             }
+            
             const minutes = parseInt(document.getElementById('timerMinutes').value);
             if (!minutes || minutes < 1) {
                 showNotification('Defina um tempo válido', 'error');
                 return;
             }
 
-            systemData.pumpEnabled = true;
-            systemData.pumpActive = true;
             systemData.timerRunning = true;
             systemData.timerEndTime = Date.now() + (minutes * 60 * 1000);
             systemData.timerIntervalId = null;
 
             addNotification(`Timer iniciado por ${minutes} minuto${minutes > 1 ? 's' : ''}`, 'info');
             showNotification(`Timer iniciado por ${minutes} minutos`);
-            
-            // Clicar automaticamente em ligar
-            document.getElementById('pumpOnBtn').click();
 
             // Atualizar popup a cada segundo
             systemData.timerIntervalId = setInterval(() => {
@@ -2295,13 +2308,14 @@
             }, 1000);
 
             setTimeout(() => {
-                systemData.pumpEnabled = false;
-                systemData.pumpActive = false;
                 systemData.timerRunning = false;
                 document.getElementById('pumpTimerPopup').classList.remove('active');
                 addNotification('Timer concluído', 'success');
                 showNotification('Timer expirou');
+                
+                // Clicar automaticamente em desligar
                 document.getElementById('pumpOffBtn').click();
+                
                 updateDashboard();
                 clearInterval(systemData.timerIntervalId);
             }, minutes * 60 * 1000);
@@ -2331,17 +2345,19 @@
             if (mode === 'continuous') {
                 document.getElementById('modeContBtn').classList.add('active');
                 modePopup.textContent = 'Contínuo';
+                if (systemData.pumpActive) {
+                    modePopup.classList.add('active');
+                }
                 addNotification('Modo Contínuo ativado', 'info');
                 showNotification('Modo Contínuo');
             } else if (mode === 'pulse') {
                 document.getElementById('modePulseBtn').classList.add('active');
                 modePopup.textContent = 'Pulsante';
+                if (systemData.pumpActive) {
+                    modePopup.classList.add('active');
+                }
                 addNotification('Modo Pulsante ativado', 'info');
                 showNotification('Modo Pulsante');
-            }
-            
-            if (systemData.pumpActive) {
-                modePopup.classList.add('active');
             }
         }
 
