@@ -2,2408 +2,346 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="EcoFlux - Sistema de Limpeza Inteligente de Rios">
-    <meta name="theme-color" content="#0f172a">
-    <title>EcoFlux Dashboard</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Layouts EcoFlux</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            background-attachment: fixed;
-            color: #e2e8f0;
-            min-height: 100vh;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; color: #333; }
+        .layouts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; }
+        .layout { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .layout-title { padding: 15px; background: #333; color: white; font-weight: bold; font-size: 18px; }
+        .layout-content { padding: 20px; height: 600px; overflow: auto; }
+        
+        /* LAYOUT 1 - MINIMALISTA */
+        .layout1 { background: #f8f9fa; }
+        .layout1-content {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
             align-items: center;
-            padding: 10px;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1a2540 50%, #0f172a 100%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* MODAL AUTENTICAÇÃO */
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .auth-modal.hidden {
-            display: none;
-        }
-
-        .auth-container {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 420px;
-            width: 100%;
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .auth-container h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-        }
-
-        .auth-container > p {
-            color: #94a3b8;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .auth-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-            flex-wrap: wrap;
-        }
-
-        .auth-tabs button {
-            flex: 1;
-            min-width: 100px;
-            padding: 12px;
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .auth-tabs button.active {
-            color: #06b6d4;
-            border-bottom-color: #06b6d4;
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #cbd5e1;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #06b6d4;
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
-        }
-
-        .auth-button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .auth-button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
-        }
-
-        .auth-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .error-message {
-            color: #fca5a5;
-            font-size: 12px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* CONTAINER PRINCIPAL */
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            display: none;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container.active {
-            display: block;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 15px;
-            border: 1px solid rgba(71, 85, 105, 0.2);
-            flex-wrap: wrap;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            min-width: 200px;
-        }
-
-        .status-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #94a3b8;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px currentColor;
-            flex-shrink: 0;
-        }
-
-        .status-indicator.connected {
-            background: #10b981;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
-        }
-
-        .status-indicator.active {
-            background: #10b981;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
-            animation: pulse 2s infinite;
-        }
-
-        .status-indicator.inactive {
-            background: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .header-left h1 {
-            font-size: 32px;
-            margin: 0;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .header-left p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin: 0;
-            white-space: nowrap;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .user-info {
-            text-align: right;
-        }
-
-        .user-info .username {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-
-        .user-info .role {
-            font-size: 12px;
-            color: #06b6d4;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            position: relative;
-        }
-
-        .notification-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .notification-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 12px;
-            height: 12px;
-            background: #ef4444;
-            border-radius: 50%;
-            display: none;
-        }
-
-        .notification-badge.active {
-            display: block;
-        }
-
-        .settings-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .settings-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
-            transform: rotate(90deg);
-        }
-
-        .menu-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .menu-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
-        }
-
-        .logout-btn {
-            padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.3);
-            border-color: rgba(239, 68, 68, 0.5);
-        }
-
-        /* ABAS */
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .tab-button {
-            padding: 12px 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 8px;
-            color: #94a3b8;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
-
-        .tab-button:hover {
-            border-color: #06b6d4;
-        }
-
-        .tab-button.active {
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            color: white;
-            border-color: transparent;
-        }
-
-        /* CONTEÚDO ABAS */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* CARDS COM FORMATOS DIFERENTES */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .status-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            padding: 25px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-        }
-
-        .status-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #06b6d4, transparent);
-        }
-
-        .status-card:hover {
-            border-color: rgba(6, 182, 212, 0.5);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.15);
-        }
-
-        .status-card:nth-child(1) {
-            border-radius: 20px;
-            grid-column: 1;
-        }
-
-        .status-card:nth-child(2) {
-            border-radius: 15px 0 15px 0;
-            grid-column: 2;
-        }
-
-        .status-card:nth-child(3) {
-            border-radius: 15px;
-            grid-column: 3;
-        }
-
-        .status-card:nth-child(4) {
-            border-radius: 0 15px 0 15px;
-            grid-column: 1;
-        }
-
-        .status-card:nth-child(5) {
-            border-radius: 15px;
-            grid-column: 2;
-        }
-
-        .status-card:nth-child(6) {
-            border-radius: 15px;
-            grid-column: 3;
-        }
-
-        .status-card-label {
-            color: #94a3b8;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .status-card-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .status-card-unit {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .progress-container {
-            margin-top: 15px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        /* CONTROL PANEL */
-        .control-panel {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .control-group {
+            padding: 30px;
+            background: #0f1419;
+            min-height: 600px;
+        }
+        .balde-svg {
+            width: 150px;
+            height: 150px;
             margin-bottom: 20px;
         }
-
-        .control-group:last-child {
-            margin-bottom: 0;
-        }
-
-        .control-label {
-            color: #cbd5e1;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 11px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: 'Inter', sans-serif;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-        }
-
-        .btn-primary.active {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-        }
-
-        .btn-danger:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-danger.active {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        }
-
-        .btn-mode {
-            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
-            color: white;
-        }
-
-        .btn-mode:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
-        }
-
-        .btn-mode.active {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        }
-
-        .btn-timer {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-        }
-
-        .btn-timer:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(107, 114, 128, 0.2);
-        }
-
-        .timer-popup {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(107, 114, 128, 0.2);
-            border: 1px solid rgba(107, 114, 128, 0.5);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            color: #6b7280;
-            font-weight: 600;
-            display: none;
-            white-space: nowrap;
-        }
-
-        .timer-popup.active {
-            display: block;
-        }
-
-        .timer-close {
-            margin-left: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-
-        .timer-close:hover {
-            opacity: 1;
-        }
-
-        .timer-close {
-            margin-left: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-
-        .timer-close:hover {
-            color: #ef4444;
-        }
-
-        .mode-popup {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(168, 85, 247, 0.2);
-            border: 1px solid rgba(168, 85, 247, 0.5);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            color: #a855f7;
-            font-weight: 600;
-            display: none;
-            white-space: nowrap;
-        }
-
-        .mode-popup.active {
-            display: block;
-        }
-
-        .mode-text {
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        .mode-line {
-            display: none;
-        }
-
-        .notifications-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 450px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
+        .percentual { font-size: 48px; font-weight: bold; color: #06b6d4; margin-left: 20px; }
+        .circulares { display: flex; gap: 40px; margin-top: 30px; }
+        .circulo { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #06b6d4; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; font-size: 14px; }
+        
+        /* LAYOUT 2 - GLASSMORPHISM */
+        .layout2 { background: linear-gradient(135deg, #e0f7ff 0%, #f0e7ff 100%); }
+        .layout2-content {
             padding: 20px;
-            overflow-y: auto;
-            z-index: 998;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .notifications-modal.active {
-            transform: translateX(0);
-        }
-
-        .notifications-modal.hidden {
-            display: none;
-        }
-
-        .notifications-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .notifications-header h2 {
-            font-size: 18px;
-            color: #e2e8f0;
-        }
-
-        .close-notifications {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .close-notifications:hover {
-            color: #06b6d4;
-        }
-
-        .notification-item {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border-left: 4px solid #06b6d4;
-            background: rgba(30, 41, 59, 0.5);
-            font-size: 13px;
-        }
-
-        .notification-item.success {
-            border-left-color: #10b981;
-        }
-
-        .notification-item.warning {
-            border-left-color: #f59e0b;
-        }
-
-        .notification-item.error {
-            border-left-color: #ef4444;
-        }
-
-        .notification-item.info {
-            border-left-color: #a855f7;
-        }
-
-        .notification-time {
-            color: #64748b;
-            font-size: 11px;
-            margin-top: 5px;
-        }
-
-        /* SETTINGS MODAL */
-        .settings-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 999;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .settings-modal.active {
-            transform: translateX(0);
-        }
-
-        .settings-modal.hidden {
-            display: none;
-        }
-
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .settings-header h2 {
-            font-size: 18px;
-            color: #e2e8f0;
-        }
-
-        .close-settings {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .close-settings:hover {
-            color: #06b6d4;
-        }
-
-        .user-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 998;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .user-modal.active {
-            transform: translateX(0);
-        }
-
-        .user-modal.hidden {
-            display: none;
-        }
-
-        .user-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .user-header h2 {
-            font-size: 18px;
-            color: #e2e8f0;
-        }
-
-        .close-user {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .close-user:hover {
-            color: #06b6d4;
-        }
-
-        .user-info-section {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .user-info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.1);
-        }
-
-        .user-info-item:last-child {
-            border-bottom: none;
-        }
-
-        .user-info-label {
-            color: #94a3b8;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .user-info-value {
-            color: #e2e8f0;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .settings-group {
-            margin-bottom: 25px;
-        }
-
-        .settings-group h3 {
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-
-        .settings-item-label {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .settings-item-label strong {
-            color: #e2e8f0;
-            font-size: 13px;
-        }
-
-        .settings-item-label p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin-top: 3px;
-        }
-
-        .settings-item-control input {
-            padding: 8px 10px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 6px;
-            color: #e2e8f0;
-            text-align: center;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            width: 80px;
-        }
-
-        .save-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 20px;
-        }
-
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
-        }
-
-        /* ADMIN PANEL */
-        .admin-panel {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
-        }
-
-        .admin-header h2 {
-            color: #e2e8f0;
-            font-size: 18px;
-        }
-
-        .accounts-list {
-            width: 100%;
-        }
-
-        .account-row {
+            min-height: 600px;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 15px;
-            padding: 15px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-            align-items: center;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-
-        .account-row:hover {
-            background: rgba(30, 41, 59, 0.3);
-        }
-
-        .account-item {
-            font-size: 13px;
-            color: #cbd5e1;
-        }
-
-        .account-role {
-            display: inline-block;
-            padding: 4px 10px;
-            background: rgba(6, 182, 212, 0.2);
-            color: #06b6d4;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* NOTIFICAÇÕES */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 20px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-            animation: slideIn 0.3s ease;
-            z-index: 997;
-            max-width: 300px;
-            font-size: 14px;
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .hidden-notification {
-            display: none !important;
-        }
-
-        /* TIMER */
-        .timer-input {
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             gap: 10px;
-            align-items: flex-end;
-            flex-wrap: wrap;
         }
-
-        .timer-input input {
-            padding: 11px 14px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            min-width: 120px;
+        .glass-label { font-size: 12px; color: #666; text-transform: uppercase; }
+        .glass-value { font-size: 42px; font-weight: bold; background: linear-gradient(135deg, #0ea5e9, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* LAYOUT 3 - CYBERPUNK */
+        .layout3 { background: #0a0e27; position: relative; overflow: hidden; }
+        .layout3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px);
+            pointer-events: none;
         }
-
-        .timer-input input:focus {
-            outline: none;
-            border-color: #06b6d4;
+        .layout3-content {
+            position: relative;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            min-height: 600px;
         }
-
-        /* MAINTENANCE TABLE */
-        .maintenance-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .maintenance-table th {
-            padding: 12px;
-            text-align: left;
-            color: #94a3b8;
+        .neon-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff88;
+            border-radius: 0;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 10px rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
             font-size: 12px;
-            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
-            font-weight: 600;
-            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
-
-        .maintenance-table td {
-            padding: 12px;
-            color: #cbd5e1;
+        .neon-value { font-size: 36px; font-weight: bold; }
+        
+        /* LAYOUT 4 - CARD-BASED */
+        .layout4 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+        .layout4-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            min-height: 600px;
+        }
+        .banco-card {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+        }
+        .banco-label { font-size: 13px; opacity: 0.9; text-transform: uppercase; }
+        .banco-value { font-size: 48px; font-weight: bold; margin: 10px 0; }
+        .banco-unit { font-size: 14px; opacity: 0.8; }
+        
+        /* LAYOUT 5 - CORPORATIVO */
+        .layout5 { background: #f5f5f5; display: flex; }
+        .layout5-sidebar {
+            width: 200px;
+            background: #1e3a5f;
+            color: white;
+            padding: 20px;
             font-size: 13px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
         }
-
-        .maintenance-table tr:hover {
-            background: rgba(30, 41, 59, 0.3);
+        .layout5-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
         }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            background: rgba(16, 185, 129, 0.2);
-            color: #86efac;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
+        .layout5-content {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 600px;
         }
-
-        .status-badge.warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fcd34d;
+        .corp-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
-        .status-badge.critical {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
-
-        /* RESPONSIVO */
-        @media (max-width: 768px) {
-            body {
-                padding: 5px;
-            }
-
-            .container {
-                padding: 10px;
-                min-height: auto;
-            }
-
-            .header {
-                padding: 12px;
-                flex-direction: column;
-                text-align: center;
-                gap: 12px;
-            }
-
-            .header-left,
-            .header-right {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .header-left {
-                flex-direction: column;
-            }
-
-            .header-left h1 {
-                font-size: 24px;
-            }
-
-            .header-left p {
-                font-size: 11px;
-            }
-
-            .status-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .settings-modal,
-            .notifications-modal {
-                max-width: 100%;
-            }
-
-            .tabs-container {
-                flex-direction: column;
-            }
-
-            .tab-button {
-                width: 100%;
-            }
-
-            .account-row {
-                grid-template-columns: 1fr;
-            }
-
-            .auth-container {
-                padding: 30px 20px;
-            }
-
-            .auth-tabs {
-                flex-direction: column;
-            }
-
-            .auth-tabs button {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 10px;
-            }
-
-            .header-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .status-card-value {
-                font-size: 20px;
-            }
-
-            .header-left h1 {
-                font-size: 20px;
-            }
-
-            .header-left p {
-                font-size: 10px;
-            }
-
-            .control-panel {
-                padding: 15px;
-            }
-
-            .settings-modal,
-            .notifications-modal {
-                padding: 15px;
-            }
-
-            .container {
-                padding: 5px;
-            }
-
-            .status-card {
-                padding: 15px;
-            }
-        }
+        .corp-header { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
+        .corp-value { font-size: 36px; font-weight: bold; color: #1e3a5f; }
+        .corp-detail { font-size: 12px; color: #999; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <!-- MODAL DE AUTENTICAÇÃO -->
-    <div class="auth-modal" id="authModal">
-        <div class="auth-container">
-            <h1>EcoFlux</h1>
-            <p>Sistema de Limpeza Inteligente</p>
-
-            <div class="auth-tabs">
-                <button class="auth-tab-btn active" onclick="switchAuthTab('login')">Entrar</button>
-                <button class="auth-tab-btn" onclick="switchAuthTab('register')">Cadastro</button>
-            </div>
-
-            <!-- LOGIN -->
-            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="auth-button" id="loginBtn">Entrar</button>
-                <div class="error-message" id="loginError"></div>
-            </form>
-
-            <!-- REGISTRO -->
-            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label>Nome de Usuário</label>
-                    <input type="text" id="registerUsername" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" id="registerEmail" placeholder="seu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="registerPassword" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>Confirme a Senha</label>
-                    <input type="password" id="registerPasswordConfirm" required minlength="6">
-                </div>
-                <button type="submit" class="auth-button" id="registerBtn">Criar Conta</button>
-                <div class="error-message" id="registerError"></div>
-            </form>
-        </div>
-    </div>
-
-    <!-- CONTAINER PRINCIPAL -->
-    <div class="container" id="mainContainer">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-left">
-                <div class="status-indicator" id="statusIndicator"></div>
-                <div>
-                    <h1>EcoFlux</h1>
-                    <p>Sistema de Limpeza Inteligente</p>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="header-buttons">
-                    <button class="notification-btn" onclick="toggleNotifications()" title="Notificações">
-                        🔔
-                        <div class="notification-badge" id="notificationBadge"></div>
-                    </button>
-                    <button class="settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
-                    <button class="menu-btn" onclick="toggleUserMenu()" title="Perfil">☰</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABAS -->
-        <div class="tabs-container">
-            <button class="tab-button active" onclick="switchTab('dashboard')">Dashboard</button>
-            <button class="tab-button" onclick="switchTab('control')">Controle</button>
-            <button class="tab-button" onclick="switchTab('maintenance')">Manutenção</button>
-            <button class="tab-button admin-tab" style="display:none;" onclick="switchTab('admin')">Admin</button>
-        </div>
-
-        <!-- ABA: DASHBOARD -->
-        <div class="tab-content active" id="dashboard">
-            <div class="status-grid">
-                <!-- Nível do Balde - Retangular vertical esquerda -->
-                <div class="status-card">
-                    <div class="status-card-label">Nível do Balde</div>
-                    <div class="status-card-value" id="bucketLevel">0</div>
-                    <div class="status-card-unit">%</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="bucketProgress" style="width: 0%"></div>
+    <div class="container">
+        <h1>🎨 5 LAYOUTS DIFERENTES PARA ECOFLUX</h1>
+        
+        <div class="layouts-grid">
+            <!-- LAYOUT 1 -->
+            <div class="layout">
+                <div class="layout-title">LAYOUT 1: MINIMALISTA (Baseado no seu desenho)</div>
+                <div class="layout-content">
+                    <div class="layout1-content">
+                        <svg class="balde-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Balde trapézio -->
+                            <path d="M 60 50 L 140 50 L 160 150 L 40 150 Z" fill="none" stroke="#06b6d4" stroke-width="3"/>
+                            <!-- Asa -->
+                            <path d="M 80 50 Q 100 20 120 50" fill="none" stroke="#06b6d4" stroke-width="2"/>
+                        </svg>
+                        <div style="display: flex; align-items: center; gap: 20px; color: white;">
+                            <div style="font-size: 32px;">Nível do Balde</div>
+                            <div class="percentual">57%</div>
+                        </div>
+                        
+                        <div class="circulares">
+                            <div class="circulo">
+                                <div style="font-size: 20px;">💧</div>
+                                <div>Bomba</div>
+                                <div style="font-size: 24px; margin-top: 5px;">OFF</div>
+                            </div>
+                            <div class="circulo">
+                                <div style="font-size: 20px;">⏱️</div>
+                                <div>Tempo</div>
+                                <div style="font-size: 20px; margin-top: 5px;">1.00h</div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Nível da Bateria - Retangular horizontal topo -->
-                <div class="status-card">
-                    <div class="status-card-label">Nível da Bateria</div>
-                    <div class="status-card-value" id="batteryLevel">0</div>
-                    <div class="status-card-unit">%</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="batteryProgress" style="width: 0%"></div>
+            <!-- LAYOUT 2 -->
+            <div class="layout">
+                <div class="layout-title">LAYOUT 2: GLASSMORPHISM (Moderno)</div>
+                <div class="layout-content layout2-content">
+                    <div class="glass-card">
+                        <div class="glass-label">Nível Balde</div>
+                        <div class="glass-value">57%</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="glass-label">Nível Bateria</div>
+                        <div class="glass-value">77%</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="glass-label">Tensão</div>
+                        <div class="glass-value">12.5V</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="glass-label">Bomba</div>
+                        <div class="glass-value" style="font-size: 28px;">OFF</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="glass-label">Tempo</div>
+                        <div class="glass-value">1.00h</div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="glass-label">Manutenção</div>
+                        <div class="glass-value" style="font-size: 28px;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYOUT 3 -->
+            <div class="layout">
+                <div class="layout-title">LAYOUT 3: CYBERPUNK (Dark Futurista)</div>
+                <div class="layout-content layout3-content">
+                    <div class="neon-card">
+                        <div style="font-size: 11px; color: #00ffff;">&gt; BALDE_NIVEL</div>
+                        <div class="neon-value">57%</div>
+                    </div>
+                    <div class="neon-card">
+                        <div style="font-size: 11px; color: #00ffff;">&gt; BATERIA_NIVEL</div>
+                        <div class="neon-value">77%</div>
+                    </div>
+                    <div class="neon-card">
+                        <div style="font-size: 11px; color: #00ffff;">&gt; TENSAO</div>
+                        <div class="neon-value">12.5V</div>
+                    </div>
+                    <div class="neon-card">
+                        <div style="font-size: 11px; color: #00ffff;">&gt; BOMBA_STATUS</div>
+                        <div class="neon-value">OFF</div>
+                    </div>
+                    <div class="neon-card">
+                        <div style="font-size: 11px; color: #00ffff;">&gt; TEMPO_EXEC</div>
+                        <div class="neon-value">1h</div>
+                    </div>
+                    <div class="neon-card">
+                        <div style="font-size: 11px; color: #00ffff;">&gt; MANUTENCAO</div>
+                        <div class="neon-value">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYOUT 4 -->
+            <div class="layout">
+                <div class="layout-title">LAYOUT 4: CARD-BASED (Estilo Cartão)</div>
+                <div class="layout-content layout4-content">
+                    <div class="banco-card">
+                        <div class="banco-label">Nível do Balde</div>
+                        <div class="banco-value">57%</div>
+                        <div class="banco-unit">Em tempo real</div>
+                    </div>
+                    <div class="banco-card" style="background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
+                        <div class="banco-label">Nível Bateria</div>
+                        <div class="banco-value">77%</div>
+                        <div class="banco-unit">Carregada</div>
+                    </div>
+                    <div class="banco-card" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
+                        <div class="banco-label">Tensão</div>
+                        <div class="banco-value">12.5V</div>
+                        <div class="banco-unit">Normal</div>
+                    </div>
+                    <div class="banco-card" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
+                        <div class="banco-label">Bomba</div>
+                        <div class="banco-value" style="font-size: 32px;">OFF</div>
+                        <div class="banco-unit">Desligada</div>
+                    </div>
+                    <div class="banco-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
+                        <div class="banco-label">Tempo</div>
+                        <div class="banco-value">1.00h</div>
+                        <div class="banco-unit">Operacional</div>
+                    </div>
+                    <div class="banco-card" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
+                        <div class="banco-label">Manutenção</div>
+                        <div class="banco-value" style="font-size: 32px;">-</div>
+                        <div class="banco-unit">Próxima</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYOUT 5 -->
+            <div class="layout">
+                <div class="layout-title">LAYOUT 5: CORPORATIVO (Enterprise)</div>
+                <div class="layout-content layout5">
+                    <div class="layout5-sidebar">
+                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">📊 Menu</div>
+                        <div class="layout5-item">📈 Dashboard</div>
+                        <div class="layout5-item">⚙️ Controle</div>
+                        <div class="layout5-item">🔧 Manutenção</div>
+                        <div class="layout5-item">👤 Perfil</div>
+                    </div>
+                    <div class="layout5-content">
+                        <div class="corp-card">
+                            <div class="corp-header">Nível do Balde</div>
+                            <div class="corp-value">57%</div>
+                            <div class="corp-detail">Última atualização: Agora</div>
+                            <div style="background: #f0f0f0; height: 8px; border-radius: 4px; margin-top: 10px;">
+                                <div style="background: #1e3a5f; height: 100%; width: 57%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div class="corp-card">
+                            <div class="corp-header">Nível Bateria</div>
+                            <div class="corp-value">77%</div>
+                            <div class="corp-detail">Status: Bom</div>
+                            <div style="background: #f0f0f0; height: 8px; border-radius: 4px; margin-top: 10px;">
+                                <div style="background: #10b981; height: 100%; width: 77%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div class="corp-card">
+                            <div class="corp-header">Tensão (V)</div>
+                            <div class="corp-value">12.5</div>
+                            <div class="corp-detail">Voltagem normal</div>
+                        </div>
+                        <div class="corp-card">
+                            <div class="corp-header">Status da Bomba</div>
+                            <div class="corp-value" style="color: #ef4444;">OFF</div>
+                            <div class="corp-detail">Desligada</div>
+                        </div>
+                        <div class="corp-card">
+                            <div class="corp-header">Tempo Total</div>
+                            <div class="corp-value">1.00h</div>
+                            <div class="corp-detail">Horas operacionais</div>
+                        </div>
+                        <div class="corp-card">
+                            <div class="corp-header">Próxima Manutenção</div>
+                            <div class="corp-value" style="font-size: 28px;">-</div>
+                            <div class="corp-detail">Sem agendamento</div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Tensão - Circular -->
-                <div class="status-card">
-                    <div class="status-card-label">Tensão</div>
-                    <div class="status-card-value" id="batteryVoltage">0</div>
-                    <div class="status-card-unit">V</div>
-                </div>
-
-                <!-- Bomba - Retangular -->
-                <div class="status-card pump-status-card" id="pumpCard">
-                    <div class="mode-popup" id="modePopup"></div>
-                    <div class="status-card-label">Bomba</div>
-                    <div class="status-card-value" id="pumpStatus">Off</div>
-                </div>
-
-                <!-- Tempo - Circular -->
-                <div class="status-card">
-                    <div class="timer-popup" id="timerPopup"></div>
-                    <div class="status-card-label">Tempo</div>
-                    <div class="status-card-value" id="runtime">0</div>
-                    <div class="status-card-unit">h</div>
-                </div>
-
-                <!-- Próxima Manutenção - Retangular -->
-                <div class="status-card">
-                    <div class="status-card-label">Próxima Manutenção</div>
-                    <div class="status-card-value" id="nextMaintenance">-</div>
-                    <div class="status-card-unit">dias</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABA: CONTROLE -->
-        <div class="tab-content" id="control">
-            <div class="control-panel">
-                <div class="control-group">
-                    <label class="control-label">Controle da Bomba</label>
-                    <div class="button-group">
-                        <button class="btn btn-primary" id="pumpOnBtn" onclick="turnPumpOn()">Ligar</button>
-                        <button class="btn btn-danger" id="pumpOffBtn" onclick="turnPumpOff()">Desligar</button>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label">Timer (minutos)</label>
-                    <div class="timer-input">
-                        <input type="number" id="timerMinutes" placeholder="Minutos" min="1" max="1440" value="30">
-                        <button class="btn btn-timer" onclick="startTimer()">Iniciar</button>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label">Modo</label>
-                    <div class="button-group">
-                        <button class="btn btn-mode" onclick="setMode('continuous')" id="modeContBtn">Contínuo</button>
-                        <button class="btn btn-mode" onclick="setMode('pulse')" id="modePulseBtn">Pulsante</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABA: MANUTENÇÃO -->
-        <div class="tab-content" id="maintenance">
-            <div class="control-panel">
-                <h3 style="color: #cbd5e1; margin-bottom: 20px;">Status dos Componentes</h3>
-                <div style="overflow-x: auto;">
-                    <table class="maintenance-table">
-                        <thead>
-                            <tr>
-                                <th>Componente</th>
-                                <th>Uso</th>
-                                <th>Limite</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Bomba</td>
-                                <td id="pumpHours">0.00 h</td>
-                                <td>500 h</td>
-                                <td><span class="status-badge">Bom</span></td>
-                            </tr>
-                            <tr>
-                                <td>Bateria</td>
-                                <td id="batteryHours">0.00 ciclos</td>
-                                <td>300 ciclos</td>
-                                <td><span class="status-badge">Bom</span></td>
-                            </tr>
-                            <tr>
-                                <td>Filtro</td>
-                                <td id="filterHours">0.00 h</td>
-                                <td>100 h</td>
-                                <td><span class="status-badge">Bom</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABA: ADMIN -->
-        <div class="tab-content" id="admin">
-            <div class="admin-panel">
-                <div class="admin-header">
-                    <h2>Painel Administrativo</h2>
-                    <span id="totalAccounts" style="color: #94a3b8; font-size: 14px;">0 contas</span>
-                </div>
-                <div class="accounts-list" id="accountsList"></div>
             </div>
         </div>
     </div>
-
-    <!-- NOTIFICATIONS SIDEBAR -->
-    <div class="notifications-modal" id="notificationsModal">
-        <div class="notifications-header">
-            <h2>Notificações</h2>
-            <button class="close-notifications" onclick="toggleNotifications()">✕</button>
-        </div>
-        <div id="notificationsList"></div>
-    </div>
-
-    <!-- SETTINGS SIDEBAR -->
-    <div class="settings-modal" id="settingsModal">
-        <div class="settings-header">
-            <h2>Configurações</h2>
-            <button class="close-settings" onclick="toggleSettings()">✕</button>
-        </div>
-
-        <div class="settings-group">
-            <h3>Bomba</h3>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Tempo Ativação</strong>
-                    <p>Milissegundos</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="pumpOnTime" value="1000" min="500" max="5000">
-                </div>
-            </div>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Tempo Desativação</strong>
-                    <p>Milissegundos</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="pumpOffTime" value="2000" min="1000" max="10000">
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <h3>Sensores</h3>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Altura Máx Balde</strong>
-                    <p>Centímetros</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="maxBucketHeight" value="16" min="5" max="100">
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <h3>Avisos</h3>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Aviso Bomba</strong>
-                    <p>Horas</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="pumpWarning" value="400" min="1" max="1000">
-                </div>
-            </div>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Aviso Filtro</strong>
-                    <p>Horas</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="filterWarning" value="80" min="1" max="500">
-                </div>
-            </div>
-        </div>
-
-        <button class="save-btn" onclick="saveSettings()">Salvar</button>
-    </div>
-
-    <!-- USER MENU SIDEBAR -->
-    <div class="user-modal" id="userModal">
-        <div class="user-header">
-            <h2>Perfil</h2>
-            <button class="close-user" onclick="toggleUserMenu()">✕</button>
-        </div>
-
-        <div class="user-info-section">
-            <div class="user-info-item">
-                <span class="user-info-label">Usuário</span>
-                <span class="user-info-value" id="userUsername">-</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Email</span>
-                <span class="user-info-value" id="userEmail">-</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Tipo de Conta</span>
-                <span class="user-info-value" id="userType">Usuário</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Data de Criação</span>
-                <span class="user-info-value" id="userCreatedDate">-</span>
-            </div>
-        </div>
-
-        <div class="user-info-section">
-            <div class="user-info-item">
-                <span class="user-info-label">Horas Bomba</span>
-                <span class="user-info-value" id="userPumpHours">0.00 h</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Ciclos Bateria</span>
-                <span class="user-info-value" id="userBatteryHours">0.00</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Horas Filtro</span>
-                <span class="user-info-value" id="userFilterHours">0.00 h</span>
-            </div>
-        </div>
-
-        <button class="save-btn" onclick="logout()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); margin-top: 30px;">Sair</button>
-    </div>
-
-    <!-- NOTIFICAÇÃO FLUTUANTE -->
-    <div class="notification hidden-notification" id="notification"></div>
-
-    <script>
-        // ========== SISTEMA DE ARMAZENAMENTO PERSISTENTE ==========
-        class EcoFluxStorage {
-            constructor() {
-                this.loadAllData();
-            }
-
-            loadAllData() {
-                this.users = this.loadUsers();
-                this.currentUser = this.loadCurrentUser();
-            }
-
-            loadUsers() {
-                try {
-                    const data = localStorage.getItem('ecoflux_users_v4');
-                    return data ? JSON.parse(data) : {};
-                } catch (e) {
-                    return {};
-                }
-            }
-
-            saveUsers() {
-                try {
-                    localStorage.setItem('ecoflux_users_v4', JSON.stringify(this.users));
-                } catch (e) {
-                    console.error('Erro ao salvar usuários:', e);
-                }
-            }
-
-            loadCurrentUser() {
-                return localStorage.getItem('ecoflux_current_user_v4');
-            }
-
-            setCurrentUser(email) {
-                localStorage.setItem('ecoflux_current_user_v4', email);
-                this.currentUser = email;
-            }
-
-            clearCurrentUser() {
-                localStorage.removeItem('ecoflux_current_user_v4');
-                this.currentUser = null;
-            }
-
-            getUserData(email) {
-                try {
-                    const data = localStorage.getItem(`ecoflux_user_${email}_v4`);
-                    return data ? JSON.parse(data) : this.getDefaultUserData(email);
-                } catch (e) {
-                    return this.getDefaultUserData(email);
-                }
-            }
-
-            saveUserData(email, data) {
-                try {
-                    localStorage.setItem(`ecoflux_user_${email}_v4`, JSON.stringify(data));
-                } catch (e) {
-                    console.error('Erro ao salvar dados do usuário:', e);
-                }
-            }
-
-            getDefaultUserData(email) {
-                const isAdmin = email === 'admin@gmail.com';
-                return {
-                    pumpHours: 0,
-                    pumpMinutes: 0,
-                    batteryHours: 0,
-                    batteryMinutes: 0,
-                    filterHours: 0,
-                    filterMinutes: 0,
-                    notifications: [],
-                    settings: {
-                        pumpOnTime: 1000,
-                        pumpOffTime: 2000,
-                        maxBucketHeight: 16,
-                        pumpWarning: 400,
-                        filterWarning: 80
-                    },
-                    lastSync: new Date().toISOString(),
-                    role: isAdmin ? 'admin' : 'user',
-                    isAdmin: isAdmin
-                };
-            }
-
-            register(email, password, username) {
-                this.loadAllData();
-                
-                if (this.users[email]) {
-                    return { success: false, error: 'Email já cadastrado' };
-                }
-
-                this.users[email] = {
-                    username,
-                    password: btoa(password),
-                    createdAt: new Date().toISOString(),
-                    role: 'user',
-                    isAdmin: false
-                };
-
-                this.saveUsers();
-                this.setCurrentUser(email);
-                
-                const userData = this.getDefaultUserData(email);
-                this.saveUserData(email, userData);
-
-                return { success: true };
-            }
-
-            login(email, password) {
-                this.loadAllData();
-                
-                if (email === 'admin@gmail.com' && password === 'admin') {
-                    this.setCurrentUser('admin@gmail.com');
-                    const adminData = this.getDefaultUserData('admin@gmail.com');
-                    this.saveUserData('admin@gmail.com', adminData);
-                    return { success: true, isAdmin: true };
-                }
-                
-                if (!this.users[email]) {
-                    return { success: false, error: 'Email não encontrado' };
-                }
-
-                if (this.users[email].password !== btoa(password)) {
-                    return { success: false, error: 'Senha incorreta' };
-                }
-
-                this.setCurrentUser(email);
-                return { success: true, isAdmin: false };
-            }
-
-            logout() {
-                this.clearCurrentUser();
-            }
-
-            getAllUsers() {
-                this.loadAllData();
-                return this.users;
-            }
-
-            addNotification(email, message, type = 'info') {
-                const userData = this.getUserData(email);
-                userData.notifications.push({
-                    message,
-                    type,
-                    timestamp: new Date().toISOString()
-                });
-                if (userData.notifications.length > 50) {
-                    userData.notifications = userData.notifications.slice(-50);
-                }
-                this.saveUserData(email, userData);
-            }
-
-            getNotifications(email) {
-                const userData = this.getUserData(email);
-                return userData.notifications || [];
-            }
-        }
-
-        // ========== INSTÂNCIAS GLOBAIS ==========
-        const storage = new EcoFluxStorage();
-        let systemData = {
-            bucketLevel: Math.random() * 30,
-            batteryVoltage: 12.0,
-            batteryPercentage: 50,
-            estimatedRuntime: 0,
-            pumpActive: false,
-            pumpEnabled: false,
-            timerRunning: false,
-            connectionStatus: false,
-            currentMode: 'pulse',
-            pumpHours: 0,
-            pumpMinutes: 0,
-            batteryHours: 0,
-            batteryMinutes: 0,
-            filterHours: 0,
-            filterMinutes: 0
-        };
-
-        let dataRefreshInterval = null;
-        let componentUpdateInterval = null;
-        let timerInterval = null;
-
-        // ========== INICIALIZAÇÃO ==========
-        window.addEventListener('load', () => {
-            if (storage.currentUser) {
-                showMainApp();
-            } else {
-                showAuthModal();
-            }
-        });
-
-        // ========== AUTENTICAÇÃO ==========
-        function switchAuthTab(tab) {
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.error-message').forEach(e => e.classList.remove('show'));
-
-            if (tab === 'login') {
-                document.getElementById('loginForm').classList.add('active');
-                document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
-            } else {
-                document.getElementById('registerForm').classList.add('active');
-                document.querySelectorAll('.auth-tab-btn')[1].classList.add('active');
-            }
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            const loginBtn = document.getElementById('loginBtn');
-
-            if (!email || !password) {
-                errorDiv.textContent = 'Preencha email e senha';
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Entrando...';
-            errorDiv.classList.remove('show');
-
-            setTimeout(() => {
-                const result = storage.login(email, password);
-                if (result.success) {
-                    document.getElementById('loginEmail').value = '';
-                    document.getElementById('loginPassword').value = '';
-                    showMainApp();
-                } else {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.add('show');
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Entrar';
-                }
-            }, 300);
-        }
-
-        function handleRegister(event) {
-            event.preventDefault();
-            const username = document.getElementById('registerUsername').value.trim();
-            const email = document.getElementById('registerEmail').value.trim();
-            const password = document.getElementById('registerPassword').value;
-            const confirm = document.getElementById('registerPasswordConfirm').value;
-            const errorDiv = document.getElementById('registerError');
-            const registerBtn = document.getElementById('registerBtn');
-
-            if (!username || username.length < 3) {
-                errorDiv.textContent = 'Nome deve ter 3+ caracteres';
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            if (!email) {
-                errorDiv.textContent = 'Email é obrigatório';
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            if (password.length < 6) {
-                errorDiv.textContent = 'Senha deve ter 6+ caracteres';
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            if (password !== confirm) {
-                errorDiv.textContent = 'Senhas não conferem';
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            registerBtn.disabled = true;
-            registerBtn.textContent = 'Criando...';
-            errorDiv.classList.remove('show');
-
-            setTimeout(() => {
-                const result = storage.register(email, password, username);
-                if (result.success) {
-                    showNotification('Conta criada com sucesso!');
-                    document.getElementById('registerUsername').value = '';
-                    document.getElementById('registerEmail').value = '';
-                    document.getElementById('registerPassword').value = '';
-                    document.getElementById('registerPasswordConfirm').value = '';
-                    
-                    switchAuthTab('login');
-                    registerBtn.disabled = false;
-                    registerBtn.textContent = 'Criar Conta';
-                } else {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.add('show');
-                    registerBtn.disabled = false;
-                    registerBtn.textContent = 'Criar Conta';
-                }
-            }, 300);
-        }
-
-        // ========== INTERFACE ==========
-        function showAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-            document.getElementById('mainContainer').classList.remove('active');
-        }
-
-        function showMainApp() {
-            document.getElementById('authModal').classList.add('hidden');
-            document.getElementById('mainContainer').classList.add('active');
-
-            const isAdmin = storage.currentUser === 'admin@gmail.com';
-            const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
-            const userData = storage.getUserData(storage.currentUser);
-            
-            document.getElementById('currentUser').textContent = user ? user.username : 'Usuário';
-            document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Usuário';
-
-            if (isAdmin) {
-                document.querySelector('.admin-tab').style.display = 'block';
-                loadAdminPanel();
-            } else {
-                document.querySelector('.admin-tab').style.display = 'none';
-            }
-
-            // Inicializar modo como Contínuo por padrão
-            if (!systemData.currentMode) {
-                setMode('continuous');
-            }
-
-            loadUserData();
-            startDataRefresh();
-            startComponentUpdate();
-            updateStatusIndicator();
-            displayNotifications();
-        }
-
-        function logout() {
-            if (dataRefreshInterval) {
-                clearInterval(dataRefreshInterval);
-                dataRefreshInterval = null;
-            }
-            if (componentUpdateInterval) {
-                clearInterval(componentUpdateInterval);
-                componentUpdateInterval = null;
-            }
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            storage.logout();
-            showAuthModal();
-            document.getElementById('loginForm').classList.add('active');
-            document.getElementById('registerForm').classList.remove('active');
-            document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
-            document.querySelectorAll('.auth-tab-btn')[1].classList.remove('active');
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.remove('show');
-        }
-
-        // ========== ABAS ==========
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // ========== NOTIFICAÇÕES ==========
-        function toggleNotifications() {
-            const modal = document.getElementById('notificationsModal');
-            modal.classList.toggle('active');
-            if (modal.classList.contains('active')) {
-                document.getElementById('notificationBadge').classList.remove('active');
-            }
-        }
-
-        function addNotification(message, type = 'info') {
-            storage.addNotification(storage.currentUser, message, type);
-            
-            const notifList = document.getElementById('notificationsList');
-            const item = document.createElement('div');
-            item.className = `notification-item ${type}`;
-            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            item.innerHTML = `
-                <div style="color: #e2e8f0;">${message}</div>
-                <div class="notification-time">${time}</div>
-            `;
-            notifList.insertBefore(item, notifList.firstChild);
-
-            const badge = document.getElementById('notificationBadge');
-            badge.classList.add('active');
-        }
-
-        function displayNotifications() {
-            const notifications = storage.getNotifications(storage.currentUser);
-            const notifList = document.getElementById('notificationsList');
-            notifList.innerHTML = '';
-            
-            if (notifications.length === 0) {
-                notifList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma notificação</p>';
-                return;
-            }
-
-            notifications.slice().reverse().forEach(notif => {
-                const item = document.createElement('div');
-                item.className = `notification-item ${notif.type}`;
-                const time = new Date(notif.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                item.innerHTML = `
-                    <div style="color: #e2e8f0;">${notif.message}</div>
-                    <div class="notification-time">${time}</div>
-                `;
-                notifList.appendChild(item);
-            });
-        }
-
-        // ========== SETTINGS ==========
-        function toggleSettings() {
-            document.getElementById('settingsModal').classList.toggle('active');
-        }
-
-        function toggleUserMenu() {
-            const userModal = document.getElementById('userModal');
-            userModal.classList.toggle('active');
-            
-            if (userModal.classList.contains('active')) {
-                loadUserMenuData();
-            }
-        }
-
-        function loadUserMenuData() {
-            const isAdmin = storage.currentUser === 'admin@gmail.com';
-            const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
-            const userData = storage.getUserData(storage.currentUser);
-
-            document.getElementById('userUsername').textContent = user ? user.username : '-';
-            document.getElementById('userEmail').textContent = storage.currentUser;
-            document.getElementById('userType').textContent = isAdmin ? 'Administrador' : 'Usuário';
-            document.getElementById('userTypeModal').textContent = isAdmin ? 'Administrador' : 'Usuário';
-            document.getElementById('userCreatedDate').textContent = user ? new Date(user.createdAt).toLocaleDateString('pt-BR') : '-';
-            
-            const pumpHoursDecimal = (userData.pumpHours + userData.pumpMinutes / 60).toFixed(2);
-            const batteryHoursDecimal = (userData.batteryHours + userData.batteryMinutes / 60).toFixed(2);
-            const filterHoursDecimal = (userData.filterHours + userData.filterMinutes / 60).toFixed(2);
-            
-            document.getElementById('userPumpHours').textContent = `${pumpHoursDecimal} h`;
-            document.getElementById('userBatteryHours').textContent = `${batteryHoursDecimal}`;
-            document.getElementById('userFilterHours').textContent = `${filterHoursDecimal} h`;
-        }
-        function loadUserData() {
-            const userData = storage.getUserData(storage.currentUser);
-
-            document.getElementById('pumpOnTime').value = userData.settings.pumpOnTime;
-            document.getElementById('pumpOffTime').value = userData.settings.pumpOffTime;
-            document.getElementById('maxBucketHeight').value = userData.settings.maxBucketHeight;
-            document.getElementById('pumpWarning').value = userData.settings.pumpWarning;
-            document.getElementById('filterWarning').value = userData.settings.filterWarning;
-
-            systemData.pumpHours = userData.pumpHours || 0;
-            systemData.pumpMinutes = userData.pumpMinutes || 0;
-            systemData.batteryHours = userData.batteryHours || 0;
-            systemData.batteryMinutes = userData.batteryMinutes || 0;
-            systemData.filterHours = userData.filterHours || 0;
-            systemData.filterMinutes = userData.filterMinutes || 0;
-        }
-
-        function startDataRefresh() {
-            if (dataRefreshInterval) {
-                clearInterval(dataRefreshInterval);
-            }
-
-            dataRefreshInterval = setInterval(() => {
-                if (systemData.pumpActive) {
-                    systemData.bucketLevel = Math.min(100, systemData.bucketLevel + Math.random() * 2);
-                } else {
-                    systemData.bucketLevel = Math.max(0, systemData.bucketLevel - Math.random() * 0.5);
-                }
-
-                updateDashboard();
-            }, 1000);
-        }
-
-        function startComponentUpdate() {
-            if (componentUpdateInterval) {
-                clearInterval(componentUpdateInterval);
-            }
-
-            componentUpdateInterval = setInterval(() => {
-                if (systemData.pumpActive) {
-                    // Incrementar segundos
-                    let pumpSeconds = (systemData.pumpHours * 3600) + (systemData.pumpMinutes * 60);
-                    let batterySeconds = (systemData.batteryHours * 3600) + (systemData.batteryMinutes * 60);
-                    let filterSeconds = (systemData.filterHours * 3600) + (systemData.filterMinutes * 60);
-                    
-                    pumpSeconds += 1;
-                    batterySeconds += 1;
-                    filterSeconds += 1;
-                    
-                    // Converter de volta
-                    systemData.pumpHours = Math.floor(pumpSeconds / 3600);
-                    systemData.pumpMinutes = Math.floor((pumpSeconds % 3600) / 60);
-                    
-                    systemData.batteryHours = Math.floor(batterySeconds / 3600);
-                    systemData.batteryMinutes = Math.floor((batterySeconds % 3600) / 60);
-                    
-                    systemData.filterHours = Math.floor(filterSeconds / 3600);
-                    systemData.filterMinutes = Math.floor((filterSeconds % 3600) / 60);
-
-                    saveComponentHours();
-                    updateMaintenanceTable();
-                }
-            }, 1000); // A cada segundo
-        }
-
-        function saveComponentHours() {
-            const userData = storage.getUserData(storage.currentUser);
-            userData.pumpHours = systemData.pumpHours;
-            userData.pumpMinutes = systemData.pumpMinutes;
-            userData.batteryHours = systemData.batteryHours;
-            userData.batteryMinutes = systemData.batteryMinutes;
-            userData.filterHours = systemData.filterHours;
-            userData.filterMinutes = systemData.filterMinutes;
-            storage.saveUserData(storage.currentUser, userData);
-        }
-
-        function updateMaintenanceTable() {
-            const pumpHoursDecimal = (systemData.pumpHours + systemData.pumpMinutes / 60).toFixed(2);
-            const batteryHoursDecimal = (systemData.batteryHours + systemData.batteryMinutes / 60).toFixed(2);
-            const filterHoursDecimal = (systemData.filterHours + systemData.filterMinutes / 60).toFixed(2);
-
-            document.getElementById('pumpHours').textContent = `${pumpHoursDecimal} h`;
-            document.getElementById('batteryHours').textContent = `${batteryHoursDecimal} ciclos`;
-            document.getElementById('filterHours').textContent = `${filterHoursDecimal} h`;
-        }
-
-        function updateDashboard() {
-            document.getElementById('bucketLevel').textContent = Math.round(systemData.bucketLevel);
-            document.getElementById('bucketProgress').style.width = systemData.bucketLevel + '%';
-
-            document.getElementById('batteryLevel').textContent = Math.round(systemData.batteryPercentage);
-            document.getElementById('batteryProgress').style.width = systemData.batteryPercentage + '%';
-
-            document.getElementById('batteryVoltage').textContent = systemData.batteryVoltage.toFixed(2);
-            document.getElementById('runtime').textContent = '0.5';
-
-            document.getElementById('pumpStatus').textContent = systemData.pumpActive ? 'Ligada' : 'Desligada';
-            
-            // Gerenciar popups de modo
-            const modePopup = document.getElementById('modePopup');
-            if (systemData.pumpActive && systemData.currentMode) {
-                modePopup.classList.add('active');
-            } else {
-                modePopup.classList.remove('active');
-            }
-
-            updateStatusIndicator();
-        }
-
-        function updateStatusIndicator() {
-            const indicator = document.getElementById('statusIndicator');
-            indicator.classList.remove('connected', 'active', 'inactive');
-            
-            if (systemData.pumpActive) {
-                indicator.classList.add('active');
-            } else if (systemData.pumpEnabled) {
-                indicator.classList.add('connected');
-            } else {
-                indicator.classList.add('inactive');
-            }
-        }
-
-        // ========== CONTROLES ==========
-        function turnPumpOn() {
-            // Sempre selecionar Contínuo ao ligar
-            setMode('continuous');
-            
-            systemData.pumpEnabled = true;
-            systemData.pumpActive = true;
-            systemData.timerRunning = false;
-            document.getElementById('pumpOnBtn').classList.add('active');
-            document.getElementById('pumpOffBtn').classList.remove('active');
-            addNotification('Bomba ligada', 'success');
-            showNotification('Bomba ligada!');
-            updateDashboard();
-        }
-
-        function turnPumpOff() {
-            systemData.pumpEnabled = false;
-            systemData.pumpActive = false;
-            systemData.timerRunning = false;
-            document.getElementById('pumpOnBtn').classList.remove('active');
-            document.getElementById('pumpOffBtn').classList.add('active');
-            addNotification('Bomba desligada', 'info');
-            showNotification('Bomba desligada');
-            updateDashboard();
-        }
-
-        function startTimer() {
-            if (!systemData.pumpActive) {
-                showNotification('Ligue a bomba primeiro!', 'error');
-                return;
-            }
-            
-            const minutes = parseInt(document.getElementById('timerMinutes').value);
-            if (!minutes || minutes < 1) {
-                showNotification('Defina um tempo válido', 'error');
-                return;
-            }
-
-            systemData.timerRunning = true;
-            systemData.timerEndTime = Date.now() + (minutes * 60 * 1000);
-            systemData.timerIntervalId = null;
-
-            addNotification(`Timer iniciado por ${minutes} minuto${minutes > 1 ? 's' : ''}`, 'info');
-            showNotification(`Timer iniciado por ${minutes} minutos`);
-
-            // Atualizar popup a cada segundo
-            systemData.timerIntervalId = setInterval(() => {
-                if (!systemData.timerRunning) {
-                    clearInterval(systemData.timerIntervalId);
-                    document.getElementById('timerPopup').classList.remove('active');
-                    return;
-                }
-
-                const remaining = systemData.timerEndTime - Date.now();
-                if (remaining > 0) {
-                    const mins = Math.floor(remaining / 60000);
-                    const secs = Math.floor((remaining % 60000) / 1000);
-                    document.getElementById('timerPopup').innerHTML = `${mins}m ${secs}s <span class="timer-close" onclick="cancelTimer()">✕</span>`;
-                    document.getElementById('timerPopup').classList.add('active');
-                }
-            }, 1000);
-
-            setTimeout(() => {
-                systemData.timerRunning = false;
-                document.getElementById('timerPopup').classList.remove('active');
-                addNotification('Timer concluído', 'success');
-                showNotification('Timer expirou');
-                
-                // Clicar automaticamente em desligar
-                document.getElementById('pumpOffBtn').click();
-                
-                updateDashboard();
-                clearInterval(systemData.timerIntervalId);
-            }, minutes * 60 * 1000);
-
-            updateDashboard();
-        }
-
-        function cancelTimer() {
-            systemData.timerRunning = false;
-            systemData.pumpEnabled = false;
-            systemData.pumpActive = false;
-            document.getElementById('timerPopup').classList.remove('active');
-            clearInterval(systemData.timerIntervalId);
-            addNotification('Timer cancelado', 'info');
-            showNotification('Timer cancelado');
-            document.getElementById('pumpOffBtn').click();
-            updateDashboard();
-        }
-
-        function setMode(mode) {
-            systemData.currentMode = mode;
-            document.getElementById('modeContBtn').classList.remove('active');
-            document.getElementById('modePulseBtn').classList.remove('active');
-            
-            const modePopup = document.getElementById('modePopup');
-            
-            if (mode === 'continuous') {
-                document.getElementById('modeContBtn').classList.add('active');
-                modePopup.textContent = 'Contínuo';
-                if (systemData.pumpActive) {
-                    modePopup.classList.add('active');
-                }
-                addNotification('Modo Contínuo ativado', 'info');
-                showNotification('Modo Contínuo');
-            } else if (mode === 'pulse') {
-                document.getElementById('modePulseBtn').classList.add('active');
-                modePopup.textContent = 'Pulsante';
-                if (systemData.pumpActive) {
-                    modePopup.classList.add('active');
-                }
-                addNotification('Modo Pulsante ativado', 'info');
-                showNotification('Modo Pulsante');
-            }
-        }
-
-        function saveSettings() {
-            const userData = storage.getUserData(storage.currentUser);
-
-            userData.settings.pumpOnTime = parseInt(document.getElementById('pumpOnTime').value);
-            userData.settings.pumpOffTime = parseInt(document.getElementById('pumpOffTime').value);
-            userData.settings.maxBucketHeight = parseInt(document.getElementById('maxBucketHeight').value);
-            userData.settings.pumpWarning = parseInt(document.getElementById('pumpWarning').value);
-            userData.settings.filterWarning = parseInt(document.getElementById('filterWarning').value);
-
-            storage.saveUserData(storage.currentUser, userData);
-            addNotification('Configurações salvas', 'success');
-            showNotification('Configurações salvas!');
-            toggleSettings();
-        }
-
-        // ========== ADMIN PANEL ==========
-        function loadAdminPanel() {
-            const allUsers = storage.getAllUsers();
-            const accountsList = document.getElementById('accountsList');
-            
-            document.getElementById('totalAccounts').textContent = `${Object.keys(allUsers).length} contas`;
-
-            accountsList.innerHTML = '';
-            
-            if (Object.keys(allUsers).length === 0) {
-                accountsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
-                return;
-            }
-            
-            Object.entries(allUsers).forEach(([email, user]) => {
-                const row = document.createElement('div');
-                row.className = 'account-row';
-                row.innerHTML = `
-                    <div class="account-item"><strong>${user.username}</strong></div>
-                    <div class="account-item">${email}</div>
-                    <div class="account-item">${new Date(user.createdAt).toLocaleDateString('pt-BR')}</div>
-                    <div class="account-role">Usuário</div>
-                `;
-                accountsList.appendChild(row);
-            });
-        }
-
-        // ========== NOTIFICAÇÕES FLUTUANTES ==========
-        function showNotification(message, type = 'success') {
-            const notif = document.getElementById('notification');
-            notif.textContent = message;
-            notif.className = type === 'error' ? 'notification error' : 'notification';
-            notif.classList.remove('hidden-notification');
-
-            setTimeout(() => {
-                notif.classList.add('hidden-notification');
-            }, 3000);
-        }
-
-        // Inicializar
-        updateDashboard();
-        updateMaintenanceTable();
-    </script>
 </body>
 </html>
