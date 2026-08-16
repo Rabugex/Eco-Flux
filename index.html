@@ -2,345 +2,279 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5 Layouts EcoFlux</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="EcoFlux - Sistema de Limpeza Inteligente de Rios">
+    <meta name="theme-color" content="#0f172a">
+    <title>EcoFlux Dashboard - Glassmorphism</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        h1 { text-align: center; margin-bottom: 30px; color: #333; }
-        .layouts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; }
-        .layout { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .layout-title { padding: 15px; background: #333; color: white; font-weight: bold; font-size: 18px; }
-        .layout-content { padding: 20px; height: 600px; overflow: auto; }
-        
-        /* LAYOUT 1 - MINIMALISTA */
-        .layout1 { background: #f8f9fa; }
-        .layout1-content {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f7ff 0%, #f0e7ff 50%, #e8f5ff 100%);
+            color: #1e293b;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            gap: 30px;
+            justify-content: center;
             align-items: center;
-            padding: 30px;
-            background: #0f1419;
-            min-height: 600px;
-        }
-        .balde-svg {
-            width: 150px;
-            height: 150px;
-            margin-bottom: 20px;
-        }
-        .percentual { font-size: 48px; font-weight: bold; color: #06b6d4; margin-left: 20px; }
-        .circulares { display: flex; gap: 40px; margin-top: 30px; }
-        .circulo { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #06b6d4; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; font-size: 14px; }
-        
-        /* LAYOUT 2 - GLASSMORPHISM */
-        .layout2 { background: linear-gradient(135deg, #e0f7ff 0%, #f0e7ff 100%); }
-        .layout2-content {
             padding: 20px;
-            min-height: 600px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            backdrop-filter: blur(20px);
         }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
         .glass-card {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 25px;
+            padding: 30px;
             border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            gap: 10px;
+            gap: 15px;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .glass-label { font-size: 12px; color: #666; text-transform: uppercase; }
-        .glass-value { font-size: 42px; font-weight: bold; background: linear-gradient(135deg, #0ea5e9, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* LAYOUT 3 - CYBERPUNK */
-        .layout3 { background: #0a0e27; position: relative; overflow: hidden; }
-        .layout3::before {
+
+        .glass-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
             pointer-events: none;
         }
-        .layout3-content {
-            position: relative;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            min-height: 600px;
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.8);
         }
-        .neon-card {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #00ff88;
-            border-radius: 0;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 10px rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-        .neon-value { font-size: 36px; font-weight: bold; }
-        
-        /* LAYOUT 4 - CARD-BASED */
-        .layout4 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
-        .layout4-content {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            min-height: 600px;
-        }
-        .banco-card {
-            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-            border-radius: 20px;
-            padding: 30px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);
-            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
-        }
-        .banco-label { font-size: 13px; opacity: 0.9; text-transform: uppercase; }
-        .banco-value { font-size: 48px; font-weight: bold; margin: 10px 0; }
-        .banco-unit { font-size: 14px; opacity: 0.8; }
-        
-        /* LAYOUT 5 - CORPORATIVO */
-        .layout5 { background: #f5f5f5; display: flex; }
-        .layout5-sidebar {
-            width: 200px;
-            background: #1e3a5f;
-            color: white;
-            padding: 20px;
+
+        .glass-label {
             font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
         }
-        .layout5-item {
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+
+        .glass-value {
+            font-size: 45px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+            line-height: 1;
+        }
+
+        .glass-detail {
+            font-size: 12px;
+            color: #94a3b8;
+            position: relative;
+            z-index: 1;
+            margin-top: 5px;
+        }
+
+        .progress-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(100, 116, 139, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9 0%, #a855f7 100%);
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .featured-card {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(168, 85, 247, 0.15));
+        }
+
+        .featured-card .glass-value {
+            font-size: 60px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            color: #1e293b;
         }
-        .layout5-content {
-            flex: 1;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            min-height: 600px;
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
-        .corp-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+            color: white;
+            border: none;
         }
-        .corp-header { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
-        .corp-value { font-size: 36px; font-weight: bold; color: #1e3a5f; }
-        .corp-detail { font-size: 12px; color: #999; margin-top: 10px; }
+
+        .btn-primary:hover {
+            box-shadow: 0 12px 24px rgba(14, 165, 233, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-card {
+                grid-column: span 1 !important;
+            }
+
+            .glass-value {
+                font-size: 32px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎨 5 LAYOUTS DIFERENTES PARA ECOFLUX</h1>
-        
-        <div class="layouts-grid">
-            <!-- LAYOUT 1 -->
-            <div class="layout">
-                <div class="layout-title">LAYOUT 1: MINIMALISTA (Baseado no seu desenho)</div>
-                <div class="layout-content">
-                    <div class="layout1-content">
-                        <svg class="balde-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Balde trapézio -->
-                            <path d="M 60 50 L 140 50 L 160 150 L 40 150 Z" fill="none" stroke="#06b6d4" stroke-width="3"/>
-                            <!-- Asa -->
-                            <path d="M 80 50 Q 100 20 120 50" fill="none" stroke="#06b6d4" stroke-width="2"/>
-                        </svg>
-                        <div style="display: flex; align-items: center; gap: 20px; color: white;">
-                            <div style="font-size: 32px;">Nível do Balde</div>
-                            <div class="percentual">57%</div>
-                        </div>
-                        
-                        <div class="circulares">
-                            <div class="circulo">
-                                <div style="font-size: 20px;">💧</div>
-                                <div>Bomba</div>
-                                <div style="font-size: 24px; margin-top: 5px;">OFF</div>
-                            </div>
-                            <div class="circulo">
-                                <div style="font-size: 20px;">⏱️</div>
-                                <div>Tempo</div>
-                                <div style="font-size: 20px; margin-top: 5px;">1.00h</div>
-                            </div>
-                        </div>
+        <div class="header">
+            <h1>EcoFlux</h1>
+            <p>Sistema de Limpeza Inteligente de Rios</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="glass-card featured-card">
+                <div class="glass-label">Nível do Balde</div>
+                <div class="glass-value">57%</div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 57%;"></div>
                     </div>
                 </div>
+                <div class="glass-detail">Em tempo real</div>
             </div>
 
-            <!-- LAYOUT 2 -->
-            <div class="layout">
-                <div class="layout-title">LAYOUT 2: GLASSMORPHISM (Moderno)</div>
-                <div class="layout-content layout2-content">
-                    <div class="glass-card">
-                        <div class="glass-label">Nível Balde</div>
-                        <div class="glass-value">57%</div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="glass-label">Nível Bateria</div>
-                        <div class="glass-value">77%</div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="glass-label">Tensão</div>
-                        <div class="glass-value">12.5V</div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="glass-label">Bomba</div>
-                        <div class="glass-value" style="font-size: 28px;">OFF</div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="glass-label">Tempo</div>
-                        <div class="glass-value">1.00h</div>
-                    </div>
-                    <div class="glass-card">
-                        <div class="glass-label">Manutenção</div>
-                        <div class="glass-value" style="font-size: 28px;">-</div>
+            <div class="glass-card">
+                <div class="glass-label">Nível Bateria</div>
+                <div class="glass-value">77%</div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 77%;"></div>
                     </div>
                 </div>
+                <div class="glass-detail">Carregada</div>
             </div>
 
-            <!-- LAYOUT 3 -->
-            <div class="layout">
-                <div class="layout-title">LAYOUT 3: CYBERPUNK (Dark Futurista)</div>
-                <div class="layout-content layout3-content">
-                    <div class="neon-card">
-                        <div style="font-size: 11px; color: #00ffff;">&gt; BALDE_NIVEL</div>
-                        <div class="neon-value">57%</div>
-                    </div>
-                    <div class="neon-card">
-                        <div style="font-size: 11px; color: #00ffff;">&gt; BATERIA_NIVEL</div>
-                        <div class="neon-value">77%</div>
-                    </div>
-                    <div class="neon-card">
-                        <div style="font-size: 11px; color: #00ffff;">&gt; TENSAO</div>
-                        <div class="neon-value">12.5V</div>
-                    </div>
-                    <div class="neon-card">
-                        <div style="font-size: 11px; color: #00ffff;">&gt; BOMBA_STATUS</div>
-                        <div class="neon-value">OFF</div>
-                    </div>
-                    <div class="neon-card">
-                        <div style="font-size: 11px; color: #00ffff;">&gt; TEMPO_EXEC</div>
-                        <div class="neon-value">1h</div>
-                    </div>
-                    <div class="neon-card">
-                        <div style="font-size: 11px; color: #00ffff;">&gt; MANUTENCAO</div>
-                        <div class="neon-value">-</div>
-                    </div>
-                </div>
+            <div class="glass-card">
+                <div class="glass-label">Tensão</div>
+                <div class="glass-value">12.5V</div>
+                <div class="glass-detail">Normal</div>
             </div>
 
-            <!-- LAYOUT 4 -->
-            <div class="layout">
-                <div class="layout-title">LAYOUT 4: CARD-BASED (Estilo Cartão)</div>
-                <div class="layout-content layout4-content">
-                    <div class="banco-card">
-                        <div class="banco-label">Nível do Balde</div>
-                        <div class="banco-value">57%</div>
-                        <div class="banco-unit">Em tempo real</div>
-                    </div>
-                    <div class="banco-card" style="background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
-                        <div class="banco-label">Nível Bateria</div>
-                        <div class="banco-value">77%</div>
-                        <div class="banco-unit">Carregada</div>
-                    </div>
-                    <div class="banco-card" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
-                        <div class="banco-label">Tensão</div>
-                        <div class="banco-value">12.5V</div>
-                        <div class="banco-unit">Normal</div>
-                    </div>
-                    <div class="banco-card" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
-                        <div class="banco-label">Bomba</div>
-                        <div class="banco-value" style="font-size: 32px;">OFF</div>
-                        <div class="banco-unit">Desligada</div>
-                    </div>
-                    <div class="banco-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
-                        <div class="banco-label">Tempo</div>
-                        <div class="banco-value">1.00h</div>
-                        <div class="banco-unit">Operacional</div>
-                    </div>
-                    <div class="banco-card" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3), 0 20px 40px rgba(0, 0, 0, 0.2);">
-                        <div class="banco-label">Manutenção</div>
-                        <div class="banco-value" style="font-size: 32px;">-</div>
-                        <div class="banco-unit">Próxima</div>
-                    </div>
-                </div>
+            <div class="glass-card">
+                <div class="glass-label">Bomba</div>
+                <div class="glass-value" style="color: #ef4444;">OFF</div>
+                <div class="glass-detail">Desligada</div>
             </div>
 
-            <!-- LAYOUT 5 -->
-            <div class="layout">
-                <div class="layout-title">LAYOUT 5: CORPORATIVO (Enterprise)</div>
-                <div class="layout-content layout5">
-                    <div class="layout5-sidebar">
-                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">📊 Menu</div>
-                        <div class="layout5-item">📈 Dashboard</div>
-                        <div class="layout5-item">⚙️ Controle</div>
-                        <div class="layout5-item">🔧 Manutenção</div>
-                        <div class="layout5-item">👤 Perfil</div>
-                    </div>
-                    <div class="layout5-content">
-                        <div class="corp-card">
-                            <div class="corp-header">Nível do Balde</div>
-                            <div class="corp-value">57%</div>
-                            <div class="corp-detail">Última atualização: Agora</div>
-                            <div style="background: #f0f0f0; height: 8px; border-radius: 4px; margin-top: 10px;">
-                                <div style="background: #1e3a5f; height: 100%; width: 57%; border-radius: 4px;"></div>
-                            </div>
-                        </div>
-                        <div class="corp-card">
-                            <div class="corp-header">Nível Bateria</div>
-                            <div class="corp-value">77%</div>
-                            <div class="corp-detail">Status: Bom</div>
-                            <div style="background: #f0f0f0; height: 8px; border-radius: 4px; margin-top: 10px;">
-                                <div style="background: #10b981; height: 100%; width: 77%; border-radius: 4px;"></div>
-                            </div>
-                        </div>
-                        <div class="corp-card">
-                            <div class="corp-header">Tensão (V)</div>
-                            <div class="corp-value">12.5</div>
-                            <div class="corp-detail">Voltagem normal</div>
-                        </div>
-                        <div class="corp-card">
-                            <div class="corp-header">Status da Bomba</div>
-                            <div class="corp-value" style="color: #ef4444;">OFF</div>
-                            <div class="corp-detail">Desligada</div>
-                        </div>
-                        <div class="corp-card">
-                            <div class="corp-header">Tempo Total</div>
-                            <div class="corp-value">1.00h</div>
-                            <div class="corp-detail">Horas operacionais</div>
-                        </div>
-                        <div class="corp-card">
-                            <div class="corp-header">Próxima Manutenção</div>
-                            <div class="corp-value" style="font-size: 28px;">-</div>
-                            <div class="corp-detail">Sem agendamento</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="glass-card">
+                <div class="glass-label">Tempo Total</div>
+                <div class="glass-value">1.00h</div>
+                <div class="glass-detail">Horas operacionais</div>
             </div>
+
+            <div class="glass-card">
+                <div class="glass-label">Próxima Manutenção</div>
+                <div class="glass-value">-</div>
+                <div class="glass-detail">Sem agendamento</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn">Configurações</button>
+            <button class="btn btn-primary">Ligar Bomba</button>
+            <button class="btn">Sair</button>
         </div>
     </div>
 </body>
