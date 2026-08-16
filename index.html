@@ -1440,13 +1440,13 @@
                 <!-- Bomba - Retangular -->
                 <div class="status-card pump-status-card" id="pumpCard">
                     <div class="mode-popup" id="modePopup"></div>
-                    <div class="timer-popup" id="pumpTimerPopup"></div>
                     <div class="status-card-label">Bomba</div>
                     <div class="status-card-value" id="pumpStatus">Off</div>
                 </div>
 
                 <!-- Tempo - Circular -->
                 <div class="status-card">
+                    <div class="timer-popup" id="timerPopup"></div>
                     <div class="status-card-label">Tempo</div>
                     <div class="status-card-value" id="runtime">0</div>
                     <div class="status-card-unit">h</div>
@@ -2233,23 +2233,9 @@
 
         // ========== CONTROLES ==========
         function turnPumpOn() {
-            if (systemData.currentMode === null || systemData.currentMode === undefined) {
-                showNotification('Ativando modo Contínuo...', 'info');
-                document.getElementById('modeContBtn').click();
-                
-                // Dar um pequeno delay antes de ligar
-                setTimeout(() => {
-                    systemData.pumpEnabled = true;
-                    systemData.pumpActive = true;
-                    systemData.timerRunning = false;
-                    document.getElementById('pumpOnBtn').classList.add('active');
-                    document.getElementById('pumpOffBtn').classList.remove('active');
-                    addNotification('Bomba ligada', 'success');
-                    showNotification('Bomba ligada!');
-                    updateDashboard();
-                }, 100);
-                return;
-            }
+            // Sempre selecionar Contínuo ao ligar
+            setMode('continuous');
+            
             systemData.pumpEnabled = true;
             systemData.pumpActive = true;
             systemData.timerRunning = false;
@@ -2294,7 +2280,7 @@
             systemData.timerIntervalId = setInterval(() => {
                 if (!systemData.timerRunning) {
                     clearInterval(systemData.timerIntervalId);
-                    document.getElementById('pumpTimerPopup').classList.remove('active');
+                    document.getElementById('timerPopup').classList.remove('active');
                     return;
                 }
 
@@ -2302,14 +2288,14 @@
                 if (remaining > 0) {
                     const mins = Math.floor(remaining / 60000);
                     const secs = Math.floor((remaining % 60000) / 1000);
-                    document.getElementById('pumpTimerPopup').innerHTML = `${mins}m ${secs}s <span class="timer-close" onclick="cancelTimer()">✕</span>`;
-                    document.getElementById('pumpTimerPopup').classList.add('active');
+                    document.getElementById('timerPopup').innerHTML = `${mins}m ${secs}s <span class="timer-close" onclick="cancelTimer()">✕</span>`;
+                    document.getElementById('timerPopup').classList.add('active');
                 }
             }, 1000);
 
             setTimeout(() => {
                 systemData.timerRunning = false;
-                document.getElementById('pumpTimerPopup').classList.remove('active');
+                document.getElementById('timerPopup').classList.remove('active');
                 addNotification('Timer concluído', 'success');
                 showNotification('Timer expirou');
                 
@@ -2327,7 +2313,7 @@
             systemData.timerRunning = false;
             systemData.pumpEnabled = false;
             systemData.pumpActive = false;
-            document.getElementById('pumpTimerPopup').classList.remove('active');
+            document.getElementById('timerPopup').classList.remove('active');
             clearInterval(systemData.timerIntervalId);
             addNotification('Timer cancelado', 'info');
             showNotification('Timer cancelado');
