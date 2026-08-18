@@ -37,7 +37,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
             background: rgba(15, 23, 42, 0.7);
             border: 2px solid rgba(6, 182, 212, 0.3);
@@ -47,12 +47,8 @@
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
             margin-bottom: 50px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
         }
 
         .header h1 {
@@ -64,61 +60,37 @@
             font-weight: 700;
         }
 
-        .header-controls {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            background: rgba(6, 182, 212, 0.1);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            color: #06b6d4;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background: rgba(6, 182, 212, 0.2);
-            border-color: rgba(6, 182, 212, 0.5);
-        }
-
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            align-items: flex-start;
         }
 
-        /* BALDE */
+        /* COLUNA 1: BALDE */
         .balde-section {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 30px;
+            gap: 25px;
         }
 
         .balde-container {
-            position: relative;
-            width: 200px;
-            height: 250px;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
         }
 
         .balde {
-            width: 140px;
-            height: 180px;
-            background: linear-gradient(to right, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.1));
-            border: 3px solid #06b6d4;
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+            width: 120px;
+            height: 140px;
+            background: linear-gradient(to right, rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.1));
+            border: 2px solid #06b6d4;
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
             position: relative;
+            flex-shrink: 0;
         }
 
         .balde-fill {
@@ -126,9 +98,10 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(6, 182, 212, 0.4), transparent);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+            background: linear-gradient(to top, rgba(6, 182, 212, 0.5), transparent);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
             animation: fillWave 3s ease-in-out infinite;
+            height: 57%;
         }
 
         @keyframes fillWave {
@@ -136,36 +109,96 @@
             50% { height: 59%; }
         }
 
+        .percentual-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
         .percentual {
-            position: absolute;
-            right: -80px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 700;
             color: #06b6d4;
             line-height: 1;
         }
 
-        .balde-label {
-            text-align: center;
-            font-size: 14px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .progress-bar {
+            width: 280px;
+            height: 6px;
+            background: rgba(6, 182, 212, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
         }
 
-        /* CIRCULARES */
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
+            width: 57%;
+            border-radius: 3px;
+        }
+
+        /* COLUNA 2: BATERIA E TENSÃO */
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .info-pill {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #06b6d4;
+        }
+
+        .info-detail {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .battery-progress {
+            width: 100%;
+            height: 5px;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .battery-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
+            width: 77%;
+            border-radius: 2px;
+        }
+
+        /* COLUNA 3: CIRCULARES */
         .circulares {
             display: flex;
-            gap: 40px;
-            justify-content: center;
-            width: 100%;
+            flex-direction: column;
+            gap: 25px;
         }
 
         .circulo {
-            width: 140px;
-            height: 140px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             border: 2px solid #06b6d4;
             display: flex;
@@ -190,7 +223,7 @@
         }
 
         .circulo-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -204,54 +237,20 @@
             z-index: 1;
         }
 
-        /* LADO DIREITO */
-        .info-section {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
 
-        .info-card {
-            background: rgba(6, 182, 212, 0.05);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-        }
+            .balde-container {
+                justify-content: center;
+            }
 
-        .info-card-label {
-            font-size: 12px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
-
-        .info-card-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #06b6d4;
-        }
-
-        .info-card-detail {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 8px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(6, 182, 212, 0.1);
-            border-radius: 3px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
-            width: 77%;
-            border-radius: 3px;
+            .circulares {
+                flex-direction: row;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 768px) {
@@ -259,24 +258,26 @@
                 padding: 20px;
             }
 
-            .dashboard {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .percentual {
-                position: static;
-                transform: none;
-                margin-top: 20px;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 20px;
-            }
-
             .header h1 {
                 font-size: 24px;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .balde {
+                width: 100px;
+                height: 120px;
+            }
+
+            .progress-bar {
+                width: 200px;
+            }
+
+            .circulo {
+                width: 140px;
+                height: 140px;
             }
         }
     </style>
@@ -285,60 +286,51 @@
     <div class="container">
         <div class="header">
             <h1>EcoFlux</h1>
-            <div class="header-controls">
-                <button class="btn">Entrar</button>
-                <button class="btn">Configurações</button>
-            </div>
         </div>
 
         <div class="dashboard">
+            <!-- COLUNA 1: BALDE -->
             <div class="balde-section">
                 <div class="balde-container">
                     <div class="balde">
                         <div class="balde-fill"></div>
                     </div>
-                    <div class="percentual">57%</div>
-                </div>
-                <div class="balde-label">Nível do Balde</div>
-
-                <div class="circulares">
-                    <div class="circulo">
-                        <div class="circulo-label">Bomba</div>
-                        <div class="circulo-valor">OFF</div>
-                    </div>
-                    <div class="circulo">
-                        <div class="circulo-label">Tempo</div>
-                        <div class="circulo-valor">1.0h</div>
+                    <div class="percentual-display">
+                        <div class="percentual">57%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- COLUNA 2: BATERIA E TENSÃO -->
             <div class="info-section">
-                <div class="info-card">
-                    <div class="info-card-label">Nível da Bateria</div>
-                    <div class="info-card-value">77%</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 77%;"></div>
+                <div class="info-pill">
+                    <div class="info-label">Nível da Bateria</div>
+                    <div class="info-value">77%</div>
+                    <div class="battery-progress">
+                        <div class="battery-progress-fill"></div>
                     </div>
-                    <div class="info-card-detail">Carregada</div>
+                    <div class="info-detail">Carregada</div>
                 </div>
 
-                <div class="info-card">
-                    <div class="info-card-label">Tensão</div>
-                    <div class="info-card-value">12.5V</div>
-                    <div class="info-card-detail">Normal</div>
+                <div class="info-pill">
+                    <div class="info-label">Tensão</div>
+                    <div class="info-value">12.5V</div>
+                    <div class="info-detail">Normal</div>
                 </div>
+            </div>
 
-                <div class="info-card">
-                    <div class="info-card-label">Próxima Manutenção</div>
-                    <div class="info-card-value">-</div>
-                    <div class="info-card-detail">Sem agendamento</div>
+            <!-- COLUNA 3: CIRCULARES -->
+            <div class="circulares">
+                <div class="circulo">
+                    <div class="circulo-label">Bomba</div>
+                    <div class="circulo-valor">OFF</div>
                 </div>
-
-                <div class="info-card">
-                    <div class="info-card-label">Status Geral</div>
-                    <div class="info-card-value" style="color: #10b981;">BOM</div>
-                    <div class="info-card-detail">Tudo funcionando normalmente</div>
+                <div class="circulo">
+                    <div class="circulo-label">Tempo</div>
+                    <div class="circulo-valor">1.0h</div>
                 </div>
             </div>
         </div>
