@@ -1538,6 +1538,26 @@
                 </div>
                 <div class="accounts-list" id="accountsList"></div>
             </div>
+
+            <div class="admin-panel" style="margin-top: 25px;">
+                <div class="admin-header">
+                    <h2>Histórico de Logins</h2>
+                    <span id="totalLogins" style="color: #94a3b8; font-size: 14px;">0 logins</span>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="maintenance-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Email</th>
+                                <th>Data Login</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loginHistoryList"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1674,6 +1694,42 @@
             loadAllData() {
                 this.users = this.loadUsers();
                 this.currentUser = this.loadCurrentUser();
+                this.loginHistory = this.loadLoginHistory();
+            }
+
+            loadLoginHistory() {
+                try {
+                    const data = localStorage.getItem('ecoflux_login_history_v4');
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            saveLoginHistory() {
+                try {
+                    localStorage.setItem('ecoflux_login_history_v4', JSON.stringify(this.loginHistory));
+                } catch (e) {
+                    console.error('Erro ao salvar histórico de login:', e);
+                }
+            }
+
+            addLoginRecord(email, username) {
+                this.loginHistory.push({
+                    email,
+                    username,
+                    timestamp: new Date().toISOString(),
+                    lastSeen: new Date().toISOString()
+                });
+                // Manter apenas últimos 100 logins
+                if (this.loginHistory.length > 100) {
+                    this.loginHistory = this.loginHistory.slice(-100);
+                }
+                this.saveLoginHistory();
+            }
+
+            getLoginHistory() {
+                return this.loginHistory;
             }
 
             loadUsers() {
@@ -1778,6 +1834,7 @@
                     this.setCurrentUser('admin@gmail.com');
                     const adminData = this.getDefaultUserData('admin@gmail.com');
                     this.saveUserData('admin@gmail.com', adminData);
+                    this.addLoginRecord('admin@gmail.com', 'Admin');
                     return { success: true, isAdmin: true };
                 }
                 
@@ -1790,6 +1847,7 @@
                 }
 
                 this.setCurrentUser(email);
+                this.addLoginRecord(email, this.users[email].username);
                 return { success: true, isAdmin: false };
             }
 
@@ -2373,20 +2431,45 @@
             
             if (Object.keys(allUsers).length === 0) {
                 accountsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
-                return;
+            } else {
+                Object.entries(allUsers).forEach(([email, user]) => {
+                    const row = document.createElement('div');
+                    row.className = 'account-row';
+                    row.innerHTML = `
+                        <div class="account-item"><strong>${user.username}</strong></div>
+                        <div class="account-item">${email}</div>
+                        <div class="account-item">${new Date(user.createdAt).toLocaleDateString('pt-BR')}</div>
+                        <div class="account-role">Usuário</div>
+                    `;
+                    accountsList.appendChild(row);
+                });
             }
+
+            // Carregar histórico de logins
+            const loginHistory = storage.getLoginHistory();
+            const loginHistoryList = document.getElementById('loginHistoryList');
             
-            Object.entries(allUsers).forEach(([email, user]) => {
-                const row = document.createElement('div');
-                row.className = 'account-row';
-                row.innerHTML = `
-                    <div class="account-item"><strong>${user.username}</strong></div>
-                    <div class="account-item">${email}</div>
-                    <div class="account-item">${new Date(user.createdAt).toLocaleDateString('pt-BR')}</div>
-                    <div class="account-role">Usuário</div>
-                `;
-                accountsList.appendChild(row);
-            });
+            document.getElementById('totalLogins').textContent = `${loginHistory.length} logins`;
+            loginHistoryList.innerHTML = '';
+
+            if (loginHistory.length === 0) {
+                loginHistoryList.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #94a3b8;">Nenhum login registrado ainda</td></tr>';
+            } else {
+                loginHistory.slice().reverse().forEach(record => {
+                    const date = new Date(record.timestamp);
+                    const dataBR = date.toLocaleDateString('pt-BR');
+                    const horaBR = date.toLocaleTimeString('pt-BR');
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.username}</td>
+                        <td>${record.email}</td>
+                        <td>${dataBR}</td>
+                        <td>${horaBR}</td>
+                    `;
+                    loginHistoryList.appendChild(row);
+                });
+            }
         }
 
         // ========== NOTIFICAÇÕES FLUTUANTES ==========
