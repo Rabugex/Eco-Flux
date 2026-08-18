@@ -1949,6 +1949,8 @@
                 if (result.success) {
                     document.getElementById('loginEmail').value = '';
                     document.getElementById('loginPassword').value = '';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Entrar';
                     showMainApp();
                 } else {
                     errorDiv.textContent = result.error;
@@ -2027,18 +2029,22 @@
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('mainContainer').classList.add('active');
 
+            // Recarregar dados de storage
+            storage.loadAllData();
+            
             const isAdmin = storage.currentUser === 'admin@gmail.com';
-            const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
+            const user = isAdmin ? { username: 'Admin' } : (storage.users[storage.currentUser] || {});
             const userData = storage.getUserData(storage.currentUser);
             
-            document.getElementById('currentUser').textContent = user ? user.username : 'Usuário';
-            document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Usuário';
-
-            if (isAdmin) {
-                document.querySelector('.admin-tab').style.display = 'block';
-                loadAdminPanel();
-            } else {
-                document.querySelector('.admin-tab').style.display = 'none';
+            // Mostrar/ocultar admin tab
+            const adminTab = document.querySelector('.admin-tab');
+            if (adminTab) {
+                if (isAdmin) {
+                    adminTab.style.display = 'block';
+                    setTimeout(() => loadAdminPanel(), 100);
+                } else {
+                    adminTab.style.display = 'none';
+                }
             }
 
             // Inicializar modo como Contínuo por padrão
@@ -2066,7 +2072,23 @@
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
+            if (systemData.timerIntervalId) {
+                clearInterval(systemData.timerIntervalId);
+                systemData.timerIntervalId = null;
+            }
+            
             storage.logout();
+            
+            // Resetar estado
+            systemData.pumpActive = false;
+            systemData.pumpEnabled = false;
+            systemData.timerRunning = false;
+            
+            // Fechar modais
+            document.getElementById('notificationsModal').classList.remove('active');
+            document.getElementById('settingsModal').classList.remove('active');
+            document.getElementById('userModal').classList.remove('active');
+            
             showAuthModal();
             document.getElementById('loginForm').classList.add('active');
             document.getElementById('registerForm').classList.remove('active');
@@ -2075,6 +2097,8 @@
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginPassword').value = '';
             document.getElementById('loginError').classList.remove('show');
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'Entrar';
         }
 
         // ========== ABAS ==========
