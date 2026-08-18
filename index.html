@@ -2044,6 +2044,11 @@
                     setTimeout(() => loadAdminPanel(), 100);
                 } else {
                     adminTab.style.display = 'none';
+                    // Voltar para dashboard se admin tab estava ativo
+                    const activeTab = document.querySelector('.tab-content.active');
+                    if (activeTab && activeTab.id === 'admin') {
+                        switchTab('dashboard');
+                    }
                 }
             }
 
@@ -2107,7 +2112,13 @@
             document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
 
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            
+            // Encontrar e ativar o botão correspondente
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(`'${tabName}'`)) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         // ========== NOTIFICAÇÕES ==========
