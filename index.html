@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFlux - Controle de LEDs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>EcoFlux</h1>
+        <p class="subtitle">Sistema de Controle de LEDs</p>
+        <div class="grid">
+            <!-- LED Azul (GPIO 2) -->
+            <div class="card">
+                <h2>LED Azul</h2>
+                <p style="color:#94a3b8; font-size:12px; margin-bottom:15px;">GPIO2</p>
+                <div class="led-circle" id="led1">OFF</div>
+                <div class="buttons">
+                    <button class="btn-on" onclick="cmd('led1', 'on')">Ligar</button>
+                    <button class="btn-off" onclick="cmd('led1', 'off')">Desligar</button>
+                    <button class="btn-toggle" onclick="cmd('led1', 'toggle')">Toggle</button>
+                </div>
+                <div class="status-text">Status: <strong id="led1s">DESLIGADO</strong></div>
+            </div>
+
+            <!-- LED Laranja (GPIO 21) -->
+            <div class="card">
+                <h2>LED Laranja</h2>
+                <p style="color:#94a3b8; font-size:12px; margin-bottom:15px;">GPIO21</p>
+                <div class="led-circle" id="led2">OFF</div>
+                <div class="buttons">
+                    <button class="btn-on" onclick="cmd('led2', 'on')">Ligar</button>
+                    <button class="btn-off" onclick="cmd('led2', 'off')">Desligar</button>
+                    <button class="btn-toggle" onclick="cmd('led2', 'toggle')">Toggle</button>
+                </div>
+                <div class="status-text">Status: <strong id="led2s">DESLIGADO</strong></div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>EcoFlux - Sistema de Limpeza Inteligente de Rios</p>
+            <p>TCC Eletrônica - Lucas</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
