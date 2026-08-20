@@ -236,7 +236,7 @@
             transition: width 0.3s;
         }
 
-        .led-controls {
+        .led-indicators {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -279,11 +279,10 @@
             color: #fb923c;
         }
 
-        .button-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
+        .led-description {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
         .btn-sm {
@@ -329,7 +328,7 @@
             .header-title {
                 font-size: 20px;
             }
-            .led-controls {
+            .led-indicators {
                 grid-template-columns: 1fr;
             }
         }
@@ -373,7 +372,7 @@
         <!-- Abas -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(event, 'dashboard')">Dashboard</button>
-            <button class="tab-btn" onclick="switchTab(event, 'leds')">Controle LEDs</button>
+            <button class="tab-btn" onclick="switchTab(event, 'leds')">Indicadores</button>
             <button class="tab-btn" onclick="switchTab(event, 'sensores')">Sensores</button>
         </div>
 
@@ -425,31 +424,42 @@
             </div>
         </div>
 
-        <!-- Controle LEDs -->
+        <!-- Indicadores (LEDs) -->
         <div class="tab-content" id="leds">
-            <div class="led-controls">
-                <!-- LED Azul (GPIO 23) -->
+            <div class="led-indicators">
+                <!-- Indicador de Bomba (LED Azul - GPIO 23) -->
                 <div class="led-card">
-                    <h3>LED Azul (GPIO 23)</h3>
-                    <div class="led-circle" id="led1">OFF</div>
-                    <div class="button-group">
-                        <button class="btn-sm btn-on" onclick="controlLED('led1', 'on')">Ligar</button>
-                        <button class="btn-sm btn-off" onclick="controlLED('led1', 'off')">Desligar</button>
-                        <button class="btn-sm btn-toggle" onclick="controlLED('led1', 'toggle')">Toggle</button>
+                    <h3>Status da Bomba</h3>
+                    <div class="led-circle" id="pumpLED">OFF</div>
+                    <div class="led-description">
+                        <p><strong>LED Azul (GPIO 23)</strong></p>
+                        <p>Ligado = Bomba em operação</p>
+                        <p>Desligado = Bomba parada</p>
                     </div>
-                    <div class="info-text">Status: <span id="led1Status">DESLIGADO</span></div>
+                    <div class="info-text">Status: <span id="pumpLEDStatus">DESLIGADO</span></div>
                 </div>
 
-                <!-- LED Laranja (GPIO 22) -->
+                <!-- Indicador de Sistema (LED Laranja - GPIO 22) -->
                 <div class="led-card">
-                    <h3>LED Laranja (GPIO 22)</h3>
-                    <div class="led-circle" id="led2">OFF</div>
-                    <div class="button-group">
-                        <button class="btn-sm btn-on" onclick="controlLED('led2', 'on')">Ligar</button>
-                        <button class="btn-sm btn-off" onclick="controlLED('led2', 'off')">Desligar</button>
-                        <button class="btn-sm btn-toggle" onclick="controlLED('led2', 'toggle')">Toggle</button>
+                    <h3>Status do Sistema</h3>
+                    <div class="led-circle" id="systemLED">ON</div>
+                    <div class="led-description">
+                        <p><strong>LED Laranja (GPIO 22)</strong></p>
+                        <p>Ligado = Sistema ativo</p>
+                        <p>Desligado = Sistema inativo</p>
                     </div>
-                    <div class="info-text">Status: <span id="led2Status">DESLIGADO</span></div>
+                    <div class="info-text">Status: <span id="systemLEDStatus">ATIVO</span></div>
+                </div>
+            </div>
+
+            <!-- Botões para simular o sistema (opcional) -->
+            <div class="card" style="margin-top: 20px;">
+                <h3>Simular Sistema (Teste)</h3>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn-sm btn-on" onclick="simulatePump('on')">Ligar Bomba</button>
+                    <button class="btn-sm btn-off" onclick="simulatePump('off')">Desligar Bomba</button>
+                    <button class="btn-sm btn-on" onclick="simulateSystem('on')">Ativar Sistema</button>
+                    <button class="btn-sm btn-off" onclick="simulateSystem('off')">Desativar Sistema</button>
                 </div>
             </div>
         </div>
@@ -517,9 +527,9 @@
             event.target.classList.add('active');
         }
 
-        // Controlar LED
-        function controlLED(led, action) {
-            fetch(`http://${espIP}/${led}/${action}`)
+        // Funções para simular o sistema (teste)
+        function simulatePump(action) {
+            fetch(`http://${espIP}/pump/${action}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Erro na requisição');
@@ -527,41 +537,62 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Atualiza o status localmente (opcional, pois o upd() já faz isso)
                     atualizarLEDs(data);
                 })
                 .catch(error => {
-                    console.error('Erro ao controlar LED:', error);
-                    alert('Erro ao controlar LED. Verifique a conexão com o ESP32.');
+                    console.error('Erro ao simular bomba:', error);
+                    alert('Erro ao simular bomba. Verifique a conexão com o ESP32.');
+                });
+        }
+
+        function simulateSystem(action) {
+            fetch(`http://${espIP}/system/${action}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na requisição');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    atualizarLEDs(data);
+                })
+                .catch(error => {
+                    console.error('Erro ao simular sistema:', error);
+                    alert('Erro ao simular sistema. Verifique a conexão com o ESP32.');
                 });
         }
 
         // Atualiza o status dos LEDs na interface
         function atualizarLEDs(data) {
-            // LED 1 (Azul - GPIO 23)
-            const led1 = document.getElementById('led1');
-            const led1Status = document.getElementById('led1Status');
-            if (data.led1 === "on") {
-                led1.classList.add('on-blue');
-                led1.textContent = 'ON';
-                led1Status.textContent = 'LIGADO';
+            // LED da Bomba (GPIO 23 - Azul)
+            const pumpLED = document.getElementById('pumpLED');
+            const pumpLEDStatus = document.getElementById('pumpLEDStatus');
+            const pumpStatusElement = document.getElementById('pumpStatus');
+
+            if (data.pump === "on") {
+                pumpLED.classList.add('on-blue');
+                pumpLED.textContent = 'ON';
+                pumpLEDStatus.textContent = 'LIGADO';
+                pumpStatusElement.textContent = 'ON';
             } else {
-                led1.classList.remove('on-blue');
-                led1.textContent = 'OFF';
-                led1Status.textContent = 'DESLIGADO';
+                pumpLED.classList.remove('on-blue');
+                pumpLED.textContent = 'OFF';
+                pumpLEDStatus.textContent = 'DESLIGADO';
+                pumpStatusElement.textContent = 'OFF';
             }
 
-            // LED 2 (Laranja - GPIO 22)
-            const led2 = document.getElementById('led2');
-            const led2Status = document.getElementById('led2Status');
-            if (data.led2 === "on") {
-                led2.classList.add('on-orange');
-                led2.textContent = 'ON';
-                led2Status.textContent = 'LIGADO';
+            // LED do Sistema (GPIO 22 - Laranja)
+            const systemLED = document.getElementById('systemLED');
+            const systemLEDStatus = document.getElementById('systemLEDStatus');
+
+            if (data.system === "on") {
+                systemLED.classList.add('on-orange');
+                systemLED.textContent = 'ON';
+                systemLEDStatus.textContent = 'ATIVO';
             } else {
-                led2.classList.remove('on-orange');
-                led2.textContent = 'OFF';
-                led2Status.textContent = 'DESLIGADO';
+                systemLED.classList.remove('on-orange');
+                systemLED.textContent = 'OFF';
+                systemLEDStatus.textContent = 'INATIVO';
             }
         }
 
