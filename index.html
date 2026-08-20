@@ -1,47 +1,579 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>EcoFlux - Controle de LEDs</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFlux - Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal h2 {
+            color: #06b6d4;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(6, 182, 212, 0.3);
+        }
+        
+        .main-container {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .main-container.active {
+            display: block;
+        }
+        
+        header {
+            background: rgba(30, 41, 59, 0.7);
+            border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            color: #06b6d4;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+        
+        .status-indicator.online {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        
+        .btn-logout {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-logout:hover {
+            transform: translateY(-2px);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+        
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .tab-btn.active {
+            color: #06b6d4;
+            border-bottom-color: #06b6d4;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .card h3 {
+            color: #06b6d4;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0ea5e9;
+            margin-bottom: 8px;
+        }
+        
+        .card-unit {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .led-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .led-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .led-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 15px auto;
+            background: rgba(15, 23, 42, 0.5);
+            border: 3px solid rgba(6, 182, 212, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .led-circle.on-blue {
+            background: #1e3a8a;
+            border-color: #3b82f6;
+            box-shadow: 0 0 30px #3b82f6;
+            color: #60a5fa;
+        }
+        
+        .led-circle.on-orange {
+            background: #7c2d12;
+            border-color: #f97316;
+            box-shadow: 0 0 30px #f97316;
+            color: #fb923c;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .btn-sm {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 12px;
+            flex: 1;
+        }
+        
+        .btn-on {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-off {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-toggle {
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            color: white;
+        }
+        
+        .btn-sm:hover {
+            transform: translateY(-2px);
+        }
+        
+        .info-text {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .header-title {
+                font-size: 20px;
+            }
+            .led-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>EcoFlux</h1>
-        <p class="subtitle">Sistema de Controle de LEDs</p>
-        <div class="grid">
-            <!-- LED Azul (GPIO 23) -->
-            <div class="card">
-                <h2>LED Azul</h2>
-                <p style="color:#94a3b8;font-size:12px;margin-bottom:15px">GPIO 23</p>
-                <div class="led-circle" id="led1">OFF</div>
-                <div class="buttons">
-                    <button class="btn-on" onclick="cmd('led1','on')">Ligar</button>
-                    <button class="btn-off" onclick="cmd('led1','off')">Desligar</button>
-                    <button class="btn-toggle" onclick="cmd('led1','toggle')">Toggle</button>
+    <!-- Modal de Login -->
+    <div class="modal active" id="loginModal">
+        <div class="modal-content">
+            <h2>EcoFlux</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required>
                 </div>
-                <div class="status-text">Status: <strong id="led1s">DESLIGADO</strong></div>
-            </div>
-
-            <!-- LED Laranja (GPIO 22) -->
-            <div class="card">
-                <h2>LED Laranja</h2>
-                <p style="color:#94a3b8;font-size:12px;margin-bottom:15px">GPIO 22</p>
-                <div class="led-circle" id="led2">OFF</div>
-                <div class="buttons">
-                    <button class="btn-on" onclick="cmd('led2','on')">Ligar</button>
-                    <button class="btn-off" onclick="cmd('led2','off')">Desligar</button>
-                    <button class="btn-toggle" onclick="cmd('led2','toggle')">Toggle</button>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha" required>
                 </div>
-                <div class="status-text">Status: <strong id="led2s">DESLIGADO</strong></div>
-            </div>
-        </div>
-        <div class="footer">
-            <p>EcoFlux - Sistema de Limpeza Inteligente de Rios</p>
-            <p>TCC Eletrônica - Lucas</p>
+                <button type="submit" class="btn-login">Entrar</button>
+                <div class="info-text" style="text-align: center; margin-top: 20px;">
+                    <p>Demo: admin@gmail.com / admin</p>
+                </div>
+            </form>
         </div>
     </div>
-    <script src="script.js"></script>
+    
+    <!-- Main Dashboard -->
+    <div class="main-container" id="mainContainer">
+        <header>
+            <div class="header-title">EcoFlux</div>
+            <div class="header-user">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="status-indicator online" id="statusDot"></div>
+                    <span id="statusText">Conectado ao ESP32</span>
+                </div>
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </header>
+        
+        <!-- Abas -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('leds')">Controle LEDs</button>
+            <button class="tab-btn" onclick="switchTab('sensores')">Sensores</button>
+        </div>
+        
+        <!-- Dashboard -->
+        <div class="tab-content active" id="dashboard">
+            <div class="grid">
+                <div class="card">
+                    <h3>Nível do Balde</h3>
+                    <div class="card-value" id="bucketLevel">0</div>
+                    <div class="card-unit">%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="bucketBar"></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Tensão Bateria</h3>
+                    <div class="card-value" id="batteryVoltage">0.0</div>
+                    <div class="card-unit">V</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="batteryBar"></div>
+                    </div>
+                    <div class="info-text" id="batteryPercent">0%</div>
+                </div>
+                
+                <div class="card">
+                    <h3>Temperatura</h3>
+                    <div class="card-value" id="temperature">0.0</div>
+                    <div class="card-unit">°C</div>
+                </div>
+                
+                <div class="card">
+                    <h3>Status Bomba</h3>
+                    <div class="card-value" id="pumpStatus">OFF</div>
+                    <div class="card-unit" id="pumpRuntime">0h 0m</div>
+                </div>
+                
+                <div class="card">
+                    <h3>Sinal WiFi</h3>
+                    <div class="card-value" id="signalStrength">-50</div>
+                    <div class="card-unit">dBm</div>
+                </div>
+                
+                <div class="card">
+                    <h3>Uptime</h3>
+                    <div class="card-value" id="uptime">0</div>
+                    <div class="card-unit">segundos</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Controle LEDs -->
+        <div class="tab-content" id="leds">
+            <div class="led-controls">
+                <div class="led-card">
+                    <h3>LED Azul (GPIO2)</h3>
+                    <div class="led-circle" id="led1">OFF</div>
+                    <div class="button-group">
+                        <button class="btn-sm btn-on" onclick="controlLED('led1', 'on')">Ligar</button>
+                        <button class="btn-sm btn-off" onclick="controlLED('led1', 'off')">Desligar</button>
+                        <button class="btn-sm btn-toggle" onclick="controlLED('led1', 'toggle')">Toggle</button>
+                    </div>
+                    <div class="info-text">Status: <span id="led1Status">DESLIGADO</span></div>
+                </div>
+                
+                <div class="led-card">
+                    <h3>LED Laranja (GPIO21)</h3>
+                    <div class="led-circle" id="led2">OFF</div>
+                    <div class="button-group">
+                        <button class="btn-sm btn-on" onclick="controlLED('led2', 'on')">Ligar</button>
+                        <button class="btn-sm btn-off" onclick="controlLED('led2', 'off')">Desligar</button>
+                        <button class="btn-sm btn-toggle" onclick="controlLED('led2', 'toggle')">Toggle</button>
+                    </div>
+                    <div class="info-text">Status: <span id="led2Status">DESLIGADO</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sensores -->
+        <div class="tab-content" id="sensores">
+            <div class="card">
+                <h3>Configuração do ESP32</h3>
+                <form style="max-width: 500px;">
+                    <div class="form-group">
+                        <label>IP do ESP32</label>
+                        <input type="text" id="espIP" placeholder="192.168.1.100" value="ecoflux.local">
+                    </div>
+                    <button type="button" class="btn-login" onclick="conectarESP32()">Conectar</button>
+                </form>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Informações do Sistema</h3>
+                    <div class="card" style="margin-top: 15px;">
+                        <p><strong>IP do ESP32:</strong> <span id="sysIP">-</span></p>
+                        <p><strong>WiFi:</strong> <span id="sysWiFi">-</span></p>
+                        <p><strong>Versão:</strong> <span id="sysVersion">-</span></p>
+                        <p><strong>RAM Livre:</strong> <span id="sysRAM">-</span> bytes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuração
+        let espIP = localStorage.getItem('espIP') || 'ecoflux.local';
+        let currentUser = null;
+        
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email === 'admin@gmail.com' && password === 'admin') {
+                currentUser = { email, username: 'Admin' };
+                document.getElementById('loginModal').classList.remove('active');
+                document.getElementById('mainContainer').classList.add('active');
+                iniciarAtualizacao();
+            } else {
+                alert('Credenciais incorretas');
+            }
+        });
+        
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginModal').classList.add('active');
+            document.getElementById('mainContainer').classList.remove('active');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+        
+        // Trocar abas
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Controlar LED
+        function controlLED(led, action) {
+            fetch(`http://${espIP}/${led}/${action}`)
+                .then(r => r.json())
+                .catch(e => console.log('Erro:', e));
+            
+            setTimeout(atualizarDados, 300);
+        }
+        
+        // Atualizar dados do ESP32
+        function atualizarDados() {
+            // Status dos LEDs
+            fetch(`http://${espIP}/status`)
+                .then(r => r.json())
+                .then(d => {
+                    const led1 = document.getElementById('led1');
+                    const led1Status = document.getElementById('led1Status');
+                    if (d.led1) {
+                        led1.classList.add('on-blue');
+                        led1.textContent = 'ON';
+                        led1Status.textContent = 'LIGADO';
+                    } else {
+                        led1.classList.remove('on-blue');
+                        led1.textContent = 'OFF';
+                        led1Status.textContent = 'DESLIGADO';
+                    }
+                    
+                    const led2 = document.getElementById('led2');
+                    const led2Status = document.getElementById('led2Status');
+                    if (d.led2) {
+                        led2.classList.add('on-orange');
+                        led2.textContent = 'ON';
+                        led2Status.textContent = 'LIGADO';
+                    } else {
+                        led2.classList.remove('on-orange');
+                        led2.textContent = 'OFF';
+                        led2Status.textContent = 'DESLIGADO';
+                    }
+                    
+                    document.getElementById('statusDot').classList.add('online');
+                    document.getElementById('statusText').textContent = 'Conectado ao ESP32';
+                })
+                .catch(e => {
+                    document.getElementById('statusDot').classList.remove('online');
+                    document.getElementById('statusText').textContent = 'Desconectado';
+                });
+        }
+        
+        function conectarESP32() {
+            espIP = document.getElementById('espIP').value;
+            localStorage.setItem('espIP', espIP);
+            atualizarDados();
+            alert('Conectando a ' + espIP);
+        }
+        
+        function iniciarAtualizacao() {
+            setInterval(atualizarDados, 1000);
+            atualizarDados();
+        }
+    </script>
 </body>
 </html>
