@@ -1,2509 +1,431 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="EcoFlux - Sistema de Limpeza Inteligente de Rios">
-    <meta name="theme-color" content="#0f172a">
-    <title>EcoFlux Dashboard</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
- 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-        }
- 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            background-attachment: fixed;
-            color: #e2e8f0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            position: relative;
-        }
- 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1a2540 50%, #0f172a 100%);
-            z-index: -1;
-            pointer-events: none;
-        }
- 
-        /* MODAL AUTENTICAÇÃO */
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            padding: 20px;
-            overflow-y: auto;
-        }
- 
-        .auth-modal.hidden {
-            display: none;
-        }
- 
-        .auth-container {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 420px;
-            width: 100%;
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
- 
-        .auth-container h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-        }
- 
-        .auth-container > p {
-            color: #94a3b8;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
- 
-        .auth-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-            flex-wrap: wrap;
-        }
- 
-        .auth-tabs button {
-            flex: 1;
-            min-width: 100px;
-            padding: 12px;
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
- 
-        .auth-tabs button.active {
-            color: #06b6d4;
-            border-bottom-color: #06b6d4;
-        }
- 
-        .auth-form {
-            display: none;
-        }
- 
-        .auth-form.active {
-            display: block;
-        }
- 
-        .form-group {
-            margin-bottom: 15px;
-        }
- 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #cbd5e1;
-        }
- 
-        .form-group input {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-        }
- 
-        .form-group input:focus {
-            outline: none;
-            border-color: #06b6d4;
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
-        }
- 
-        .auth-button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
- 
-        .auth-button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
-        }
- 
-        .auth-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
- 
-        .error-message {
-            color: #fca5a5;
-            font-size: 12px;
-            margin-top: 10px;
-            display: none;
-        }
- 
-        .error-message.show {
-            display: block;
-        }
- 
-        /* CONTAINER PRINCIPAL */
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            display: none;
-            padding: 20px;
-            min-height: 100vh;
-        }
- 
-        .container.active {
-            display: block;
-        }
- 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 15px;
-            border: 1px solid rgba(71, 85, 105, 0.2);
-            flex-wrap: wrap;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-        }
- 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            min-width: 200px;
-        }
- 
-        .status-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #94a3b8;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px currentColor;
-            flex-shrink: 0;
-        }
- 
-        .status-indicator.connected {
-            background: #10b981;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
-        }
- 
-        .status-indicator.active {
-            background: #10b981;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
-            animation: pulse 2s infinite;
-        }
- 
-        .status-indicator.inactive {
-            background: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
-        }
- 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
- 
-        .header-left h1 {
-            font-size: 32px;
-            margin: 0;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            white-space: nowrap;
-        }
- 
-        .header-left p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin: 0;
-            white-space: nowrap;
-        }
- 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
- 
-        .user-info {
-            text-align: right;
-        }
- 
-        .user-info .username {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
- 
-        .user-info .role {
-            font-size: 12px;
-            color: #06b6d4;
-        }
- 
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            position: relative;
-        }
- 
-        .notification-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            position: relative;
-        }
- 
-        .notification-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
-        }
- 
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 12px;
-            height: 12px;
-            background: #ef4444;
-            border-radius: 50%;
-            display: none;
-        }
- 
-        .notification-badge.active {
-            display: block;
-        }
- 
-        .settings-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
- 
-        .settings-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
-            transform: rotate(90deg);
-        }
- 
-        .menu-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            color: #94a3b8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
- 
-        .menu-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            color: #06b6d4;
-        }
- 
-        .logout-btn {
-            padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
- 
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.3);
-            border-color: rgba(239, 68, 68, 0.5);
-        }
- 
-        /* ABAS */
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
- 
-        .tab-button {
-            padding: 12px 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 8px;
-            color: #94a3b8;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
- 
-        .tab-button:hover {
-            border-color: #06b6d4;
-        }
- 
-        .tab-button.active {
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            color: white;
-            border-color: transparent;
-        }
- 
-        /* CONTEÚDO ABAS */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
- 
-        .tab-content.active {
-            display: block;
-        }
- 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
- 
-        /* CARDS COM FORMATOS DIFERENTES */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 25px;
-        }
- 
-        .status-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            padding: 25px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-        }
- 
-        .status-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #06b6d4, transparent);
-        }
- 
-        .status-card:hover {
-            border-color: rgba(6, 182, 212, 0.5);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.15);
-        }
- 
-        .status-card:nth-child(1) {
-            border-radius: 20px;
-            grid-column: 1;
-        }
- 
-        .status-card:nth-child(2) {
-            border-radius: 15px 0 15px 0;
-            grid-column: 2;
-        }
- 
-        .status-card:nth-child(3) {
-            border-radius: 15px;
-            grid-column: 3;
-        }
- 
-        .status-card:nth-child(4) {
-            border-radius: 0 15px 0 15px;
-            grid-column: 1;
-        }
- 
-        .status-card:nth-child(5) {
-            border-radius: 15px;
-            grid-column: 2;
-        }
- 
-        .status-card:nth-child(6) {
-            border-radius: 15px;
-            grid-column: 3;
-        }
- 
-        .status-card-label {
-            color: #94a3b8;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
- 
-        .status-card-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
- 
-        .status-card-unit {
-            color: #64748b;
-            font-size: 14px;
-        }
- 
-        .progress-container {
-            margin-top: 15px;
-        }
- 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
- 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
- 
-        /* CONTROL PANEL */
-        .control-panel {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            backdrop-filter: blur(10px);
-        }
- 
-        .control-group {
-            margin-bottom: 20px;
-        }
- 
-        .control-group:last-child {
-            margin-bottom: 0;
-        }
- 
-        .control-label {
-            color: #cbd5e1;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
- 
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
- 
-        .btn {
-            padding: 11px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: 'Inter', sans-serif;
-            flex: 1;
-            min-width: 120px;
-        }
- 
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
- 
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-        }
- 
-        .btn-primary.active {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
- 
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-        }
- 
-        .btn-danger:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
-        }
- 
-        .btn-danger.active {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        }
- 
-        .btn-mode {
-            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
-            color: white;
-        }
- 
-        .btn-mode:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
-        }
- 
-        .btn-mode.active {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        }
- 
-        .btn-timer {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-        }
- 
-        .btn-timer:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(107, 114, 128, 0.2);
-        }
- 
-        .timer-popup {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(107, 114, 128, 0.2);
-            border: 1px solid rgba(107, 114, 128, 0.5);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            color: #6b7280;
-            font-weight: 600;
-            display: none;
-            white-space: nowrap;
-        }
- 
-        .timer-popup.active {
-            display: block;
-        }
- 
-        .timer-close {
-            margin-left: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
- 
-        .timer-close:hover {
-            opacity: 1;
-        }
- 
-        .timer-close {
-            margin-left: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
- 
-        .timer-close:hover {
-            color: #ef4444;
-        }
- 
-        .mode-popup {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(168, 85, 247, 0.2);
-            border: 1px solid rgba(168, 85, 247, 0.5);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            color: #a855f7;
-            font-weight: 600;
-            display: none;
-            white-space: nowrap;
-        }
- 
-        .mode-popup.active {
-            display: block;
-        }
- 
-        .mode-text {
-            display: inline-block;
-            margin-right: 8px;
-        }
- 
-        .mode-line {
-            display: none;
-        }
- 
-        .notifications-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 450px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 998;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
- 
-        .notifications-modal.active {
-            transform: translateX(0);
-        }
- 
-        .notifications-modal.hidden {
-            display: none;
-        }
- 
-        .notifications-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
- 
-        .notifications-header h2 {
-            font-size: 18px;
-            color: #e2e8f0;
-        }
- 
-        .close-notifications {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
- 
-        .close-notifications:hover {
-            color: #06b6d4;
-        }
- 
-        .notification-item {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border-left: 4px solid #06b6d4;
-            background: rgba(30, 41, 59, 0.5);
-            font-size: 13px;
-        }
- 
-        .notification-item.success {
-            border-left-color: #10b981;
-        }
- 
-        .notification-item.warning {
-            border-left-color: #f59e0b;
-        }
- 
-        .notification-item.error {
-            border-left-color: #ef4444;
-        }
- 
-        .notification-item.info {
-            border-left-color: #a855f7;
-        }
- 
-        .notification-time {
-            color: #64748b;
-            font-size: 11px;
-            margin-top: 5px;
-        }
- 
-        /* SETTINGS MODAL */
-        .settings-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 999;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
- 
-        .settings-modal.active {
-            transform: translateX(0);
-        }
- 
-        .settings-modal.hidden {
-            display: none;
-        }
- 
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
- 
-        .settings-header h2 {
-            font-size: 18px;
-            color: #e2e8f0;
-        }
- 
-        .close-settings {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
- 
-        .close-settings:hover {
-            color: #06b6d4;
-        }
- 
-        .user-modal {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.95);
-            border-left: 1px solid rgba(71, 85, 105, 0.3);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 998;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
- 
-        .user-modal.active {
-            transform: translateX(0);
-        }
- 
-        .user-modal.hidden {
-            display: none;
-        }
- 
-        .user-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
- 
-        .user-header h2 {
-            font-size: 18px;
-            color: #e2e8f0;
-        }
- 
-        .close-user {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
- 
-        .close-user:hover {
-            color: #06b6d4;
-        }
- 
-        .user-info-section {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
- 
-        .user-info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.1);
-        }
- 
-        .user-info-item:last-child {
-            border-bottom: none;
-        }
- 
-        .user-info-label {
-            color: #94a3b8;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
- 
-        .user-info-value {
-            color: #e2e8f0;
-            font-size: 14px;
-            font-weight: 600;
-        }
- 
-        .settings-group {
-            margin-bottom: 25px;
-        }
- 
-        .settings-group h3 {
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
- 
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-            gap: 10px;
-            flex-wrap: wrap;
-        }
- 
-        .settings-item:last-child {
-            border-bottom: none;
-        }
- 
-        .settings-item-label {
-            flex: 1;
-            min-width: 150px;
-        }
- 
-        .settings-item-label strong {
-            color: #e2e8f0;
-            font-size: 13px;
-        }
- 
-        .settings-item-label p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin-top: 3px;
-        }
- 
-        .settings-item-control input {
-            padding: 8px 10px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 6px;
-            color: #e2e8f0;
-            text-align: center;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            width: 80px;
-        }
- 
-        .save-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 20px;
-        }
- 
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
-        }
- 
-        /* ADMIN PANEL */
-        .admin-panel {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-        }
- 
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
-        }
- 
-        .admin-header h2 {
-            color: #e2e8f0;
-            font-size: 18px;
-        }
- 
-        .accounts-list {
-            width: 100%;
-        }
- 
-        .account-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 15px;
-            padding: 15px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-            align-items: center;
-        }
- 
-        .account-row:hover {
-            background: rgba(30, 41, 59, 0.3);
-        }
- 
-        .account-item {
-            font-size: 13px;
-            color: #cbd5e1;
-        }
- 
-        .account-role {
-            display: inline-block;
-            padding: 4px 10px;
-            background: rgba(6, 182, 212, 0.2);
-            color: #06b6d4;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
- 
-        /* NOTIFICAÇÕES */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 20px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-            animation: slideIn 0.3s ease;
-            z-index: 997;
-            max-width: 300px;
-            font-size: 14px;
-        }
- 
-        .notification.error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
-        }
- 
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
- 
-        .hidden-notification {
-            display: none !important;
-        }
- 
-        /* TIMER */
-        .timer-input {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
- 
-        .timer-input input {
-            padding: 11px 14px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            min-width: 120px;
-        }
- 
-        .timer-input input:focus {
-            outline: none;
-            border-color: #06b6d4;
-        }
- 
-        /* MAINTENANCE TABLE */
-        .maintenance-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
- 
-        .maintenance-table th {
-            padding: 12px;
-            text-align: left;
-            color: #94a3b8;
-            font-size: 12px;
-            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
- 
-        .maintenance-table td {
-            padding: 12px;
-            color: #cbd5e1;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-        }
- 
-        .maintenance-table tr:hover {
-            background: rgba(30, 41, 59, 0.3);
-        }
- 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            background: rgba(16, 185, 129, 0.2);
-            color: #86efac;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
- 
-        .status-badge.warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fcd34d;
-        }
- 
-        .status-badge.critical {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
- 
-        /* RESPONSIVO */
-        @media (max-width: 768px) {
-            body {
-                padding: 5px;
-            }
- 
-            .container {
-                padding: 10px;
-                min-height: auto;
-            }
- 
-            .header {
-                padding: 12px;
-                flex-direction: column;
-                text-align: center;
-                gap: 12px;
-            }
- 
-            .header-left,
-            .header-right {
-                width: 100%;
-                justify-content: center;
-            }
- 
-            .header-left {
-                flex-direction: column;
-            }
- 
-            .header-left h1 {
-                font-size: 24px;
-            }
- 
-            .header-left p {
-                font-size: 11px;
-            }
- 
-            .status-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
- 
-            .button-group {
-                flex-direction: column;
-            }
- 
-            .btn {
-                width: 100%;
-                min-width: unset;
-            }
- 
-            .settings-modal,
-            .notifications-modal {
-                max-width: 100%;
-            }
- 
-            .tabs-container {
-                flex-direction: column;
-            }
- 
-            .tab-button {
-                width: 100%;
-            }
- 
-            .account-row {
-                grid-template-columns: 1fr;
-            }
- 
-            .auth-container {
-                padding: 30px 20px;
-            }
- 
-            .auth-tabs {
-                flex-direction: column;
-            }
- 
-            .auth-tabs button {
-                width: 100%;
-            }
-        }
- 
-        @media (max-width: 480px) {
-            .header {
-                padding: 10px;
-            }
- 
-            .header-buttons {
-                width: 100%;
-                justify-content: center;
-            }
- 
-            .status-card-value {
-                font-size: 20px;
-            }
- 
-            .header-left h1 {
-                font-size: 20px;
-            }
- 
-            .header-left p {
-                font-size: 10px;
-            }
- 
-            .control-panel {
-                padding: 15px;
-            }
- 
-            .settings-modal,
-            .notifications-modal {
-                padding: 15px;
-            }
- 
-            .container {
-                padding: 5px;
-            }
- 
-            .status-card {
-                padding: 15px;
-            }
-        }
-    
-        /* ===== EcoFlux visual refresh ===== */
-        :root { --cyan:#22d3ee; --blue:#38bdf8; --violet:#818cf8; --ink:#06111f; --panel:rgba(10,25,43,.72); }
-        body { background: radial-gradient(circle at 12% 8%, rgba(34,211,238,.12), transparent 28%), radial-gradient(circle at 88% 12%, rgba(129,140,248,.13), transparent 30%), #06111f; }
-        body::before { background: linear-gradient(135deg, rgba(6,17,31,.7), rgba(12,35,54,.35), rgba(6,17,31,.88)); }
-        body::after { content:''; position:fixed; inset:auto -10% -180px; height:360px; background:radial-gradient(ellipse,rgba(34,211,238,.12),transparent 65%); pointer-events:none; z-index:-1; animation:ecoGlow 7s ease-in-out infinite alternate; }
-        .header, .status-card, .control-panel, .admin-panel { background:linear-gradient(145deg,rgba(15,38,59,.82),rgba(7,20,36,.72)); border:1px solid rgba(103,232,249,.13); box-shadow:0 18px 50px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04); backdrop-filter:blur(18px); }
-        .header { position:relative; overflow:hidden; }
-        .header::after { content:''; position:absolute; width:180px; height:180px; right:-55px; top:-95px; border:1px solid rgba(34,211,238,.18); border-radius:50%; box-shadow:0 0 0 22px rgba(34,211,238,.035),0 0 0 44px rgba(34,211,238,.025); }
-        .header-left h1, .auth-container h1 { letter-spacing:-.04em; }
-        .status-card { position:relative; overflow:hidden; transition:transform .25s ease,border-color .25s ease; }
-        .status-card:hover { transform:translateY(-4px); border-color:rgba(103,232,249,.42); }
-        .status-card::before { content:''; position:absolute; left:0; top:0; width:42%; height:2px; background:linear-gradient(90deg,var(--cyan),transparent); }
-        .progress-fill { background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet)); box-shadow:0 0 16px rgba(34,211,238,.45); }
-        .btn-primary, .auth-button, .save-btn { background:linear-gradient(135deg,#0891b2,#2563eb 60%,#6366f1); box-shadow:0 10px 25px rgba(37,99,235,.22); }
-        .btn:hover, .settings-btn:hover, .notification-btn:hover, .menu-btn:hover { transform:translateY(-2px); }
-        .eco-telemetry { margin-top:20px; padding:22px; border-radius:18px; background:linear-gradient(145deg,rgba(10,32,50,.86),rgba(7,18,32,.7)); border:1px solid rgba(103,232,249,.13); }
-        .eco-telemetry-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
-        .eco-telemetry h3 { color:#e0f2fe; font-size:15px; }
-        .eco-telemetry small { color:#7dd3fc; }
-        #historyChart { width:100%; height:150px; display:block; }
-        @keyframes ecoGlow { from{transform:translateX(-3%);opacity:.65} to{transform:translateX(3%);opacity:1} }
-        @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
-
-    
-        /* ===== REDESIGN ECOFLUX ===== */
-        :root { --bg:#06111f; --surface:#0b1d2d; --surface2:#102a40; --line:rgba(148,226,255,.16); --text:#e8f7ff; --muted:#84a8bd; --cyan:#39e7f5; --blue:#3987ff; --green:#55f0a6; }
-        html { background:var(--bg); }
-        body { min-height:100vh; padding:28px; display:block; color:var(--text); background:radial-gradient(circle at 5% 0%,#123d59 0,transparent 34%),radial-gradient(circle at 100% 10%,#1a275d 0,transparent 32%),var(--bg); }
-        body::before { opacity:.55; background:linear-gradient(120deg,transparent 20%,rgba(57,231,245,.05) 50%,transparent 80%); background-size:200% 100%; animation:ecoSweep 12s linear infinite; }
-        body::after { content:''; position:fixed; z-index:-1; width:55vw; height:55vw; right:-25vw; bottom:-28vw; border:1px solid rgba(57,231,245,.1); border-radius:50%; box-shadow:0 0 0 45px rgba(57,231,245,.025),0 0 0 90px rgba(57,231,245,.018),0 0 100px rgba(57,231,245,.1); pointer-events:none; }
-        .container { max-width:1320px; margin:auto; padding:0 0 40px; }
-        .header { min-height:92px; margin-bottom:18px; padding:20px 26px; border-radius:24px; background:linear-gradient(120deg,rgba(13,43,64,.94),rgba(8,23,40,.8)); border:1px solid var(--line); box-shadow:0 22px 60px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.08); }
-        .header-left h1 { font-size:31px; letter-spacing:-1.6px; color:#fff; }
-        .header-left p { color:var(--muted); margin-top:4px; }
-        .status-indicator { width:13px; height:13px; box-shadow:0 0 0 6px rgba(85,240,166,.08),0 0 22px currentColor; }
-        .tabs-container { display:flex; gap:8px; padding:7px; margin-bottom:22px; border-radius:16px; background:rgba(7,24,39,.7); border:1px solid var(--line); }
-        .tab-button { flex:0 0 auto; border-radius:11px; padding:12px 21px; color:var(--muted); transition:.25s ease; }
-        .tab-button.active { color:#fff; background:linear-gradient(135deg,rgba(57,231,245,.2),rgba(57,135,255,.22)); box-shadow:inset 0 0 0 1px rgba(57,231,245,.18),0 8px 20px rgba(0,0,0,.15); }
-        .status-grid { grid-template-columns:repeat(12,1fr); gap:16px; }
-        .status-card { min-height:150px; grid-column:span 4; padding:24px; border-radius:21px; background:linear-gradient(145deg,rgba(15,48,71,.9),rgba(8,25,43,.88)); border:1px solid var(--line); box-shadow:0 17px 40px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.045); transition:transform .25s,border-color .25s,box-shadow .25s; }
-        .status-card:nth-child(1),.status-card:nth-child(2) { grid-column:span 6; }
-        .status-card:hover { transform:translateY(-5px); border-color:rgba(57,231,245,.42); box-shadow:0 22px 48px rgba(0,0,0,.3),0 0 28px rgba(57,231,245,.06); }
-        .status-card::after { content:''; position:absolute; right:-38px; top:-38px; width:110px; height:110px; border-radius:50%; border:1px solid rgba(57,231,245,.1); box-shadow:0 0 0 16px rgba(57,231,245,.025); }
-        .status-card-label { color:var(--muted); letter-spacing:.04em; }
-        .status-card-value { margin-top:14px; font-size:42px; font-weight:700; letter-spacing:-2px; color:#fff; }
-        .status-card-unit { color:var(--cyan); }
-        .progress-container { margin-top:22px; }
-        .progress-bar { height:8px; border-radius:99px; background:#071522; overflow:hidden; }
-        .progress-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--cyan),var(--blue)); box-shadow:0 0 20px rgba(57,231,245,.65); transition:width .6s ease; }
-        .pump-status-card .status-card-value { color:var(--green); }
-        .control-panel,.admin-panel { padding:30px; border-radius:24px; background:linear-gradient(145deg,rgba(15,48,71,.9),rgba(8,25,43,.88)); border:1px solid var(--line); box-shadow:0 17px 40px rgba(0,0,0,.24); }
-        .control-group { padding:20px 0; border-bottom:1px solid rgba(148,226,255,.1); }
-        .control-group:last-child { border-bottom:0; }
-        .control-label { color:#d9f5ff; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
-        .btn { border-radius:13px; padding:13px 22px; transition:transform .2s,box-shadow .2s; }
-        .btn-primary,.auth-button,.save-btn { background:linear-gradient(135deg,#06b6d4,#2563eb 70%,#6366f1); }
-        .btn-danger { background:linear-gradient(135deg,#e05278,#9f275b); }
-        .btn:hover { transform:translateY(-3px); box-shadow:0 12px 25px rgba(0,0,0,.25); }
-        .eco-telemetry { margin-top:18px; padding:24px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(145deg,rgba(11,38,58,.88),rgba(6,20,35,.85)); box-shadow:0 17px 40px rgba(0,0,0,.18); }
-        .eco-telemetry-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
-        .eco-telemetry h3 { font-size:15px; color:#e8fbff; }
-        .eco-telemetry small { color:var(--cyan); }
-        #historyChart { display:block; width:100%; height:155px; }
-        @keyframes ecoSweep { to { background-position:-200% 0; } }
-        @media (max-width:700px) { body{padding:12px}.status-grid{display:grid}.status-card,.status-card:nth-child(1),.status-card:nth-child(2){grid-column:span 12}.tabs-container{overflow:auto}.tab-button{padding:11px 15px} }
-
-    </style>
-</head>
-<body>
-    <!-- MODAL DE AUTENTICAÇÃO -->
-    <div class="auth-modal" id="authModal">
-        <div class="auth-container">
-            <h1>EcoFlux</h1>
-            <p>Sistema de Limpeza Inteligente</p>
- 
-            <div class="auth-tabs">
-                <button class="auth-tab-btn active" onclick="switchAuthTab('login')">Entrar</button>
-                <button class="auth-tab-btn" onclick="switchAuthTab('register')">Cadastro</button>
-            </div>
- 
-            <!-- LOGIN -->
-            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="auth-button" id="loginBtn">Entrar</button>
-                <div class="error-message" id="loginError"></div>
-            </form>
- 
-            <!-- REGISTRO -->
-            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label>Nome de Usuário</label>
-                    <input type="text" id="registerUsername" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" id="registerEmail" placeholder="seu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="registerPassword" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>Confirme a Senha</label>
-                    <input type="password" id="registerPasswordConfirm" required minlength="6">
-                </div>
-                <button type="submit" class="auth-button" id="registerBtn">Criar Conta</button>
-                <div class="error-message" id="registerError"></div>
-            </form>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>
+      EcoFlux // Central de Operações
+    </title>
+  <style>:root{--bg:#07131f;--panel:#0d1e2d;--panel2:#10283b;--line:#1d4053;--text:#e8f7f5;--muted:#7896a4;--cyan:#48e6d0;--lime:#b8f36b;--orange:#ffad66;--red:#ff687d;--shadow:0 24px 70px #0006}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer}.shell{display:none;min-height:100vh;grid-template-columns:245px 1fr}.shell.on{display:grid}.sidebar{padding:28px 18px;border-right:1px solid var(--line);background:#091a29;display:flex;flex-direction:column;gap:24px}.brand{padding:4px 12px 30px;border-bottom:1px solid var(--line)}.brand-mark{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.12em;color:var(--cyan);font-size:18px}.brand-mark i{width:29px;height:29px;border:2px solid var(--cyan);display:block;border-radius:10px 10px 10px 3px;transform:rotate(-18deg);box-shadow:0 0 20px #48e6d055}.brand small{display:block;color:var(--muted);margin-top:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:13px 14px;border-radius:10px;transition:.2s;display:flex;gap:11px;align-items:center}.nav button:hover,.nav button.active{color:var(--text);background:linear-gradient(90deg,#48e6d018,transparent);box-shadow:inset 3px 0 var(--cyan)}.sidebar-foot{margin-top:auto;color:var(--muted);font-size:11px;padding:14px}.main{min-width:0;padding:28px 4.5vw 50px;max-width:1500px}.topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:36px}.eyebrow{color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:.18em}.topbar h1{font-size:30px;letter-spacing:-.05em;margin:8px 0}.topbar p{color:var(--muted);margin:0}.top-actions{display:flex;align-items:center;gap:10px}.round{border:1px solid var(--line);background:var(--panel);color:var(--text);width:40px;height:40px;border-radius:50%}.avatar{background:var(--lime);color:#16230b;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800}.view{display:none}.view.on{display:block;animation:rise .35s ease}.metrics{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:14px;margin-bottom:16px}.metric,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#102b3d,#0b1c2b);box-shadow:var(--shadow);border-radius:16px}.metric{padding:20px;min-height:140px;position:relative;overflow:hidden}.metric.feature{background:linear-gradient(145deg,#17454b,#102934)}.metric:after{content:'';position:absolute;width:110px;height:110px;border:1px solid #48e6d025;border-radius:50%;right:-35px;bottom:-50px}.metric-label{color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}.metric-value{font-size:37px;font-weight:750;letter-spacing:-.08em;margin-top:19px}.metric-value em{font-style:normal;font-size:13px;color:var(--cyan);letter-spacing:0}.meter{height:5px;background:#07131f;border-radius:10px;margin-top:20px;overflow:hidden}.meter b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--lime));border-radius:inherit;transition:width .5s}.layout{display:grid;grid-template-columns:1.4fr .8fr;gap:16px}.panel{padding:24px}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.panel h2{font-size:15px;margin:0}.muted{color:var(--muted)}.signal{font-size:11px;color:var(--orange);display:flex;gap:7px;align-items:center}.signal:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}.signal.ok{color:var(--lime)}.signal.bad{color:var(--red)}.chart{height:235px;width:100%;display:block}.water{height:235px;position:relative;display:grid;place-items:center;overflow:hidden;border-radius:14px;background:linear-gradient(#0c2537,#071622)}.water:before,.water:after{content:'';position:absolute;width:170%;height:85px;border-radius:45%;border:1px solid #48e6d055;left:-35%;top:52%;animation:wave 5s linear infinite}.water:after{top:61%;animation-duration:7s;opacity:.5}.water-core{position:relative;z-index:1;text-align:center}.water-core strong{font-size:52px;letter-spacing:-.1em}.water-core span{display:block;color:var(--cyan);font-size:11px;letter-spacing:.15em}.control-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.control-card{padding:20px;border:1px solid var(--line);border-radius:14px;background:#0a1b2a}.control-card h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 18px}.btns{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid transparent;border-radius:9px;padding:11px 14px;color:#07131f;font-weight:750;background:var(--cyan);transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}.btn.off{background:transparent;color:var(--red);border-color:#ff687d66}.btn.alt{background:#19394b;color:var(--text);border-color:var(--line)}.btn.active{outline:2px solid var(--lime);outline-offset:2px}.input{width:100%;background:#071522;border:1px solid var(--line);border-radius:8px;padding:11px;color:var(--text);outline:0}.row{display:flex;gap:9px;align-items:center}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:15px 10px;border-bottom:1px solid var(--line)}.table th{color:var(--muted);font-size:11px;text-transform:uppercase}.pill{color:var(--lime);background:#b8f36b15;border:1px solid #b8f36b40;border-radius:20px;padding:5px 9px;font-size:11px}.toast{position:fixed;right:24px;bottom:24px;padding:15px 18px;border:1px solid var(--cyan);background:#0d2938;color:var(--text);border-radius:10px;box-shadow:var(--shadow);transform:translateY(130px);transition:.3s;z-index:5}.toast.show{transform:none}.drawer{position:fixed;right:20px;top:20px;width:min(370px,calc(100% - 40px));padding:24px;background:#0b1e2e;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:4;display:none}.drawer.on{display:block}.close{float:right;background:transparent;color:var(--muted);border:0;font-size:20px}.auth{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,#12434b,#07131f 48%)}.auth-box{width:min(430px,100%);padding:38px;border:1px solid var(--line);border-radius:22px;background:#0b1f2d;box-shadow:var(--shadow)}.auth-box h1{font-size:34px;margin:0;color:var(--cyan);letter-spacing:-.08em}.auth-box p{color:var(--muted);margin:8px 0 30px}.auth-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px}.auth-tabs button{flex:1;padding:12px;background:transparent;border:0;color:var(--muted);border-bottom:2px solid transparent}.auth-tabs button.active{color:var(--cyan);border-color:var(--cyan)}.auth-form{display:none}.auth-form.on{display:block}.field{margin-bottom:14px}.field label{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}.error{color:var(--red);font-size:12px;margin-top:12px}.mobile-nav{display:none}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes wave{to{transform:translateX(80px) rotate(2deg)}}@media(max-width:1000px){.metrics{grid-template-columns:1fr 1fr}.metric.feature{grid-column:span 2}.layout{grid-template-columns:1fr}.control-grid{grid-template-columns:1fr 1fr}}@media(max-width:700px){.shell.on{display:block}.sidebar{display:none}.main{padding:20px 15px 80px}.topbar h1{font-size:24px}.metrics{grid-template-columns:1fr 1fr;gap:10px}.metric,.metric.feature{grid-column:span 1;min-height:125px;padding:15px}.metric.feature{grid-column:span 2}.metric-value{font-size:29px}.control-grid{grid-template-columns:1fr}.mobile-nav{display:flex;position:fixed;z-index:3;bottom:12px;left:12px;right:12px;padding:7px;background:#0b2131ee;border:1px solid var(--line);border-radius:14px;justify-content:space-around}.mobile-nav button{background:transparent;border:0;color:var(--muted);padding:9px;font-size:11px}.mobile-nav button.active{color:var(--cyan)}}</style>
+  </head>
+  <body>
+    <section class="auth" id="auth">
+      <div class="auth-box">
+        <h1>
+          ECOFLUX
+        </h1>
+        <p>
+          Central de operações para limpeza inteligente de rios.
+        </p>
+        <div class="auth-tabs">
+          <button class="active" onclick="authTab('login')">
+            Entrar
+          </button>
+          <button onclick="authTab('register')">
+            Criar acesso
+          </button>
         </div>
+        <form class="auth-form on" id="login" onsubmit="login(event)">
+          <div class="field">
+            <label>
+              E-mail
+            </label>
+            <input class="input" id="le" required type="email">
+          </div>
+          <div class="field">
+            <label>
+              Senha
+            </label>
+            <input class="input" id="lp" required type="password">
+          </div>
+          <button class="btn" style="width:100%;margin-top:8px">
+            Acessar central
+          </button>
+          <div class="error" id="loginError">
+          </div>
+        </form>
+        <form class="auth-form" id="register" onsubmit="register(event)">
+          <div class="field">
+            <label>
+              Nome
+            </label>
+            <input class="input" id="rn" required>
+          </div>
+          <div class="field">
+            <label>
+              E-mail
+            </label>
+            <input class="input" id="re" required type="email">
+          </div>
+          <div class="field">
+            <label>
+              Senha
+            </label>
+            <input class="input" id="rp" required minlength="6" type="password">
+          </div>
+          <button class="btn" style="width:100%;margin-top:8px">
+            Criar acesso
+          </button>
+          <div class="error" id="registerError">
+          </div>
+        </form>
+      </div>
+    </section>
+    <div class="shell" id="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">
+            <i>
+            </i>
+            ECOFLUX
+          </div>
+          <small>
+            River care / 01
+          </small>
+        </div>
+        <nav class="nav">
+          <button class="active" onclick="view('dashboard',this)">
+            ◈ Visão geral
+          </button>
+          <button onclick="view('control',this)">
+            ◉ Controle
+          </button>
+          <button onclick="view('maintenance',this)">
+            ⌁ Manutenção
+          </button>
+          <button id="adminNav" style="display:none" onclick="view('admin',this)">
+            ▦ Admin
+          </button>
+        </nav>
+        <div class="sidebar-foot">
+          Sistema local
+          <br>
+          <span class="muted">
+            Dados salvos neste dispositivo
+          </span>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">
+              monitoramento / EcoFlux
+            </div>
+            <h1>
+              Olá,
+              <span id="userName">
+                operador
+              </span>
+              .
+            </h1>
+            <p>
+              Uma leitura limpa do que está acontecendo.
+            </p>
+          </div>
+          <div class="top-actions">
+            <button class="round" onclick="drawer('notifications')">
+              ♢
+            </button>
+            <button class="round" onclick="drawer('settings')">
+              ⚙
+            </button>
+            <div class="avatar" id="avatar">
+              OP
+            </div>
+          </div>
+        </header>
+        <section class="view on" id="dashboard">
+          <div class="metrics">
+            <div class="metric feature">
+              <div class="metric-label">
+                Estado da bomba
+              </div>
+              <div class="metric-value" id="pumpStatus">
+                Desligada
+              </div>
+              <div class="signal" id="signal">
+                aguardando ESP32
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">
+                Nível do coletor
+              </div>
+              <div class="metric-value">
+                <span id="bucketLevel">
+                  0
+                </span>
+                <em>
+                  %
+                </em>
+              </div>
+              <div class="meter">
+                <b id="bucketProgress">
+                </b>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">
+                Bateria
+              </div>
+              <div class="metric-value">
+                <span id="batteryLevel">
+                  86
+                </span>
+                <em>
+                  %
+                </em>
+              </div>
+              <div class="meter">
+                <b id="batteryProgress">
+                </b>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">
+                Tensão
+              </div>
+              <div class="metric-value">
+                <span id="batteryVoltage">
+                  12.40
+                </span>
+                <em>
+                  V
+                </em>
+              </div>
+            </div>
+          </div>
+          <div class="layout">
+            <div class="panel">
+              <div class="panel-head">
+                <h2>
+                  Fluxo do coletor
+                </h2>
+                <span class="muted">
+                  últimos registros
+                </span>
+              </div>
+              <canvas id="chart" class="chart" width="900" height="235">
+              </canvas>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <h2>
+                  Reservatório
+                </h2>
+                <span class="signal ok">
+                  telemetria
+                </span>
+              </div>
+              <div class="water">
+                <div class="water-core">
+                  <strong id="waterValue">
+                    0%
+                  </strong>
+                  <span>
+                    CAPACIDADE UTILIZADA
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="view" id="control">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>
+                Comandos da operação
+              </h2>
+              <span class="muted">
+                GPIO 22 / GPIO 23
+              </span>
+            </div>
+            <div class="control-grid">
+              <div class="control-card">
+                <h3>
+                  Bomba
+                </h3>
+                <div class="btns">
+                  <button class="btn" onclick="pump(true)">
+                    Ligar bomba
+                  </button>
+                  <button class="btn off" onclick="pump(false)">
+                    Desligar
+                  </button>
+                </div>
+              </div>
+              <div class="control-card">
+                <h3>
+                  Temporizador
+                </h3>
+                <div class="row">
+                  <input class="input" id="minutes" type="number" min="1" max="1440" value="30">
+                  <button class="btn alt" onclick="startTimer()">
+                    Iniciar
+                  </button>
+                </div>
+                <p class="muted" id="timerText">
+                  Nenhum timer ativo
+                </p>
+              </div>
+              <div class="control-card">
+                <h3>
+                  Modo de trabalho
+                </h3>
+                <div class="btns">
+                  <button class="btn alt" id="continuous" onclick="setMode('continuous')">
+                    Contínuo
+                  </button>
+                  <button class="btn alt" id="pulse" onclick="setMode('pulse')">
+                    Pulsante
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:16px">
+            <div class="panel-head">
+              <h2>
+                Conexão física
+              </h2>
+              <span class="signal bad" id="connection">
+                não configurado
+              </span>
+            </div>
+            <p class="muted">
+              O navegador precisa alcançar o IP do ESP32 na mesma rede Wi-Fi.
+            </p>
+            <div class="row">
+              <input class="input" id="espIp" placeholder="http://192.168.1.100">
+              <button class="btn" onclick="saveEsp()">
+                Testar conexão
+              </button>
+            </div>
+            <p class="muted" style="font-size:12px">
+              GitHub Pages em HTTPS bloqueia HTTP local. Para testar, abra este arquivo por HTTP local ou hospede a interface no ESP32.
+            </p>
+          </div>
+        </section>
+        <section class="view" id="maintenance">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>
+                Vida dos componentes
+              </h2>
+              <span class="muted">
+                manutenção preventiva
+              </span>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    Componente
+                  </th>
+                  <th>
+                    Uso
+                  </th>
+                  <th>
+                    Limite
+                  </th>
+                  <th>
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    Bomba
+                  </td>
+                  <td id="pumpHours">
+                    0.00 h
+                  </td>
+                  <td>
+                    500 h
+                  </td>
+                  <td>
+                    <span class="pill">
+                      Bom
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Bateria
+                  </td>
+                  <td>
+                    0.00 ciclos
+                  </td>
+                  <td>
+                    300 ciclos
+                  </td>
+                  <td>
+                    <span class="pill">
+                      Bom
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Filtro
+                  </td>
+                  <td>
+                    0.00 h
+                  </td>
+                  <td>
+                    100 h
+                  </td>
+                  <td>
+                    <span class="pill">
+                      Bom
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section class="view" id="admin">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>
+                Contas cadastradas
+              </h2>
+              <span class="muted" id="accountCount">
+                0 contas
+              </span>
+            </div>
+            <div id="accounts">
+            </div>
+          </div>
+        </section>
+      </main>
+      <nav class="mobile-nav">
+        <button class="active" onclick="view('dashboard',this)">
+          Visão
+        </button>
+        <button onclick="view('control',this)">
+          Controle
+        </button>
+        <button onclick="view('maintenance',this)">
+          Manutenção
+        </button>
+      </nav>
     </div>
- 
-    <!-- CONTAINER PRINCIPAL -->
-    <div class="container" id="mainContainer">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-left">
-                <div class="status-indicator" id="statusIndicator"></div>
-                <div>
-                    <h1>EcoFlux</h1>
-                    <p>Sistema de Limpeza Inteligente</p>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="header-buttons">
-                    <button class="notification-btn" onclick="toggleNotifications()" title="Notificações">
-                        🔔
-                        <div class="notification-badge" id="notificationBadge"></div>
-                    </button>
-                    <button class="settings-btn" onclick="toggleSettings()" title="Configurações">⚙️</button>
-                    <button class="menu-btn" onclick="toggleUserMenu()" title="Perfil">☰</button>
-                </div>
-            </div>
-        </div>
- 
-        <!-- ABAS -->
-        <div class="tabs-container">
-            <button class="tab-button active" onclick="switchTab('dashboard')">Dashboard</button>
-            <button class="tab-button" onclick="switchTab('control')">Controle</button>
-            <button class="tab-button" onclick="switchTab('maintenance')">Manutenção</button>
-            <button class="tab-button admin-tab" style="display:none;" onclick="switchTab('admin')">Admin</button>
-        </div>
- 
-        <!-- ABA: DASHBOARD -->
-        <div class="tab-content active" id="dashboard">
-            <div class="status-grid">
-                <!-- Nível do Balde - Retangular vertical esquerda -->
-                <div class="status-card">
-                    <div class="status-card-label">Nível do Balde</div>
-                    <div class="status-card-value" id="bucketLevel">0</div>
-                    <div class="status-card-unit">%</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="bucketProgress" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
- 
-                <!-- Nível da Bateria - Retangular horizontal topo -->
-                <div class="status-card">
-                    <div class="status-card-label">Nível da Bateria</div>
-                    <div class="status-card-value" id="batteryLevel">0</div>
-                    <div class="status-card-unit">%</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="batteryProgress" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
- 
-                <!-- Tensão - Circular -->
-                <div class="status-card">
-                    <div class="status-card-label">Tensão</div>
-                    <div class="status-card-value" id="batteryVoltage">0</div>
-                    <div class="status-card-unit">V</div>
-                </div>
- 
-                <!-- Bomba - Retangular -->
-                <div class="status-card pump-status-card" id="pumpCard">
-                    <div class="mode-popup" id="modePopup"></div>
-                    <div class="status-card-label">Bomba</div>
-                    <div class="status-card-value" id="pumpStatus">Off</div>
-                </div>
- 
-                <!-- Tempo - Circular -->
-                <div class="status-card">
-                    <div class="timer-popup" id="timerPopup"></div>
-                    <div class="status-card-label">Tempo</div>
-                    <div class="status-card-value" id="runtime">0</div>
-                    <div class="status-card-unit">h</div>
-                </div>
- 
-                <!-- Próxima Manutenção - Retangular -->
-                <div class="status-card">
-                    <div class="status-card-label">Próxima Manutenção</div>
-                    <div class="status-card-value" id="nextMaintenance">-</div>
-                    <div class="status-card-unit">dias</div>
-                </div>
-            </div>
-        </div>
-            <div class="eco-telemetry">
-                <div class="eco-telemetry-head"><h3>Telemetria em tempo real</h3><small id="espConnectionState">ESP32 • aguardando conexão</small></div>
-                <canvas id="historyChart" width="900" height="155"></canvas>
-            </div>
-
-        <!-- ABA: CONTROLE -->
-        <div class="tab-content" id="control">
-            <div class="control-panel">
-                <div class="control-group">
-                    <label class="control-label">Controle da Bomba</label>
-                    <div class="button-group">
-                        <button class="btn btn-primary" id="pumpOnBtn" onclick="turnPumpOn()">Ligar</button>
-                        <button class="btn btn-danger" id="pumpOffBtn" onclick="turnPumpOff()">Desligar</button>
-                    </div>
-                </div>
- 
-                <div class="control-group">
-                    <label class="control-label">Timer (minutos)</label>
-                    <div class="timer-input">
-                        <input type="number" id="timerMinutes" placeholder="Minutos" min="1" max="1440" value="30">
-                        <button class="btn btn-timer" onclick="startTimer()">Iniciar</button>
-                    </div>
-                </div>
- 
-                <div class="control-group">
-                    <label class="control-label">Modo</label>
-                    <div class="button-group">
-                        <button class="btn btn-mode" onclick="setMode('continuous')" id="modeContBtn">Contínuo</button>
-                        <button class="btn btn-mode" onclick="setMode('pulse')" id="modePulseBtn">Pulsante</button>
-                    </div>
-                </div>
-            </div>
-        </div>
- 
-        <!-- ABA: MANUTENÇÃO -->
-        <div class="tab-content" id="maintenance">
-            <div class="control-panel">
-                <h3 style="color: #cbd5e1; margin-bottom: 20px;">Status dos Componentes</h3>
-                <div style="overflow-x: auto;">
-                    <table class="maintenance-table">
-                        <thead>
-                            <tr>
-                                <th>Componente</th>
-                                <th>Uso</th>
-                                <th>Limite</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Bomba</td>
-                                <td id="pumpHours">0.00 h</td>
-                                <td>500 h</td>
-                                <td><span class="status-badge">Bom</span></td>
-                            </tr>
-                            <tr>
-                                <td>Bateria</td>
-                                <td id="batteryHours">0.00 ciclos</td>
-                                <td>300 ciclos</td>
-                                <td><span class="status-badge">Bom</span></td>
-                            </tr>
-                            <tr>
-                                <td>Filtro</td>
-                                <td id="filterHours">0.00 h</td>
-                                <td>100 h</td>
-                                <td><span class="status-badge">Bom</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
- 
-        <!-- ABA: ADMIN -->
-        <div class="tab-content" id="admin">
-            <div class="admin-panel">
-                <div class="admin-header">
-                    <h2>Painel Administrativo</h2>
-                    <span id="totalAccounts" style="color: #94a3b8; font-size: 14px;">0 contas</span>
-                </div>
-                <div class="accounts-list" id="accountsList"></div>
-            </div>
-        </div>
+    <div class="drawer" id="drawer">
+      <button class="close" onclick="drawer()">
+        ×
+      </button>
+      <h2 id="drawerTitle">
+        Notificações
+      </h2>
+      <div id="drawerBody" class="muted">
+        Nenhuma notificação.
+      </div>
     </div>
- 
-    <!-- NOTIFICATIONS SIDEBAR -->
-    <div class="notifications-modal" id="notificationsModal">
-        <div class="notifications-header">
-            <h2>Notificações</h2>
-            <button class="close-notifications" onclick="toggleNotifications()">✕</button>
-        </div>
-        <div id="notificationsList"></div>
+    <div class="toast" id="toast">
     </div>
- 
-    <!-- SETTINGS SIDEBAR -->
-    <div class="settings-modal" id="settingsModal">
-        <div class="settings-header">
-            <h2>Configurações</h2>
-            <button class="close-settings" onclick="toggleSettings()">✕</button>
-        </div>
- 
-        <div class="settings-group">
-            <h3>Bomba</h3>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Tempo Ativação</strong>
-                    <p>Milissegundos</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="pumpOnTime" value="1000" min="500" max="5000">
-                </div>
-            </div>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Tempo Desativação</strong>
-                    <p>Milissegundos</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="pumpOffTime" value="2000" min="1000" max="10000">
-                </div>
-            </div>
-        </div>
- 
-        <div class="settings-group">
-            <h3>Sensores</h3>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Altura Máx Balde</strong>
-                    <p>Centímetros</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="maxBucketHeight" value="16" min="5" max="100">
-                </div>
-            </div>
-        </div>
- 
-        <div class="settings-group">
-            <h3>Avisos</h3>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Aviso Bomba</strong>
-                    <p>Horas</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="pumpWarning" value="400" min="1" max="1000">
-                </div>
-            </div>
-            <div class="settings-item">
-                <div class="settings-item-label">
-                    <strong>Aviso Filtro</strong>
-                    <p>Horas</p>
-                </div>
-                <div class="settings-item-control">
-                    <input type="number" id="filterWarning" value="80" min="1" max="500">
-                </div>
-            </div>
-        </div>
- 
-        <button class="save-btn" onclick="saveSettings()">Salvar</button>
-    </div>
- 
-    <!-- USER MENU SIDEBAR -->
-    <div class="user-modal" id="userModal">
-        <div class="user-header">
-            <h2>Perfil</h2>
-            <button class="close-user" onclick="toggleUserMenu()">✕</button>
-        </div>
- 
-        <div class="user-info-section">
-            <div class="user-info-item">
-                <span class="user-info-label">Usuário</span>
-                <span class="user-info-value" id="userUsername">-</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Email</span>
-                <span class="user-info-value" id="userEmail">-</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Tipo de Conta</span>
-                <span class="user-info-value" id="userType">Usuário</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Data de Criação</span>
-                <span class="user-info-value" id="userCreatedDate">-</span>
-            </div>
-        </div>
- 
-        <div class="user-info-section">
-            <div class="user-info-item">
-                <span class="user-info-label">Horas Bomba</span>
-                <span class="user-info-value" id="userPumpHours">0.00 h</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Ciclos Bateria</span>
-                <span class="user-info-value" id="userBatteryHours">0.00</span>
-            </div>
-            <div class="user-info-item">
-                <span class="user-info-label">Horas Filtro</span>
-                <span class="user-info-value" id="userFilterHours">0.00 h</span>
-            </div>
-        </div>
- 
-        <button class="save-btn" onclick="logout()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); margin-top: 30px;">Sair</button>
-    </div>
- 
-    <!-- NOTIFICAÇÃO FLUTUANTE -->
-    <div class="notification hidden-notification" id="notification"></div>
- 
-    <script>
-        // ========== SISTEMA DE ARMAZENAMENTO PERSISTENTE ==========
-        class EcoFluxStorage {
-            constructor() {
-                this.loadAllData();
-            }
- 
-            loadAllData() {
-                this.users = this.loadUsers();
-                this.currentUser = this.loadCurrentUser();
-            }
- 
-            loadUsers() {
-                try {
-                    const data = localStorage.getItem('ecoflux_users_v4');
-                    return data ? JSON.parse(data) : {};
-                } catch (e) {
-                    return {};
-                }
-            }
- 
-            saveUsers() {
-                try {
-                    localStorage.setItem('ecoflux_users_v4', JSON.stringify(this.users));
-                } catch (e) {
-                    console.error('Erro ao salvar usuários:', e);
-                }
-            }
- 
-            loadCurrentUser() {
-                return localStorage.getItem('ecoflux_current_user_v4');
-            }
- 
-            setCurrentUser(email) {
-                localStorage.setItem('ecoflux_current_user_v4', email);
-                this.currentUser = email;
-            }
- 
-            clearCurrentUser() {
-                localStorage.removeItem('ecoflux_current_user_v4');
-                this.currentUser = null;
-            }
- 
-            getUserData(email) {
-                try {
-                    const data = localStorage.getItem(`ecoflux_user_${email}_v4`);
-                    return data ? JSON.parse(data) : this.getDefaultUserData(email);
-                } catch (e) {
-                    return this.getDefaultUserData(email);
-                }
-            }
- 
-            saveUserData(email, data) {
-                try {
-                    localStorage.setItem(`ecoflux_user_${email}_v4`, JSON.stringify(data));
-                } catch (e) {
-                    console.error('Erro ao salvar dados do usuário:', e);
-                }
-            }
- 
-            getDefaultUserData(email) {
-                const isAdmin = email === 'admin@gmail.com';
-                return {
-                    pumpHours: 0,
-                    pumpMinutes: 0,
-                    batteryHours: 0,
-                    batteryMinutes: 0,
-                    filterHours: 0,
-                    filterMinutes: 0,
-                    notifications: [],
-                    settings: {
-                        pumpOnTime: 1000,
-                        pumpOffTime: 2000,
-                        maxBucketHeight: 16,
-                        pumpWarning: 400,
-                        filterWarning: 80
-                    },
-                    lastSync: new Date().toISOString(),
-                    role: isAdmin ? 'admin' : 'user',
-                    isAdmin: isAdmin
-                };
-            }
- 
-            register(email, password, username) {
-                this.loadAllData();
-                
-                if (this.users[email]) {
-                    return { success: false, error: 'Email já cadastrado' };
-                }
- 
-                this.users[email] = {
-                    username,
-                    password: btoa(password),
-                    createdAt: new Date().toISOString(),
-                    role: 'user',
-                    isAdmin: false
-                };
- 
-                this.saveUsers();
-                this.setCurrentUser(email);
-                
-                const userData = this.getDefaultUserData(email);
-                this.saveUserData(email, userData);
- 
-                return { success: true };
-            }
- 
-            login(email, password) {
-                this.loadAllData();
-                
-                if (email === 'admin@gmail.com' && password === 'admin') {
-                    this.setCurrentUser('admin@gmail.com');
-                    const adminData = this.getDefaultUserData('admin@gmail.com');
-                    this.saveUserData('admin@gmail.com', adminData);
-                    return { success: true, isAdmin: true };
-                }
-                
-                if (!this.users[email]) {
-                    return { success: false, error: 'Email não encontrado' };
-                }
- 
-                if (this.users[email].password !== btoa(password)) {
-                    return { success: false, error: 'Senha incorreta' };
-                }
- 
-                this.setCurrentUser(email);
-                return { success: true, isAdmin: false };
-            }
- 
-            logout() {
-                this.clearCurrentUser();
-            }
- 
-            getAllUsers() {
-                this.loadAllData();
-                return this.users;
-            }
- 
-            addNotification(email, message, type = 'info') {
-                const userData = this.getUserData(email);
-                userData.notifications.push({
-                    message,
-                    type,
-                    timestamp: new Date().toISOString()
-                });
-                if (userData.notifications.length > 50) {
-                    userData.notifications = userData.notifications.slice(-50);
-                }
-                this.saveUserData(email, userData);
-            }
- 
-            getNotifications(email) {
-                const userData = this.getUserData(email);
-                return userData.notifications || [];
-            }
-        }
- 
-        // ========== INSTÂNCIAS GLOBAIS ==========
-        const storage = new EcoFluxStorage();
-        let systemData = {
-            bucketLevel: Math.random() * 30,
-            batteryVoltage: 12.0,
-            batteryPercentage: 50,
-            estimatedRuntime: 0,
-            pumpActive: false,
-            pumpEnabled: false,
-            timerRunning: false,
-            connectionStatus: false,
-            currentMode: 'pulse',
-            pumpHours: 0,
-            pumpMinutes: 0,
-            batteryHours: 0,
-            batteryMinutes: 0,
-            filterHours: 0,
-            filterMinutes: 0
-        };
- 
-        let dataRefreshInterval = null;
-        let componentUpdateInterval = null;
-        let timerInterval = null;
- 
-        // ========== INICIALIZAÇÃO ==========
-        window.addEventListener('load', () => {
-            if (storage.currentUser) {
-                showMainApp();
-            } else {
-                showAuthModal();
-            }
-        });
- 
-        // ========== AUTENTICAÇÃO ==========
-        function switchAuthTab(tab) {
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.error-message').forEach(e => e.classList.remove('show'));
- 
-            if (tab === 'login') {
-                document.getElementById('loginForm').classList.add('active');
-                document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
-            } else {
-                document.getElementById('registerForm').classList.add('active');
-                document.querySelectorAll('.auth-tab-btn')[1].classList.add('active');
-            }
-        }
- 
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            const loginBtn = document.getElementById('loginBtn');
- 
-            if (!email || !password) {
-                errorDiv.textContent = 'Preencha email e senha';
-                errorDiv.classList.add('show');
-                return;
-            }
- 
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Entrando...';
-            errorDiv.classList.remove('show');
- 
-            setTimeout(() => {
-                const result = storage.login(email, password);
-                if (result.success) {
-                    document.getElementById('loginEmail').value = '';
-                    document.getElementById('loginPassword').value = '';
-                    showMainApp();
-                } else {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.add('show');
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Entrar';
-                }
-            }, 300);
-        }
- 
-        function handleRegister(event) {
-            event.preventDefault();
-            const username = document.getElementById('registerUsername').value.trim();
-            const email = document.getElementById('registerEmail').value.trim();
-            const password = document.getElementById('registerPassword').value;
-            const confirm = document.getElementById('registerPasswordConfirm').value;
-            const errorDiv = document.getElementById('registerError');
-            const registerBtn = document.getElementById('registerBtn');
- 
-            if (!username || username.length < 3) {
-                errorDiv.textContent = 'Nome deve ter 3+ caracteres';
-                errorDiv.classList.add('show');
-                return;
-            }
- 
-            if (!email) {
-                errorDiv.textContent = 'Email é obrigatório';
-                errorDiv.classList.add('show');
-                return;
-            }
- 
-            if (password.length < 6) {
-                errorDiv.textContent = 'Senha deve ter 6+ caracteres';
-                errorDiv.classList.add('show');
-                return;
-            }
- 
-            if (password !== confirm) {
-                errorDiv.textContent = 'Senhas não conferem';
-                errorDiv.classList.add('show');
-                return;
-            }
- 
-            registerBtn.disabled = true;
-            registerBtn.textContent = 'Criando...';
-            errorDiv.classList.remove('show');
- 
-            setTimeout(() => {
-                const result = storage.register(email, password, username);
-                if (result.success) {
-                    showNotification('Conta criada com sucesso!');
-                    document.getElementById('registerUsername').value = '';
-                    document.getElementById('registerEmail').value = '';
-                    document.getElementById('registerPassword').value = '';
-                    document.getElementById('registerPasswordConfirm').value = '';
-                    
-                    switchAuthTab('login');
-                    registerBtn.disabled = false;
-                    registerBtn.textContent = 'Criar Conta';
-                } else {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.add('show');
-                    registerBtn.disabled = false;
-                    registerBtn.textContent = 'Criar Conta';
-                }
-            }, 300);
-        }
- 
-        // ========== INTERFACE ==========
-        function showAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-            document.getElementById('mainContainer').classList.remove('active');
-        }
- 
-        function showMainApp() {
-            document.getElementById('authModal').classList.add('hidden');
-            document.getElementById('mainContainer').classList.add('active');
- 
-            const isAdmin = storage.currentUser === 'admin@gmail.com';
-            const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
-            const userData = storage.getUserData(storage.currentUser);
-            
-            document.getElementById('currentUser').textContent = user ? user.username : 'Usuário';
-            document.getElementById('userRole').textContent = isAdmin ? 'Administrador' : 'Usuário';
- 
-            if (isAdmin) {
-                document.querySelector('.admin-tab').style.display = 'block';
-                loadAdminPanel();
-            } else {
-                document.querySelector('.admin-tab').style.display = 'none';
-            }
- 
-            // Inicializar modo como Contínuo por padrão
-            if (!systemData.currentMode) {
-                setMode('continuous');
-            }
- 
-            loadUserData();
-            startDataRefresh();
-            startComponentUpdate();
-            updateStatusIndicator();
-            displayNotifications();
-        }
- 
-        function logout() {
-            if (dataRefreshInterval) {
-                clearInterval(dataRefreshInterval);
-                dataRefreshInterval = null;
-            }
-            if (componentUpdateInterval) {
-                clearInterval(componentUpdateInterval);
-                componentUpdateInterval = null;
-            }
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            storage.logout();
-            showAuthModal();
-            document.getElementById('loginForm').classList.add('active');
-            document.getElementById('registerForm').classList.remove('active');
-            document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
-            document.querySelectorAll('.auth-tab-btn')[1].classList.remove('active');
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginError').classList.remove('show');
-        }
- 
-        // ========== ABAS ==========
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
- 
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
- 
-        // ========== NOTIFICAÇÕES ==========
-        function toggleNotifications() {
-            const modal = document.getElementById('notificationsModal');
-            modal.classList.toggle('active');
-            if (modal.classList.contains('active')) {
-                document.getElementById('notificationBadge').classList.remove('active');
-            }
-        }
- 
-        function addNotification(message, type = 'info') {
-            storage.addNotification(storage.currentUser, message, type);
-            
-            const notifList = document.getElementById('notificationsList');
-            const item = document.createElement('div');
-            item.className = `notification-item ${type}`;
-            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            item.innerHTML = `
-                <div style="color: #e2e8f0;">${message}</div>
-                <div class="notification-time">${time}</div>
-            `;
-            notifList.insertBefore(item, notifList.firstChild);
- 
-            const badge = document.getElementById('notificationBadge');
-            badge.classList.add('active');
-        }
- 
-        function displayNotifications() {
-            const notifications = storage.getNotifications(storage.currentUser);
-            const notifList = document.getElementById('notificationsList');
-            notifList.innerHTML = '';
-            
-            if (notifications.length === 0) {
-                notifList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma notificação</p>';
-                return;
-            }
- 
-            notifications.slice().reverse().forEach(notif => {
-                const item = document.createElement('div');
-                item.className = `notification-item ${notif.type}`;
-                const time = new Date(notif.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                item.innerHTML = `
-                    <div style="color: #e2e8f0;">${notif.message}</div>
-                    <div class="notification-time">${time}</div>
-                `;
-                notifList.appendChild(item);
-            });
-        }
- 
-        // ========== SETTINGS ==========
-        function toggleSettings() {
-            document.getElementById('settingsModal').classList.toggle('active');
-        }
- 
-        function toggleUserMenu() {
-            const userModal = document.getElementById('userModal');
-            userModal.classList.toggle('active');
-            
-            if (userModal.classList.contains('active')) {
-                loadUserMenuData();
-            }
-        }
- 
-        function loadUserMenuData() {
-            const isAdmin = storage.currentUser === 'admin@gmail.com';
-            const user = isAdmin ? { username: 'Admin' } : storage.users[storage.currentUser];
-            const userData = storage.getUserData(storage.currentUser);
- 
-            document.getElementById('userUsername').textContent = user ? user.username : '-';
-            document.getElementById('userEmail').textContent = storage.currentUser;
-            document.getElementById('userType').textContent = isAdmin ? 'Administrador' : 'Usuário';
-            document.getElementById('userTypeModal').textContent = isAdmin ? 'Administrador' : 'Usuário';
-            document.getElementById('userCreatedDate').textContent = user ? new Date(user.createdAt).toLocaleDateString('pt-BR') : '-';
-            
-            const pumpHoursDecimal = (userData.pumpHours + userData.pumpMinutes / 60).toFixed(2);
-            const batteryHoursDecimal = (userData.batteryHours + userData.batteryMinutes / 60).toFixed(2);
-            const filterHoursDecimal = (userData.filterHours + userData.filterMinutes / 60).toFixed(2);
-            
-            document.getElementById('userPumpHours').textContent = `${pumpHoursDecimal} h`;
-            document.getElementById('userBatteryHours').textContent = `${batteryHoursDecimal}`;
-            document.getElementById('userFilterHours').textContent = `${filterHoursDecimal} h`;
-        }
-        function loadUserData() {
-            const userData = storage.getUserData(storage.currentUser);
- 
-            document.getElementById('pumpOnTime').value = userData.settings.pumpOnTime;
-            document.getElementById('pumpOffTime').value = userData.settings.pumpOffTime;
-            document.getElementById('maxBucketHeight').value = userData.settings.maxBucketHeight;
-            document.getElementById('pumpWarning').value = userData.settings.pumpWarning;
-            document.getElementById('filterWarning').value = userData.settings.filterWarning;
- 
-            systemData.pumpHours = userData.pumpHours || 0;
-            systemData.pumpMinutes = userData.pumpMinutes || 0;
-            systemData.batteryHours = userData.batteryHours || 0;
-            systemData.batteryMinutes = userData.batteryMinutes || 0;
-            systemData.filterHours = userData.filterHours || 0;
-            systemData.filterMinutes = userData.filterMinutes || 0;
-        }
- 
-        function startDataRefresh() {
-            if (dataRefreshInterval) {
-                clearInterval(dataRefreshInterval);
-            }
- 
-            dataRefreshInterval = setInterval(() => {
-                if (systemData.pumpActive) {
-                    systemData.bucketLevel = Math.min(100, systemData.bucketLevel + Math.random() * 2);
-                } else {
-                    systemData.bucketLevel = Math.max(0, systemData.bucketLevel - Math.random() * 0.5);
-                }
- 
-                updateDashboard();
-            }, 1000);
-        }
- 
-        function startComponentUpdate() {
-            if (componentUpdateInterval) {
-                clearInterval(componentUpdateInterval);
-            }
- 
-            componentUpdateInterval = setInterval(() => {
-                if (systemData.pumpActive) {
-                    // Incrementar segundos
-                    let pumpSeconds = (systemData.pumpHours * 3600) + (systemData.pumpMinutes * 60);
-                    let batterySeconds = (systemData.batteryHours * 3600) + (systemData.batteryMinutes * 60);
-                    let filterSeconds = (systemData.filterHours * 3600) + (systemData.filterMinutes * 60);
-                    
-                    pumpSeconds += 1;
-                    batterySeconds += 1;
-                    filterSeconds += 1;
-                    
-                    // Converter de volta
-                    systemData.pumpHours = Math.floor(pumpSeconds / 3600);
-                    systemData.pumpMinutes = Math.floor((pumpSeconds % 3600) / 60);
-                    
-                    systemData.batteryHours = Math.floor(batterySeconds / 3600);
-                    systemData.batteryMinutes = Math.floor((batterySeconds % 3600) / 60);
-                    
-                    systemData.filterHours = Math.floor(filterSeconds / 3600);
-                    systemData.filterMinutes = Math.floor((filterSeconds % 3600) / 60);
- 
-                    saveComponentHours();
-                    updateMaintenanceTable();
-        drawHistoryChart();
-        setInterval(pollEsp32, 3000);
-                }
-            }, 1000); // A cada segundo
-        }
- 
-        function saveComponentHours() {
-            const userData = storage.getUserData(storage.currentUser);
-            userData.pumpHours = systemData.pumpHours;
-            userData.pumpMinutes = systemData.pumpMinutes;
-            userData.batteryHours = systemData.batteryHours;
-            userData.batteryMinutes = systemData.batteryMinutes;
-            userData.filterHours = systemData.filterHours;
-            userData.filterMinutes = systemData.filterMinutes;
-            storage.saveUserData(storage.currentUser, userData);
-        }
- 
-        function updateMaintenanceTable() {
-            const pumpHoursDecimal = (systemData.pumpHours + systemData.pumpMinutes / 60).toFixed(2);
-            const batteryHoursDecimal = (systemData.batteryHours + systemData.batteryMinutes / 60).toFixed(2);
-            const filterHoursDecimal = (systemData.filterHours + systemData.filterMinutes / 60).toFixed(2);
- 
-            document.getElementById('pumpHours').textContent = `${pumpHoursDecimal} h`;
-            document.getElementById('batteryHours').textContent = `${batteryHoursDecimal} ciclos`;
-            document.getElementById('filterHours').textContent = `${filterHoursDecimal} h`;
-        }
- 
-        function updateDashboard() {
-            document.getElementById('bucketLevel').textContent = Math.round(systemData.bucketLevel);
-            document.getElementById('bucketProgress').style.width = systemData.bucketLevel + '%';
- 
-            document.getElementById('batteryLevel').textContent = Math.round(systemData.batteryPercentage);
-            document.getElementById('batteryProgress').style.width = systemData.batteryPercentage + '%';
- 
-            document.getElementById('batteryVoltage').textContent = systemData.batteryVoltage.toFixed(2);
-            document.getElementById('runtime').textContent = '0.5';
- 
-            document.getElementById('pumpStatus').textContent = systemData.pumpActive ? 'Ligada' : 'Desligada';
-            
-            // Gerenciar popups de modo
-            const modePopup = document.getElementById('modePopup');
-            if (systemData.pumpActive && systemData.currentMode) {
-                modePopup.classList.add('active');
-            } else {
-                modePopup.classList.remove('active');
-            }
- 
-            updateStatusIndicator();
-        }
- 
-        function updateStatusIndicator() {
-            const indicator = document.getElementById('statusIndicator');
-            indicator.classList.remove('connected', 'active', 'inactive');
-            
-            if (systemData.pumpActive) {
-                indicator.classList.add('active');
-            } else if (systemData.pumpEnabled) {
-                indicator.classList.add('connected');
-            } else {
-                indicator.classList.add('inactive');
-            }
-        }
- 
-        // ========== CONTROLES ==========
-        function turnPumpOn() {
-            // Sempre selecionar Contínuo ao ligar
-            setMode('continuous');
-            
-            systemData.pumpEnabled = true;
-            esp32SetPump(true);
-            systemData.pumpActive = true;
-            systemData.timerRunning = false;
-            document.getElementById('pumpOnBtn').classList.add('active');
-            document.getElementById('pumpOffBtn').classList.remove('active');
-            addNotification('Bomba ligada', 'success');
-            showNotification('Bomba ligada!');
-            updateDashboard();
-        }
- 
-        function turnPumpOff() {
-            systemData.pumpEnabled = false;
-            esp32SetPump(false);
-            systemData.pumpActive = false;
-            systemData.timerRunning = false;
-            document.getElementById('pumpOnBtn').classList.remove('active');
-            document.getElementById('pumpOffBtn').classList.add('active');
-            addNotification('Bomba desligada', 'info');
-            showNotification('Bomba desligada');
-            updateDashboard();
-        }
- 
-        function startTimer() {
-            if (!systemData.pumpActive) {
-                showNotification('Ligue a bomba primeiro!', 'error');
-                return;
-            }
-            
-            const minutes = parseInt(document.getElementById('timerMinutes').value);
-            if (!minutes || minutes < 1) {
-                showNotification('Defina um tempo válido', 'error');
-                return;
-            }
- 
-            systemData.timerRunning = true;
-            systemData.timerEndTime = Date.now() + (minutes * 60 * 1000);
-            systemData.timerIntervalId = null;
- 
-            addNotification(`Timer iniciado por ${minutes} minuto${minutes > 1 ? 's' : ''}`, 'info');
-            showNotification(`Timer iniciado por ${minutes} minutos`);
- 
-            // Atualizar popup a cada segundo
-            systemData.timerIntervalId = setInterval(() => {
-                if (!systemData.timerRunning) {
-                    clearInterval(systemData.timerIntervalId);
-                    document.getElementById('timerPopup').classList.remove('active');
-                    return;
-                }
- 
-                const remaining = systemData.timerEndTime - Date.now();
-                if (remaining > 0) {
-                    const mins = Math.floor(remaining / 60000);
-                    const secs = Math.floor((remaining % 60000) / 1000);
-                    document.getElementById('timerPopup').innerHTML = `${mins}m ${secs}s <span class="timer-close" onclick="cancelTimer()">✕</span>`;
-                    document.getElementById('timerPopup').classList.add('active');
-                }
-            }, 1000);
- 
-            setTimeout(() => {
-                systemData.timerRunning = false;
-                document.getElementById('timerPopup').classList.remove('active');
-                addNotification('Timer concluído', 'success');
-                showNotification('Timer expirou');
-                
-                // Clicar automaticamente em desligar
-                document.getElementById('pumpOffBtn').click();
-                
-                updateDashboard();
-                clearInterval(systemData.timerIntervalId);
-            }, minutes * 60 * 1000);
- 
-            updateDashboard();
-        }
- 
-        function cancelTimer() {
-            systemData.timerRunning = false;
-            systemData.pumpEnabled = false;
-            systemData.pumpActive = false;
-            document.getElementById('timerPopup').classList.remove('active');
-            clearInterval(systemData.timerIntervalId);
-            addNotification('Timer cancelado', 'info');
-            showNotification('Timer cancelado');
-            document.getElementById('pumpOffBtn').click();
-            updateDashboard();
-        }
- 
-        function setMode(mode) {
-            systemData.currentMode = mode;
-            esp32SetMode(mode);
-            document.getElementById('modeContBtn').classList.remove('active');
-            document.getElementById('modePulseBtn').classList.remove('active');
-            
-            const modePopup = document.getElementById('modePopup');
-            
-            if (mode === 'continuous') {
-                document.getElementById('modeContBtn').classList.add('active');
-                modePopup.textContent = 'Contínuo';
-                if (systemData.pumpActive) {
-                    modePopup.classList.add('active');
-                }
-                addNotification('Modo Contínuo ativado', 'info');
-                showNotification('Modo Contínuo');
-            } else if (mode === 'pulse') {
-                document.getElementById('modePulseBtn').classList.add('active');
-                modePopup.textContent = 'Pulsante';
-                if (systemData.pumpActive) {
-                    modePopup.classList.add('active');
-                }
-                addNotification('Modo Pulsante ativado', 'info');
-                showNotification('Modo Pulsante');
-            }
-        }
- 
-        function saveSettings() {
-            const userData = storage.getUserData(storage.currentUser);
- 
-            userData.settings.pumpOnTime = parseInt(document.getElementById('pumpOnTime').value);
-            userData.settings.pumpOffTime = parseInt(document.getElementById('pumpOffTime').value);
-            userData.settings.maxBucketHeight = parseInt(document.getElementById('maxBucketHeight').value);
-            userData.settings.pumpWarning = parseInt(document.getElementById('pumpWarning').value);
-            userData.settings.filterWarning = parseInt(document.getElementById('filterWarning').value);
- 
-            storage.saveUserData(storage.currentUser, userData);
-            addNotification('Configurações salvas', 'success');
-            showNotification('Configurações salvas!');
-            toggleSettings();
-        }
- 
-        // ========== ADMIN PANEL ==========
-        function loadAdminPanel() {
-            const allUsers = storage.getAllUsers();
-            const accountsList = document.getElementById('accountsList');
-            
-            document.getElementById('totalAccounts').textContent = `${Object.keys(allUsers).length} contas`;
- 
-            accountsList.innerHTML = '';
-            
-            if (Object.keys(allUsers).length === 0) {
-                accountsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma conta criada ainda</p>';
-                return;
-            }
-            
-            Object.entries(allUsers).forEach(([email, user]) => {
-                const row = document.createElement('div');
-                row.className = 'account-row';
-                row.innerHTML = `
-                    <div class="account-item"><strong>${user.username}</strong></div>
-                    <div class="account-item">${email}</div>
-                    <div class="account-item">${new Date(user.createdAt).toLocaleDateString('pt-BR')}</div>
-                    <div class="account-role">Usuário</div>
-                `;
-                accountsList.appendChild(row);
-            });
-        }
- 
-        // ========== NOTIFICAÇÕES FLUTUANTES ==========
-        function showNotification(message, type = 'success') {
-            const notif = document.getElementById('notification');
-            notif.textContent = message;
-            notif.className = type === 'error' ? 'notification error' : 'notification';
-            notif.classList.remove('hidden-notification');
- 
-            setTimeout(() => {
-                notif.classList.add('hidden-notification');
-            }, 3000);
-        }
- 
-        // Inicializar
-        updateDashboard();
-        updateMaintenanceTable();
-    
-        // ===== Comunicação com ESP32 =====
-        const ESP32_BASE_URL = localStorage.getItem('ecofluxEsp32Url') || 'http://192.168.1.100';
-        const telemetry = [];
-        async function esp32Request(path) {
-            try {
-                const res = await fetch(ESP32_BASE_URL + path, {mode:'cors'});
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const el=document.getElementById('espConnectionState'); if(el) el.textContent='ESP32 • conectado';
-                return await res.json();
-            } catch(e) { const el=document.getElementById('espConnectionState'); if(el) el.textContent='ESP32 • offline'; return null; }
-        }
-        function esp32SetPump(on) { esp32Request('/api/pump?state=' + (on?'on':'off')); }
-        function esp32SetMode(value) { esp32Request('/api/mode?value=' + encodeURIComponent(value)); }
-        function drawHistoryChart() {
-            const c=document.getElementById('historyChart'); if(!c) return; const x=c.getContext('2d'),w=c.width,h=c.height;
-            x.clearRect(0,0,w,h); x.strokeStyle='rgba(148,226,255,.11)'; x.lineWidth=1;
-            for(let y=20;y<h;y+=30){x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke();}
-            if(telemetry.length<2)return; const step=w/(telemetry.length-1); x.beginPath();
-            telemetry.forEach((v,i)=>{const px=i*step,py=h-12-(Math.max(0,Math.min(100,v))/100)*(h-32);i?x.lineTo(px,py):x.moveTo(px,py);});
-            x.strokeStyle='#39e7f5';x.lineWidth=3;x.shadowColor='#39e7f5';x.shadowBlur=12;x.stroke();x.shadowBlur=0;
-        }
-        async function pollEsp32() { const s=await esp32Request('/api/status'); if(s && typeof s.pump==='boolean'){systemData.pumpActive=s.pump;updateDashboard();} telemetry.push(Number(systemData.bucketLevel)||0);if(telemetry.length>36)telemetry.shift();drawHistoryChart(); }
-
-</script>
-</body>
+  <script>const KEY='ecoflux_users_v6',state={pump:false,mode:'continuous',bucket:18,battery:86,voltage:12.4,hours:0,history:[]};let timer=null;const $=id=>document.getElementById(id);function users(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return{}}}function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}function authTab(x){document.querySelectorAll('.auth-tabs button').forEach((b,i)=>b.classList.toggle('active',(x==='login'?i===0:i===1)));document.querySelectorAll('.auth-form').forEach(f=>f.classList.toggle('on',f.id===x))}function login(e){e.preventDefault();const d=users(),email=$('le').value.trim().toLowerCase();if(!d[email]||d[email].password!==$('lp').value){$('loginError').textContent='Acesso não encontrado. Crie uma conta primeiro.';return}sessionStorage.setItem('ecoflux_user',email);boot(d[email].name)}function register(e){e.preventDefault();const d=users(),email=$('re').value.trim().toLowerCase();if(d[email]){$('registerError').textContent='Este e-mail já está cadastrado.';return}d[email]={name:$('rn').value,password:$('rp').value};localStorage.setItem(KEY,JSON.stringify(d));sessionStorage.setItem('ecoflux_user',email);boot(d[email].name)}function boot(name){$('auth').style.display='none';$('shell').classList.add('on');$('userName').textContent=name;$('avatar').textContent=name.slice(0,2).toUpperCase();$('espIp').value=localStorage.getItem('ecoflux_esp_url')||'http://192.168.1.100';update();draw();poll();setInterval(poll,3500)}function view(id,b){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id));document.querySelectorAll('.nav button,.mobile-nav button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active')}function update(){const on=state.pump;$('pumpStatus').textContent=on?'Ligada':'Desligada';$('pumpStatus').style.color=on?'var(--lime)':'var(--red)';$('bucketLevel').textContent=Math.round(state.bucket);$('waterValue').textContent=Math.round(state.bucket)+'%';$('batteryLevel').textContent=Math.round(state.battery);$('batteryVoltage').textContent=state.voltage.toFixed(2);$('bucketProgress').style.width=state.bucket+'%';$('batteryProgress').style.width=state.battery+'%';$('signal').textContent=on?'bomba em operação':'sistema em espera';$('signal').className='signal '+(on?'ok':'');$('continuous').classList.toggle('active',state.mode==='continuous');$('pulse').classList.toggle('active',state.mode==='pulse');$('pumpHours').textContent=state.hours.toFixed(2)+' h'}function pump(on){state.pump=on;send('/api/pump?state='+(on?'on':'off'));toast(on?'Bomba ligada / GPIO 22 ativo':'Bomba desligada / GPIO 22 inativo');update()}function setMode(m){state.mode=m;send('/api/mode?value='+m);toast(m==='pulse'?'Modo pulsante / GPIO 23':'Modo contínuo');update()}function startTimer(){const n=Number($('minutes').value);if(!state.pump){toast('Ligue a bomba primeiro');return}if(!n||n<1){toast('Informe um tempo válido');return}clearTimeout(timer);$('timerText').textContent='Ativo por '+n+' minuto(s)';toast('Timer iniciado');timer=setTimeout(()=>{pump(false);$('timerText').textContent='Nenhum timer ativo'},n*60000)}function saveEsp(){const u=$('espIp').value.trim().replace(/\/$/,'');if(!u){toast('Informe o IP do ESP32');return}localStorage.setItem('ecoflux_esp_url',u);poll()}function base(){return localStorage.getItem('ecoflux_esp_url')||'http://192.168.1.100'}async function send(p){try{const r=await fetch(base()+p);if(!r.ok)throw Error();setConn(true);return await r.json()}catch{setConn(false);return null}}function setConn(ok){$('connection').textContent=ok?'conectado':'offline';$('connection').className='signal '+(ok?'ok':'bad')}async function poll(){const s=await send('/api/status');if(s){state.pump=!!s.pump;state.mode=s.mode||state.mode;update()}state.bucket=Math.max(0,Math.min(100,state.bucket+(state.pump?Math.random()*2:-.4)));state.history.push(state.bucket);if(state.history.length>55)state.history.shift();draw()}function draw(){const c=$('chart'),x=c.getContext('2d'),w=c.width=c.clientWidth*2,h=c.height=c.clientHeight*2;x.clearRect(0,0,w,h);x.strokeStyle='#1d4053';x.lineWidth=2;for(let y=25;y<h;y+=55){x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}if(state.history.length<2)return;x.beginPath();state.history.forEach((v,i)=>{const px=i*w/(state.history.length-1),py=h-20-v/100*(h-45);i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle='#48e6d0';x.lineWidth=6;x.shadowColor='#48e6d0';x.shadowBlur=18;x.stroke();x.shadowBlur=0}function drawer(t){if(!t){$('drawer').classList.remove('on');return}$('drawerTitle').textContent=t==='settings'?'Configurações':'Notificações';$('drawerBody').innerHTML=t==='settings'?'<p>IP do ESP32</p><input class="input" value="'+base()+'" onchange="localStorage.setItem(\'ecoflux_esp_url\',this.value)"><p class="muted">GPIO 22: bomba / GPIO 23: modo</p>':'<p>Central iniciada.</p><p class="muted">As ações ficam registradas neste dispositivo.</p>';$('drawer').classList.add('on')}const current=sessionStorage.getItem('ecoflux_user');if(current){const d=users();boot(d[current]?.name||'operador')}</script>
+  </body>
 </html>
