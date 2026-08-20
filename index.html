@@ -1344,6 +1344,49 @@
         @keyframes ecoGlow { from{transform:translateX(-3%);opacity:.65} to{transform:translateX(3%);opacity:1} }
         @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 
+    
+        /* ===== REDESIGN ECOFLUX ===== */
+        :root { --bg:#06111f; --surface:#0b1d2d; --surface2:#102a40; --line:rgba(148,226,255,.16); --text:#e8f7ff; --muted:#84a8bd; --cyan:#39e7f5; --blue:#3987ff; --green:#55f0a6; }
+        html { background:var(--bg); }
+        body { min-height:100vh; padding:28px; display:block; color:var(--text); background:radial-gradient(circle at 5% 0%,#123d59 0,transparent 34%),radial-gradient(circle at 100% 10%,#1a275d 0,transparent 32%),var(--bg); }
+        body::before { opacity:.55; background:linear-gradient(120deg,transparent 20%,rgba(57,231,245,.05) 50%,transparent 80%); background-size:200% 100%; animation:ecoSweep 12s linear infinite; }
+        body::after { content:''; position:fixed; z-index:-1; width:55vw; height:55vw; right:-25vw; bottom:-28vw; border:1px solid rgba(57,231,245,.1); border-radius:50%; box-shadow:0 0 0 45px rgba(57,231,245,.025),0 0 0 90px rgba(57,231,245,.018),0 0 100px rgba(57,231,245,.1); pointer-events:none; }
+        .container { max-width:1320px; margin:auto; padding:0 0 40px; }
+        .header { min-height:92px; margin-bottom:18px; padding:20px 26px; border-radius:24px; background:linear-gradient(120deg,rgba(13,43,64,.94),rgba(8,23,40,.8)); border:1px solid var(--line); box-shadow:0 22px 60px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.08); }
+        .header-left h1 { font-size:31px; letter-spacing:-1.6px; color:#fff; }
+        .header-left p { color:var(--muted); margin-top:4px; }
+        .status-indicator { width:13px; height:13px; box-shadow:0 0 0 6px rgba(85,240,166,.08),0 0 22px currentColor; }
+        .tabs-container { display:flex; gap:8px; padding:7px; margin-bottom:22px; border-radius:16px; background:rgba(7,24,39,.7); border:1px solid var(--line); }
+        .tab-button { flex:0 0 auto; border-radius:11px; padding:12px 21px; color:var(--muted); transition:.25s ease; }
+        .tab-button.active { color:#fff; background:linear-gradient(135deg,rgba(57,231,245,.2),rgba(57,135,255,.22)); box-shadow:inset 0 0 0 1px rgba(57,231,245,.18),0 8px 20px rgba(0,0,0,.15); }
+        .status-grid { grid-template-columns:repeat(12,1fr); gap:16px; }
+        .status-card { min-height:150px; grid-column:span 4; padding:24px; border-radius:21px; background:linear-gradient(145deg,rgba(15,48,71,.9),rgba(8,25,43,.88)); border:1px solid var(--line); box-shadow:0 17px 40px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.045); transition:transform .25s,border-color .25s,box-shadow .25s; }
+        .status-card:nth-child(1),.status-card:nth-child(2) { grid-column:span 6; }
+        .status-card:hover { transform:translateY(-5px); border-color:rgba(57,231,245,.42); box-shadow:0 22px 48px rgba(0,0,0,.3),0 0 28px rgba(57,231,245,.06); }
+        .status-card::after { content:''; position:absolute; right:-38px; top:-38px; width:110px; height:110px; border-radius:50%; border:1px solid rgba(57,231,245,.1); box-shadow:0 0 0 16px rgba(57,231,245,.025); }
+        .status-card-label { color:var(--muted); letter-spacing:.04em; }
+        .status-card-value { margin-top:14px; font-size:42px; font-weight:700; letter-spacing:-2px; color:#fff; }
+        .status-card-unit { color:var(--cyan); }
+        .progress-container { margin-top:22px; }
+        .progress-bar { height:8px; border-radius:99px; background:#071522; overflow:hidden; }
+        .progress-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--cyan),var(--blue)); box-shadow:0 0 20px rgba(57,231,245,.65); transition:width .6s ease; }
+        .pump-status-card .status-card-value { color:var(--green); }
+        .control-panel,.admin-panel { padding:30px; border-radius:24px; background:linear-gradient(145deg,rgba(15,48,71,.9),rgba(8,25,43,.88)); border:1px solid var(--line); box-shadow:0 17px 40px rgba(0,0,0,.24); }
+        .control-group { padding:20px 0; border-bottom:1px solid rgba(148,226,255,.1); }
+        .control-group:last-child { border-bottom:0; }
+        .control-label { color:#d9f5ff; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+        .btn { border-radius:13px; padding:13px 22px; transition:transform .2s,box-shadow .2s; }
+        .btn-primary,.auth-button,.save-btn { background:linear-gradient(135deg,#06b6d4,#2563eb 70%,#6366f1); }
+        .btn-danger { background:linear-gradient(135deg,#e05278,#9f275b); }
+        .btn:hover { transform:translateY(-3px); box-shadow:0 12px 25px rgba(0,0,0,.25); }
+        .eco-telemetry { margin-top:18px; padding:24px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(145deg,rgba(11,38,58,.88),rgba(6,20,35,.85)); box-shadow:0 17px 40px rgba(0,0,0,.18); }
+        .eco-telemetry-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
+        .eco-telemetry h3 { font-size:15px; color:#e8fbff; }
+        .eco-telemetry small { color:var(--cyan); }
+        #historyChart { display:block; width:100%; height:155px; }
+        @keyframes ecoSweep { to { background-position:-200% 0; } }
+        @media (max-width:700px) { body{padding:12px}.status-grid{display:grid}.status-card,.status-card:nth-child(1),.status-card:nth-child(2){grid-column:span 12}.tabs-container{overflow:auto}.tab-button{padding:11px 15px} }
+
     </style>
 </head>
 <body>
@@ -1484,7 +1527,11 @@
                 </div>
             </div>
         </div>
- 
+            <div class="eco-telemetry">
+                <div class="eco-telemetry-head"><h3>Telemetria em tempo real</h3><small id="espConnectionState">ESP32 • aguardando conexão</small></div>
+                <canvas id="historyChart" width="900" height="155"></canvas>
+            </div>
+
         <!-- ABA: CONTROLE -->
         <div class="tab-content" id="control">
             <div class="control-panel">
@@ -2194,6 +2241,8 @@
  
                     saveComponentHours();
                     updateMaintenanceTable();
+        drawHistoryChart();
+        setInterval(pollEsp32, 3000);
                 }
             }, 1000); // A cada segundo
         }
@@ -2431,6 +2480,30 @@
         // Inicializar
         updateDashboard();
         updateMaintenanceTable();
-    </script>
+    
+        // ===== Comunicação com ESP32 =====
+        const ESP32_BASE_URL = localStorage.getItem('ecofluxEsp32Url') || 'http://192.168.1.100';
+        const telemetry = [];
+        async function esp32Request(path) {
+            try {
+                const res = await fetch(ESP32_BASE_URL + path, {mode:'cors'});
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const el=document.getElementById('espConnectionState'); if(el) el.textContent='ESP32 • conectado';
+                return await res.json();
+            } catch(e) { const el=document.getElementById('espConnectionState'); if(el) el.textContent='ESP32 • offline'; return null; }
+        }
+        function esp32SetPump(on) { esp32Request('/api/pump?state=' + (on?'on':'off')); }
+        function esp32SetMode(value) { esp32Request('/api/mode?value=' + encodeURIComponent(value)); }
+        function drawHistoryChart() {
+            const c=document.getElementById('historyChart'); if(!c) return; const x=c.getContext('2d'),w=c.width,h=c.height;
+            x.clearRect(0,0,w,h); x.strokeStyle='rgba(148,226,255,.11)'; x.lineWidth=1;
+            for(let y=20;y<h;y+=30){x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke();}
+            if(telemetry.length<2)return; const step=w/(telemetry.length-1); x.beginPath();
+            telemetry.forEach((v,i)=>{const px=i*step,py=h-12-(Math.max(0,Math.min(100,v))/100)*(h-32);i?x.lineTo(px,py):x.moveTo(px,py);});
+            x.strokeStyle='#39e7f5';x.lineWidth=3;x.shadowColor='#39e7f5';x.shadowBlur=12;x.stroke();x.shadowBlur=0;
+        }
+        async function pollEsp32() { const s=await esp32Request('/api/status'); if(s && typeof s.pump==='boolean'){systemData.pumpActive=s.pump;updateDashboard();} telemetry.push(Number(systemData.bucketLevel)||0);if(telemetry.length>36)telemetry.shift();drawHistoryChart(); }
+
+</script>
 </body>
 </html>
