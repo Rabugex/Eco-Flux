@@ -1,5 +1,5 @@
 // Substitua pelo IP do seu ESP32 (ex: "192.168.1.100")
-const ESP32_IP = "192.168.1.100"; // <-- MUDE ISSO PARA O IP DO SEU ESP32
+const ESP32_IP = "192.168.15.17"; // <-- MUDE ISSO PARA O IP DO SEU ESP32
 
 // Função para enviar comandos para o ESP32
 function cmd(led, action) {
