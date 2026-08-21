@@ -1,431 +1,1110 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>
-      EcoFlux // Central de Operações
-    </title>
-  <style>:root{--bg:#07131f;--panel:#0d1e2d;--panel2:#10283b;--line:#1d4053;--text:#e8f7f5;--muted:#7896a4;--cyan:#48e6d0;--lime:#b8f36b;--orange:#ffad66;--red:#ff687d;--shadow:0 24px 70px #0006}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer}.shell{display:none;min-height:100vh;grid-template-columns:245px 1fr}.shell.on{display:grid}.sidebar{padding:28px 18px;border-right:1px solid var(--line);background:#091a29;display:flex;flex-direction:column;gap:24px}.brand{padding:4px 12px 30px;border-bottom:1px solid var(--line)}.brand-mark{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.12em;color:var(--cyan);font-size:18px}.brand-mark i{width:29px;height:29px;border:2px solid var(--cyan);display:block;border-radius:10px 10px 10px 3px;transform:rotate(-18deg);box-shadow:0 0 20px #48e6d055}.brand small{display:block;color:var(--muted);margin-top:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:13px 14px;border-radius:10px;transition:.2s;display:flex;gap:11px;align-items:center}.nav button:hover,.nav button.active{color:var(--text);background:linear-gradient(90deg,#48e6d018,transparent);box-shadow:inset 3px 0 var(--cyan)}.sidebar-foot{margin-top:auto;color:var(--muted);font-size:11px;padding:14px}.main{min-width:0;padding:28px 4.5vw 50px;max-width:1500px}.topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:36px}.eyebrow{color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:.18em}.topbar h1{font-size:30px;letter-spacing:-.05em;margin:8px 0}.topbar p{color:var(--muted);margin:0}.top-actions{display:flex;align-items:center;gap:10px}.round{border:1px solid var(--line);background:var(--panel);color:var(--text);width:40px;height:40px;border-radius:50%}.avatar{background:var(--lime);color:#16230b;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800}.view{display:none}.view.on{display:block;animation:rise .35s ease}.metrics{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:14px;margin-bottom:16px}.metric,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#102b3d,#0b1c2b);box-shadow:var(--shadow);border-radius:16px}.metric{padding:20px;min-height:140px;position:relative;overflow:hidden}.metric.feature{background:linear-gradient(145deg,#17454b,#102934)}.metric:after{content:'';position:absolute;width:110px;height:110px;border:1px solid #48e6d025;border-radius:50%;right:-35px;bottom:-50px}.metric-label{color:var(--muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}.metric-value{font-size:37px;font-weight:750;letter-spacing:-.08em;margin-top:19px}.metric-value em{font-style:normal;font-size:13px;color:var(--cyan);letter-spacing:0}.meter{height:5px;background:#07131f;border-radius:10px;margin-top:20px;overflow:hidden}.meter b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--lime));border-radius:inherit;transition:width .5s}.layout{display:grid;grid-template-columns:1.4fr .8fr;gap:16px}.panel{padding:24px}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.panel h2{font-size:15px;margin:0}.muted{color:var(--muted)}.signal{font-size:11px;color:var(--orange);display:flex;gap:7px;align-items:center}.signal:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}.signal.ok{color:var(--lime)}.signal.bad{color:var(--red)}.chart{height:235px;width:100%;display:block}.water{height:235px;position:relative;display:grid;place-items:center;overflow:hidden;border-radius:14px;background:linear-gradient(#0c2537,#071622)}.water:before,.water:after{content:'';position:absolute;width:170%;height:85px;border-radius:45%;border:1px solid #48e6d055;left:-35%;top:52%;animation:wave 5s linear infinite}.water:after{top:61%;animation-duration:7s;opacity:.5}.water-core{position:relative;z-index:1;text-align:center}.water-core strong{font-size:52px;letter-spacing:-.1em}.water-core span{display:block;color:var(--cyan);font-size:11px;letter-spacing:.15em}.control-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.control-card{padding:20px;border:1px solid var(--line);border-radius:14px;background:#0a1b2a}.control-card h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 18px}.btns{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid transparent;border-radius:9px;padding:11px 14px;color:#07131f;font-weight:750;background:var(--cyan);transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}.btn.off{background:transparent;color:var(--red);border-color:#ff687d66}.btn.alt{background:#19394b;color:var(--text);border-color:var(--line)}.btn.active{outline:2px solid var(--lime);outline-offset:2px}.input{width:100%;background:#071522;border:1px solid var(--line);border-radius:8px;padding:11px;color:var(--text);outline:0}.row{display:flex;gap:9px;align-items:center}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:15px 10px;border-bottom:1px solid var(--line)}.table th{color:var(--muted);font-size:11px;text-transform:uppercase}.pill{color:var(--lime);background:#b8f36b15;border:1px solid #b8f36b40;border-radius:20px;padding:5px 9px;font-size:11px}.toast{position:fixed;right:24px;bottom:24px;padding:15px 18px;border:1px solid var(--cyan);background:#0d2938;color:var(--text);border-radius:10px;box-shadow:var(--shadow);transform:translateY(130px);transition:.3s;z-index:5}.toast.show{transform:none}.drawer{position:fixed;right:20px;top:20px;width:min(370px,calc(100% - 40px));padding:24px;background:#0b1e2e;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:4;display:none}.drawer.on{display:block}.close{float:right;background:transparent;color:var(--muted);border:0;font-size:20px}.auth{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,#12434b,#07131f 48%)}.auth-box{width:min(430px,100%);padding:38px;border:1px solid var(--line);border-radius:22px;background:#0b1f2d;box-shadow:var(--shadow)}.auth-box h1{font-size:34px;margin:0;color:var(--cyan);letter-spacing:-.08em}.auth-box p{color:var(--muted);margin:8px 0 30px}.auth-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px}.auth-tabs button{flex:1;padding:12px;background:transparent;border:0;color:var(--muted);border-bottom:2px solid transparent}.auth-tabs button.active{color:var(--cyan);border-color:var(--cyan)}.auth-form{display:none}.auth-form.on{display:block}.field{margin-bottom:14px}.field label{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}.error{color:var(--red);font-size:12px;margin-top:12px}.mobile-nav{display:none}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes wave{to{transform:translateX(80px) rotate(2deg)}}@media(max-width:1000px){.metrics{grid-template-columns:1fr 1fr}.metric.feature{grid-column:span 2}.layout{grid-template-columns:1fr}.control-grid{grid-template-columns:1fr 1fr}}@media(max-width:700px){.shell.on{display:block}.sidebar{display:none}.main{padding:20px 15px 80px}.topbar h1{font-size:24px}.metrics{grid-template-columns:1fr 1fr;gap:10px}.metric,.metric.feature{grid-column:span 1;min-height:125px;padding:15px}.metric.feature{grid-column:span 2}.metric-value{font-size:29px}.control-grid{grid-template-columns:1fr}.mobile-nav{display:flex;position:fixed;z-index:3;bottom:12px;left:12px;right:12px;padding:7px;background:#0b2131ee;border:1px solid var(--line);border-radius:14px;justify-content:space-around}.mobile-nav button{background:transparent;border:0;color:var(--muted);padding:9px;font-size:11px}.mobile-nav button.active{color:var(--cyan)}}</style>
-  </head>
-  <body>
-    <section class="auth" id="auth">
-      <div class="auth-box">
-        <h1>
-          ECOFLUX
-        </h1>
-        <p>
-          Central de operações para limpeza inteligente de rios.
-        </p>
-        <div class="auth-tabs">
-          <button class="active" onclick="authTab('login')">
-            Entrar
-          </button>
-          <button onclick="authTab('register')">
-            Criar acesso
-          </button>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFlux Dashboard v6</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .auth-screen {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-box h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-box p {
+            color: #94a3b8;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+        }
+
+        .auth-tabs button {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .auth-tabs button.active {
+            color: #06b6d4;
+            border-bottom-color: #06b6d4;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #06b6d4;
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-error {
+            color: #fca5a5;
+            font-size: 12px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .auth-error.show {
+            display: block;
+        }
+
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 12px;
+            border: 1px solid rgba(71, 85, 105, 0.2);
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-left p {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-small {
+            padding: 10px 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-small:hover {
+            border-color: #06b6d4;
+            color: #06b6d4;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 18px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-label {
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-unit {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4 0%, #0ea5e9 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .control-panel {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 65, 89, 0.4));
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-mode {
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            color: white;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-mode:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-mode.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 13px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid rgba(71, 85, 105, 0.3);
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            color: #cbd5e1;
+        }
+
+        table tr:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(6, 182, 212, 0.2);
+            color: #06b6d4;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .notifications {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 100%;
+            max-width: 350px;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #10b981;
+            font-size: 13px;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: rgba(239, 68, 68, 0.95);
+            border-left-color: #ef4444;
+        }
+
+        .notification.warning {
+            background: rgba(245, 158, 11, 0.95);
+            border-left-color: #f59e0b;
+        }
+
+        .notification.info {
+            background: rgba(59, 130, 246, 0.95);
+            border-left-color: #3b82f6;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left, .header-right {
+                width: 100%;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-group input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AUTH SCREEN -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-box">
+            <h1>EcoFlux</h1>
+            <p>Sistema de Limpeza Inteligente de Rios</p>
+
+            <div class="auth-tabs">
+                <button class="active" onclick="switchAuth('login')">Entrar</button>
+                <button onclick="switchAuth('register')">Cadastro</button>
+            </div>
+
+            <!-- LOGIN -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="auth-btn">Entrar</button>
+                <div class="auth-error" id="loginError"></div>
+            </form>
+
+            <!-- REGISTER -->
+            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha (mín. 6 caracteres)</label>
+                    <input type="password" id="registerPassword" minlength="6" required>
+                </div>
+                <button type="submit" class="auth-btn">Criar Conta</button>
+                <div class="auth-error" id="registerError"></div>
+            </form>
         </div>
-        <form class="auth-form on" id="login" onsubmit="login(event)">
-          <div class="field">
-            <label>
-              E-mail
-            </label>
-            <input class="input" id="le" required type="email">
-          </div>
-          <div class="field">
-            <label>
-              Senha
-            </label>
-            <input class="input" id="lp" required type="password">
-          </div>
-          <button class="btn" style="width:100%;margin-top:8px">
-            Acessar central
-          </button>
-          <div class="error" id="loginError">
-          </div>
-        </form>
-        <form class="auth-form" id="register" onsubmit="register(event)">
-          <div class="field">
-            <label>
-              Nome
-            </label>
-            <input class="input" id="rn" required>
-          </div>
-          <div class="field">
-            <label>
-              E-mail
-            </label>
-            <input class="input" id="re" required type="email">
-          </div>
-          <div class="field">
-            <label>
-              Senha
-            </label>
-            <input class="input" id="rp" required minlength="6" type="password">
-          </div>
-          <button class="btn" style="width:100%;margin-top:8px">
-            Criar acesso
-          </button>
-          <div class="error" id="registerError">
-          </div>
-        </form>
-      </div>
-    </section>
-    <div class="shell" id="shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <div class="brand-mark">
-            <i>
-            </i>
-            ECOFLUX
-          </div>
-          <small>
-            River care / 01
-          </small>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <div class="header-left">
+                <h1>EcoFlux</h1>
+                <p>Sistema de Limpeza Inteligente | <span id="userDisplay">Usuário</span></p>
+            </div>
+            <div class="header-right">
+                <button class="btn-small" id="espStatusBtn">ESP32: Aguardando...</button>
+                <button class="btn-small btn-logout" onclick="logout()">Sair</button>
+            </div>
         </div>
-        <nav class="nav">
-          <button class="active" onclick="view('dashboard',this)">
-            ◈ Visão geral
-          </button>
-          <button onclick="view('control',this)">
-            ◉ Controle
-          </button>
-          <button onclick="view('maintenance',this)">
-            ⌁ Manutenção
-          </button>
-          <button id="adminNav" style="display:none" onclick="view('admin',this)">
-            ▦ Admin
-          </button>
-        </nav>
-        <div class="sidebar-foot">
-          Sistema local
-          <br>
-          <span class="muted">
-            Dados salvos neste dispositivo
-          </span>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">Visão Geral</button>
+            <button class="tab-btn" onclick="switchTab('control')">Controle</button>
+            <button class="tab-btn" onclick="switchTab('maintenance')">Manutenção</button>
+            <button class="tab-btn admin-tab" style="display:none" onclick="switchTab('admin')">Admin</button>
         </div>
-      </aside>
-      <main class="main">
-        <header class="topbar">
-          <div>
-            <div class="eyebrow">
-              monitoramento / EcoFlux
-            </div>
-            <h1>
-              Olá,
-              <span id="userName">
-                operador
-              </span>
-              .
-            </h1>
-            <p>
-              Uma leitura limpa do que está acontecendo.
-            </p>
-          </div>
-          <div class="top-actions">
-            <button class="round" onclick="drawer('notifications')">
-              ♢
-            </button>
-            <button class="round" onclick="drawer('settings')">
-              ⚙
-            </button>
-            <div class="avatar" id="avatar">
-              OP
-            </div>
-          </div>
-        </header>
-        <section class="view on" id="dashboard">
-          <div class="metrics">
-            <div class="metric feature">
-              <div class="metric-label">
-                Estado da bomba
-              </div>
-              <div class="metric-value" id="pumpStatus">
-                Desligada
-              </div>
-              <div class="signal" id="signal">
-                aguardando ESP32
-              </div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">
-                Nível do coletor
-              </div>
-              <div class="metric-value">
-                <span id="bucketLevel">
-                  0
-                </span>
-                <em>
-                  %
-                </em>
-              </div>
-              <div class="meter">
-                <b id="bucketProgress">
-                </b>
-              </div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">
-                Bateria
-              </div>
-              <div class="metric-value">
-                <span id="batteryLevel">
-                  86
-                </span>
-                <em>
-                  %
-                </em>
-              </div>
-              <div class="meter">
-                <b id="batteryProgress">
-                </b>
-              </div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">
-                Tensão
-              </div>
-              <div class="metric-value">
-                <span id="batteryVoltage">
-                  12.40
-                </span>
-                <em>
-                  V
-                </em>
-              </div>
-            </div>
-          </div>
-          <div class="layout">
-            <div class="panel">
-              <div class="panel-head">
-                <h2>
-                  Fluxo do coletor
-                </h2>
-                <span class="muted">
-                  últimos registros
-                </span>
-              </div>
-              <canvas id="chart" class="chart" width="900" height="235">
-              </canvas>
-            </div>
-            <div class="panel">
-              <div class="panel-head">
-                <h2>
-                  Reservatório
-                </h2>
-                <span class="signal ok">
-                  telemetria
-                </span>
-              </div>
-              <div class="water">
-                <div class="water-core">
-                  <strong id="waterValue">
-                    0%
-                  </strong>
-                  <span>
-                    CAPACIDADE UTILIZADA
-                  </span>
+
+        <!-- TAB: OVERVIEW -->
+        <div class="tab-content active" id="overview">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-label">Bomba</div>
+                    <div class="card-value" id="pumpStatus">Desligada</div>
+                    <div class="card-unit" id="pumpMode">-</div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="view" id="control">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>
-                Comandos da operação
-              </h2>
-              <span class="muted">
-                GPIO 22 / GPIO 23
-              </span>
-            </div>
-            <div class="control-grid">
-              <div class="control-card">
-                <h3>
-                  Bomba
-                </h3>
-                <div class="btns">
-                  <button class="btn" onclick="pump(true)">
-                    Ligar bomba
-                  </button>
-                  <button class="btn off" onclick="pump(false)">
-                    Desligar
-                  </button>
+
+                <div class="card">
+                    <div class="card-label">Nível do Balde</div>
+                    <div class="card-value"><span id="bucketLevel">0</span><span style="font-size: 16px;">%</span></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="bucketProgress"></div>
+                    </div>
                 </div>
-              </div>
-              <div class="control-card">
-                <h3>
-                  Temporizador
-                </h3>
-                <div class="row">
-                  <input class="input" id="minutes" type="number" min="1" max="1440" value="30">
-                  <button class="btn alt" onclick="startTimer()">
-                    Iniciar
-                  </button>
+
+                <div class="card">
+                    <div class="card-label">Bateria</div>
+                    <div class="card-value"><span id="batteryLevel">0</span><span style="font-size: 16px;">%</span></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="batteryProgress"></div>
+                    </div>
                 </div>
-                <p class="muted" id="timerText">
-                  Nenhum timer ativo
-                </p>
-              </div>
-              <div class="control-card">
-                <h3>
-                  Modo de trabalho
-                </h3>
-                <div class="btns">
-                  <button class="btn alt" id="continuous" onclick="setMode('continuous')">
-                    Contínuo
-                  </button>
-                  <button class="btn alt" id="pulse" onclick="setMode('pulse')">
-                    Pulsante
-                  </button>
+
+                <div class="card">
+                    <div class="card-label">Tensão</div>
+                    <div class="card-value"><span id="voltage">0.00</span><span style="font-size: 16px;">V</span></div>
                 </div>
-              </div>
+
+                <div class="card">
+                    <div class="card-label">Horas da Bomba</div>
+                    <div class="card-value"><span id="pumpHours">0.00</span><span style="font-size: 16px;">h</span></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Conexão</div>
+                    <div class="card-value" id="connectionStatus" style="font-size: 20px;">❌</div>
+                    <div class="card-unit">Clique em "Conectar"</div>
+                </div>
             </div>
-          </div>
-          <div class="panel" style="margin-top:16px">
-            <div class="panel-head">
-              <h2>
-                Conexão física
-              </h2>
-              <span class="signal bad" id="connection">
-                não configurado
-              </span>
+        </div>
+
+        <!-- TAB: CONTROL -->
+        <div class="tab-content" id="control">
+            <div class="control-panel">
+                <div class="control-group">
+                    <div class="control-label">Conexão ESP32</div>
+                    <div class="input-group">
+                        <input type="text" id="espUrl" placeholder="http://192.168.1.100">
+                        <button class="btn btn-success" onclick="connectEsp()">Conectar</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Controle da Bomba</div>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="controlPump(true)">Ligar</button>
+                        <button class="btn btn-danger" onclick="controlPump(false)">Desligar</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Modo</div>
+                    <div class="btn-group">
+                        <button class="btn btn-mode active" id="btnContinuous" onclick="setMode('continuous')">Contínuo</button>
+                        <button class="btn btn-mode" id="btnPulse" onclick="setMode('pulse')">Pulsante</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Timer (minutos)</div>
+                    <div class="input-group">
+                        <input type="number" id="timerMinutes" min="1" max="1440" value="30">
+                        <button class="btn btn-success" onclick="startTimer()">Iniciar</button>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 12px; margin-top: 8px;" id="timerStatus">Nenhum timer</p>
+                </div>
             </div>
-            <p class="muted">
-              O navegador precisa alcançar o IP do ESP32 na mesma rede Wi-Fi.
-            </p>
-            <div class="row">
-              <input class="input" id="espIp" placeholder="http://192.168.1.100">
-              <button class="btn" onclick="saveEsp()">
-                Testar conexão
-              </button>
+        </div>
+
+        <!-- TAB: MAINTENANCE -->
+        <div class="tab-content" id="maintenance">
+            <div class="control-panel">
+                <div class="control-label" style="margin-bottom: 16px;">Status dos Componentes</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th>Uso</th>
+                            <th>Limite</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bomba</td>
+                            <td id="mainPumpHours">0.00 h</td>
+                            <td>500 h</td>
+                            <td><span class="badge">Bom</span></td>
+                        </tr>
+                        <tr>
+                            <td>Bateria</td>
+                            <td id="mainBatteryHours">0.00 ciclos</td>
+                            <td>300 ciclos</td>
+                            <td><span class="badge">Bom</span></td>
+                        </tr>
+                        <tr>
+                            <td>Filtro</td>
+                            <td id="mainFilterHours">0.00 h</td>
+                            <td>100 h</td>
+                            <td><span class="badge">Bom</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <p class="muted" style="font-size:12px">
-              GitHub Pages em HTTPS bloqueia HTTP local. Para testar, abra este arquivo por HTTP local ou hospede a interface no ESP32.
-            </p>
-          </div>
-        </section>
-        <section class="view" id="maintenance">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>
-                Vida dos componentes
-              </h2>
-              <span class="muted">
-                manutenção preventiva
-              </span>
+        </div>
+
+        <!-- TAB: ADMIN -->
+        <div class="tab-content" id="admin">
+            <div class="control-panel">
+                <div class="control-label" style="margin-bottom: 16px;">Contas Cadastradas (<span id="accountCount">0</span>)</div>
+                <table id="accountsTable">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Data Criação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accountsBody"></tbody>
+                </table>
             </div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>
-                    Componente
-                  </th>
-                  <th>
-                    Uso
-                  </th>
-                  <th>
-                    Limite
-                  </th>
-                  <th>
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    Bomba
-                  </td>
-                  <td id="pumpHours">
-                    0.00 h
-                  </td>
-                  <td>
-                    500 h
-                  </td>
-                  <td>
-                    <span class="pill">
-                      Bom
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    Bateria
-                  </td>
-                  <td>
-                    0.00 ciclos
-                  </td>
-                  <td>
-                    300 ciclos
-                  </td>
-                  <td>
-                    <span class="pill">
-                      Bom
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    Filtro
-                  </td>
-                  <td>
-                    0.00 h
-                  </td>
-                  <td>
-                    100 h
-                  </td>
-                  <td>
-                    <span class="pill">
-                      Bom
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-        <section class="view" id="admin">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>
-                Contas cadastradas
-              </h2>
-              <span class="muted" id="accountCount">
-                0 contas
-              </span>
-            </div>
-            <div id="accounts">
-            </div>
-          </div>
-        </section>
-      </main>
-      <nav class="mobile-nav">
-        <button class="active" onclick="view('dashboard',this)">
-          Visão
-        </button>
-        <button onclick="view('control',this)">
-          Controle
-        </button>
-        <button onclick="view('maintenance',this)">
-          Manutenção
-        </button>
-      </nav>
+        </div>
     </div>
-    <div class="drawer" id="drawer">
-      <button class="close" onclick="drawer()">
-        ×
-      </button>
-      <h2 id="drawerTitle">
-        Notificações
-      </h2>
-      <div id="drawerBody" class="muted">
-        Nenhuma notificação.
-      </div>
-    </div>
-    <div class="toast" id="toast">
-    </div>
-  <script>const KEY='ecoflux_users_v6',state={pump:false,mode:'continuous',bucket:18,battery:86,voltage:12.4,hours:0,history:[]};let timer=null;const $=id=>document.getElementById(id);function users(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return{}}}function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}function authTab(x){document.querySelectorAll('.auth-tabs button').forEach((b,i)=>b.classList.toggle('active',(x==='login'?i===0:i===1)));document.querySelectorAll('.auth-form').forEach(f=>f.classList.toggle('on',f.id===x))}function login(e){e.preventDefault();const d=users(),email=$('le').value.trim().toLowerCase();if(!d[email]||d[email].password!==$('lp').value){$('loginError').textContent='Acesso não encontrado. Crie uma conta primeiro.';return}sessionStorage.setItem('ecoflux_user',email);boot(d[email].name)}function register(e){e.preventDefault();const d=users(),email=$('re').value.trim().toLowerCase();if(d[email]){$('registerError').textContent='Este e-mail já está cadastrado.';return}d[email]={name:$('rn').value,password:$('rp').value};localStorage.setItem(KEY,JSON.stringify(d));sessionStorage.setItem('ecoflux_user',email);boot(d[email].name)}function boot(name){$('auth').style.display='none';$('shell').classList.add('on');$('userName').textContent=name;$('avatar').textContent=name.slice(0,2).toUpperCase();$('espIp').value=localStorage.getItem('ecoflux_esp_url')||'http://192.168.1.100';update();draw();poll();setInterval(poll,3500)}function view(id,b){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id));document.querySelectorAll('.nav button,.mobile-nav button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active')}function update(){const on=state.pump;$('pumpStatus').textContent=on?'Ligada':'Desligada';$('pumpStatus').style.color=on?'var(--lime)':'var(--red)';$('bucketLevel').textContent=Math.round(state.bucket);$('waterValue').textContent=Math.round(state.bucket)+'%';$('batteryLevel').textContent=Math.round(state.battery);$('batteryVoltage').textContent=state.voltage.toFixed(2);$('bucketProgress').style.width=state.bucket+'%';$('batteryProgress').style.width=state.battery+'%';$('signal').textContent=on?'bomba em operação':'sistema em espera';$('signal').className='signal '+(on?'ok':'');$('continuous').classList.toggle('active',state.mode==='continuous');$('pulse').classList.toggle('active',state.mode==='pulse');$('pumpHours').textContent=state.hours.toFixed(2)+' h'}function pump(on){state.pump=on;send('/api/pump?state='+(on?'on':'off'));toast(on?'Bomba ligada / GPIO 22 ativo':'Bomba desligada / GPIO 22 inativo');update()}function setMode(m){state.mode=m;send('/api/mode?value='+m);toast(m==='pulse'?'Modo pulsante / GPIO 23':'Modo contínuo');update()}function startTimer(){const n=Number($('minutes').value);if(!state.pump){toast('Ligue a bomba primeiro');return}if(!n||n<1){toast('Informe um tempo válido');return}clearTimeout(timer);$('timerText').textContent='Ativo por '+n+' minuto(s)';toast('Timer iniciado');timer=setTimeout(()=>{pump(false);$('timerText').textContent='Nenhum timer ativo'},n*60000)}function saveEsp(){let u=$('espIp').value.trim().replace(/\/$/,'');if(!u){toast('Informe o IP do ESP32');return}if(!/^https?:\/\//i.test(u))u='http://'+u;$('espIp').value=u;localStorage.setItem('ecoflux_esp_url',u);toast('Testando '+u);poll()}function base(){let u=localStorage.getItem('ecoflux_esp_url')||'http://192.168.1.100';if(!/^https?:\/\//i.test(u))u='http://'+u;return u}async function send(p){try{const r=await fetch(base()+p);if(!r.ok)throw Error();setConn(true);return await r.json()}catch{setConn(false);return null}}function setConn(ok){$('connection').textContent=ok?'conectado':'offline';$('connection').className='signal '+(ok?'ok':'bad')}async function poll(){const s=await send('/api/status');if(s){state.pump=!!s.pump;state.mode=s.mode||state.mode;update()}state.bucket=Math.max(0,Math.min(100,state.bucket+(state.pump?Math.random()*2:-.4)));state.history.push(state.bucket);if(state.history.length>55)state.history.shift();draw()}function draw(){const c=$('chart'),x=c.getContext('2d'),w=c.width=c.clientWidth*2,h=c.height=c.clientHeight*2;x.clearRect(0,0,w,h);x.strokeStyle='#1d4053';x.lineWidth=2;for(let y=25;y<h;y+=55){x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}if(state.history.length<2)return;x.beginPath();state.history.forEach((v,i)=>{const px=i*w/(state.history.length-1),py=h-20-v/100*(h-45);i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle='#48e6d0';x.lineWidth=6;x.shadowColor='#48e6d0';x.shadowBlur=18;x.stroke();x.shadowBlur=0}function drawer(t){if(!t){$('drawer').classList.remove('on');return}$('drawerTitle').textContent=t==='settings'?'Configurações':'Notificações';$('drawerBody').innerHTML=t==='settings'?'<p>IP do ESP32</p><input class="input" value="'+base()+'" onchange="localStorage.setItem(\'ecoflux_esp_url\',this.value)"><p class="muted">GPIO 22: bomba / GPIO 23: modo</p>':'<p>Central iniciada.</p><p class="muted">As ações ficam registradas neste dispositivo.</p>';$('drawer').classList.add('on')}const current=sessionStorage.getItem('ecoflux_user');if(current){const d=users();boot(d[current]?.name||'operador')}</script>
-  </body>
+
+    <!-- NOTIFICATIONS -->
+    <div class="notifications" id="notifications"></div>
+
+    <script>
+        // ========== STORAGE ==========
+        class Storage {
+            constructor() {
+                this.USERS_KEY = 'ecoflux_users_v7';
+                this.CURRENT_KEY = 'ecoflux_current_v7';
+                this.ESP_URL_KEY = 'ecoflux_esp_url_v7';
+            }
+
+            getUsers() {
+                try {
+                    return JSON.parse(localStorage.getItem(this.USERS_KEY) || '{}');
+                } catch {
+                    return {};
+                }
+            }
+
+            saveUsers(users) {
+                localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+            }
+
+            getCurrentUser() {
+                return localStorage.getItem(this.CURRENT_KEY);
+            }
+
+            setCurrentUser(email) {
+                localStorage.setItem(this.CURRENT_KEY, email);
+            }
+
+            clearCurrentUser() {
+                localStorage.removeItem(this.CURRENT_KEY);
+            }
+
+            getEspUrl() {
+                return localStorage.getItem(this.ESP_URL_KEY) || 'http://192.168.1.100';
+            }
+
+            setEspUrl(url) {
+                localStorage.setItem(this.ESP_URL_KEY, url);
+            }
+        }
+
+        const storage = new Storage();
+
+        // ========== ESTADO GLOBAL ==========
+        let appState = {
+            user: null,
+            isAdmin: false,
+            espConnected: false,
+            pumpActive: false,
+            pumpMode: 'continuous',
+            timerActive: false,
+            pumpHours: 0,
+            pumpMinutes: 0,
+            bucketLevel: 0,
+            batteryLevel: 0,
+            voltage: 0,
+            connectionRetries: 0
+        };
+
+        let timerInterval = null;
+
+        // ========== INIT ==========
+        window.addEventListener('load', () => {
+            const currentUser = storage.getCurrentUser();
+            if (currentUser) {
+                loadUser(currentUser);
+            } else {
+                showAuthScreen();
+            }
+        });
+
+        // ========== AUTH ==========
+        function switchAuth(tab) {
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.auth-tabs button').forEach((b, i) => {
+                b.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
+            });
+            document.getElementById(tab === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            // Admin hardcoded
+            if (email === 'admin@gmail.com' && password === 'admin') {
+                storage.setCurrentUser('admin@gmail.com');
+                loadUser('admin@gmail.com');
+                return;
+            }
+
+            const users = storage.getUsers();
+            if (!users[email] || users[email].password !== password) {
+                showAuthError('loginError', 'Email ou senha incorretos');
+                return;
+            }
+
+            storage.setCurrentUser(email);
+            loadUser(email);
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+            const password = document.getElementById('registerPassword').value;
+
+            const users = storage.getUsers();
+            if (users[email]) {
+                showAuthError('registerError', 'Email já cadastrado');
+                return;
+            }
+
+            users[email] = {
+                name,
+                email,
+                password,
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+
+            storage.saveUsers(users);
+            storage.setCurrentUser(email);
+            loadUser(email);
+        }
+
+        function showAuthError(elementId, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('dashboard').classList.remove('active');
+        }
+
+        function loadUser(email) {
+            const users = storage.getUsers();
+            let user = users[email];
+
+            if (!user && email === 'admin@gmail.com') {
+                user = {
+                    name: 'Admin',
+                    email: 'admin@gmail.com',
+                    role: 'admin'
+                };
+            }
+
+            appState.user = user;
+            appState.isAdmin = email === 'admin@gmail.com';
+
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('userDisplay').textContent = user.name;
+
+            // Mostrar admin tab
+            if (appState.isAdmin) {
+                document.querySelector('.admin-tab').style.display = 'block';
+                loadAdminPanel();
+            } else {
+                document.querySelector('.admin-tab').style.display = 'none';
+            }
+
+            // Carregar ESP URL
+            document.getElementById('espUrl').value = storage.getEspUrl();
+
+            // Iniciar polling
+            pollEsp();
+            setInterval(pollEsp, 3000);
+        }
+
+        function logout() {
+            storage.clearCurrentUser();
+            showAuthScreen();
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+        }
+
+        // ========== TABS ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ========== ESP32 CONNECTION ==========
+        function connectEsp() {
+            const url = document.getElementById('espUrl').value.trim();
+            if (!url) {
+                notify('Informe o IP do ESP32', 'error');
+                return;
+            }
+
+            storage.setEspUrl(url);
+            pollEsp();
+            notify('Tentando conectar...', 'info');
+        }
+
+        async function callEsp(endpoint) {
+            try {
+                const url = storage.getEspUrl();
+                const response = await fetch(url + endpoint, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors'
+                });
+
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+
+                const data = await response.json();
+                appState.espConnected = true;
+                appState.connectionRetries = 0;
+                return data;
+            } catch (err) {
+                appState.espConnected = false;
+                appState.connectionRetries++;
+                console.warn('ESP erro:', err.message);
+                return null;
+            }
+        }
+
+        async function pollEsp() {
+            const status = await callEsp('/api/status');
+
+            if (status) {
+                appState.pumpActive = status.pump;
+                appState.pumpMode = status.mode;
+                appState.bucketLevel = status.bucket;
+                appState.batteryLevel = status.battery;
+                appState.voltage = status.voltage;
+                appState.pumpHours = status.pumpHours;
+                appState.pumpMinutes = status.pumpMinutes;
+
+                updateUI();
+                updateEspStatus(true);
+            } else {
+                updateEspStatus(false);
+            }
+        }
+
+        function updateEspStatus(connected) {
+            const btn = document.getElementById('espStatusBtn');
+            if (connected) {
+                btn.textContent = '✅ ESP32: Conectado';
+                btn.style.borderColor = '#10b981';
+                btn.style.color = '#10b981';
+                document.getElementById('connectionStatus').textContent = '✅';
+            } else {
+                btn.textContent = '❌ ESP32: Desconectado';
+                btn.style.borderColor = '#ef4444';
+                btn.style.color = '#ef4444';
+                document.getElementById('connectionStatus').textContent = '❌';
+            }
+        }
+
+        // ========== CONTROLES ==========
+        async function controlPump(on) {
+            const endpoint = `/api/pump?state=${on ? 'on' : 'off'}`;
+            const result = await callEsp(endpoint);
+
+            if (result) {
+                notify(on ? 'Bomba ligada! 💧' : 'Bomba desligada', on ? 'info' : 'warning');
+                updateUI();
+            } else {
+                notify('Erro ao controlar bomba', 'error');
+            }
+        }
+
+        async function setMode(mode) {
+            const endpoint = `/api/mode?value=${mode}`;
+            const result = await callEsp(endpoint);
+
+            if (result) {
+                appState.pumpMode = mode;
+                document.getElementById('btnContinuous').classList.toggle('active', mode === 'continuous');
+                document.getElementById('btnPulse').classList.toggle('active', mode === 'pulse');
+                notify(`Modo ${mode === 'continuous' ? 'Contínuo' : 'Pulsante'} ativado`, 'info');
+            } else {
+                notify('Erro ao mudar modo', 'error');
+            }
+        }
+
+        function startTimer() {
+            if (!appState.pumpActive) {
+                notify('Ligue a bomba primeiro!', 'error');
+                return;
+            }
+
+            const minutes = parseInt(document.getElementById('timerMinutes').value);
+            if (!minutes || minutes < 1) {
+                notify('Tempo inválido', 'error');
+                return;
+            }
+
+            appState.timerActive = true;
+            let remaining = minutes * 60;
+
+            const update = () => {
+                const m = Math.floor(remaining / 60);
+                const s = remaining % 60;
+                document.getElementById('timerStatus').textContent = `Timer: ${m}m ${s}s`;
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    appState.timerActive = false;
+                    document.getElementById('timerStatus').textContent = 'Nenhum timer';
+                    controlPump(false);
+                    notify('Timer expirou! ⏱️', 'warning');
+                    return;
+                }
+
+                remaining--;
+            };
+
+            update();
+            timerInterval = setInterval(update, 1000);
+            notify(`Timer iniciado por ${minutes} minuto(s)`, 'info');
+        }
+
+        // ========== UI UPDATE ==========
+        function updateUI() {
+            document.getElementById('pumpStatus').textContent = appState.pumpActive ? 'Ligada' : 'Desligada';
+            document.getElementById('pumpStatus').style.color = appState.pumpActive ? '#10b981' : '#ef4444';
+            document.getElementById('pumpMode').textContent = appState.pumpMode === 'continuous' ? 'Modo: Contínuo' : 'Modo: Pulsante';
+
+            document.getElementById('bucketLevel').textContent = Math.round(appState.bucketLevel);
+            document.getElementById('bucketProgress').style.width = appState.bucketLevel + '%';
+
+            document.getElementById('batteryLevel').textContent = Math.round(appState.batteryLevel);
+            document.getElementById('batteryProgress').style.width = appState.batteryLevel + '%';
+
+            document.getElementById('voltage').textContent = appState.voltage.toFixed(2);
+
+            const totalHours = appState.pumpHours + (appState.pumpMinutes / 60);
+            document.getElementById('pumpHours').textContent = totalHours.toFixed(2);
+            document.getElementById('mainPumpHours').textContent = totalHours.toFixed(2) + ' h';
+        }
+
+        // ========== ADMIN PANEL ==========
+        function loadAdminPanel() {
+            const users = storage.getUsers();
+            const count = Object.keys(users).length + 1; // +1 para admin
+            document.getElementById('accountCount').textContent = count;
+
+            const tbody = document.getElementById('accountsBody');
+            tbody.innerHTML = '';
+
+            // Admin
+            const adminRow = tbody.insertRow();
+            adminRow.innerHTML = `
+                <td>Admin</td>
+                <td>admin@gmail.com</td>
+                <td><span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">Administrador</span></td>
+                <td>-</td>
+            `;
+
+            // Usuários
+            Object.entries(users).forEach(([email, user]) => {
+                const row = tbody.insertRow();
+                const created = new Date(user.createdAt).toLocaleDateString('pt-BR');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${email}</td>
+                    <td><span class="badge">Usuário</span></td>
+                    <td>${created}</td>
+                `;
+            });
+        }
+
+        // ========== NOTIFICATIONS ==========
+        function notify(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `notification ${type}`;
+            div.textContent = message;
+            document.getElementById('notifications').appendChild(div);
+
+            setTimeout(() => div.remove(), 3000);
+        }
+    </script>
+</body>
 </html>
