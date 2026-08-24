@@ -428,7 +428,6 @@ function update(){
 function pump(on){
   state.pump=on;
   send('/api/pump?s='+(on?'1':'0'));
-  send('/api/led?pin=21&state='+(on?'on':'off'));
   notify(on?'✅ Bomba ligada':'⏹️ Bomba desligada',on?'success':'info');
   if(!timerInterval2){
     if(on){
