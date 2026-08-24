@@ -63,7 +63,7 @@
           <button id="adminNav" style="display:none" onclick="view('admin',this)">▦ Admin</button>
         </nav>
         <div class="sidebar-foot">
-          Sistema local
+          Lixeira Aquática
           <br>
           <span class="muted">Dados salvos neste dispositivo</span>
         </div>
@@ -77,20 +77,36 @@
             <p>Uma leitura limpa do que está acontecendo.</p>
           </div>
           <div class="top-actions">
-            <button class="round" onclick="drawer('notifications')" title="Notificações">♢</button>
+            <button class="round" onclick="drawer('notifications')" title="Notificações" style="position:relative">
+              ♢
+              <span id="notifBadge" style="position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--orange);border-radius:50%;display:none"></span>
+            </button>
             <button class="round" onclick="drawer('settings')" title="Configurações">⚙</button>
-            <button class="round" onclick="logout()" title="Sair">🚪</button>
-            <div class="avatar" id="avatar">OP</div>
+            <div class="avatar" id="avatar" onclick="toggleUserMenu()" style="cursor:pointer;transition:.2s" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(1)'">OP</div>
+          </div>
+          <div id="userMenuPopup" style="position:absolute;top:60px;right:20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:150px;display:none;z-index:10;box-shadow:var(--shadow)">
+            <div style="color:var(--text);font-size:12px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--line)">
+              <strong id="userMenuName">User</strong><br>
+              <span class="muted" style="font-size:10px" id="userMenuEmail">email@test.com</span>
+            </div>
+            <button onclick="logout()" style="width:100%;padding:8px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">Sair</button>
           </div>
         </header>
 
         <!-- DASHBOARD -->
         <section class="view on" id="dashboard">
           <div class="metrics">
-            <div class="metric feature">
+            <div class="metric feature" style="position:relative">
               <div class="metric-label">Estado da bomba</div>
               <div class="metric-value" id="pumpStatus">Desligada</div>
               <div class="signal" id="signal">aguardando ESP32</div>
+              <div id="modePopup" style="position:absolute;top:12px;right:12px;background:rgba(72,230,208,0.2);border:1px solid rgba(72,230,208,0.5);border-radius:6px;padding:6px 10px;font-size:10px;color:var(--cyan);display:none;white-space:nowrap">
+                <strong id="modeText">Contínuo</strong>
+              </div>
+              <div id="timerPopup" style="position:absolute;top:12px;right:12px;background:rgba(255,173,102,0.2);border:1px solid rgba(255,173,102,0.5);border-radius:6px;padding:6px 10px;font-size:10px;color:var(--orange);display:none;white-space:nowrap">
+                <strong id="timerText2">15m 30s</strong>
+                <span onclick="cancelTimer()" style="margin-left:8px;cursor:pointer;font-weight:bold">✕</span>
+              </div>
             </div>
             <div class="metric">
               <div class="metric-label">Nível do coletor</div>
@@ -284,6 +300,8 @@ function notify(msg,type='info'){
   
   if(notifications.length>10)notifications.shift();
   notifications.push({msg,type,time:new Date().toLocaleTimeString()});
+  
+  $('notifBadge').style.display='block';
 }
 
 function authTab(x){
@@ -339,6 +357,8 @@ function boot(){
   $('shell').classList.add('on');
   $('userName').textContent=currentUser.name;
   $('avatar').textContent=currentUser.name.slice(0,2).toUpperCase();
+  $('userMenuName').textContent=currentUser.name;
+  $('userMenuEmail').textContent=currentUser.email;
   
   if(isAdmin){
     $('adminNav').style.display='block';
@@ -348,6 +368,9 @@ function boot(){
   }
   
   $('espIp').value=localStorage.getItem('ecoflux_esp_url')||'http://192.168.1.100';
+  $('modePopup').style.display='none';
+  $('timerPopup').style.display='none';
+  $('modeText').textContent=state.mode==='continuous'?'Contínuo':'Pulsante';
   update();
   draw();
   poll();
@@ -355,13 +378,20 @@ function boot(){
   notify(`Bem-vindo, ${currentUser.name}!`,'success');
 }
 
+function toggleUserMenu(){
+  const menu=$('userMenuPopup');
+  menu.style.display=menu.style.display==='none'?'block':'none';
+}
+
 function logout(){
   localStorage.removeItem('ecoflux_user');
   currentUser=null;
   isAdmin=false;
   if(pollInterval)clearInterval(pollInterval);
+  if(timer)clearTimeout(timer);
   $('auth').style.display='grid';
   $('shell').classList.remove('on');
+  $('userMenuPopup').style.display='none';
   $('loginError').textContent='';
   $('registerError').textContent='';
   $('le').value='';
@@ -398,7 +428,16 @@ function update(){
 function pump(on){
   state.pump=on;
   send('/api/pump?s='+(on?'1':'0'));
+  send('/api/led?pin=21&state='+(on?'on':'off'));
   notify(on?'✅ Bomba ligada':'⏹️ Bomba desligada',on?'success':'info');
+  if(!timerInterval2){
+    if(on){
+      $('modePopup').style.display='block';
+      $('timerPopup').style.display='none';
+    }else{
+      $('modePopup').style.display='none';
+    }
+  }
   update();
 }
 
@@ -406,9 +445,13 @@ function setMode(m){
   state.mode=m;
   const param=m==='continuous'?'c':'p';
   send('/api/mode?m='+param);
+  $('modeText').textContent=m==='continuous'?'Contínuo':'Pulsante';
   notify(m==='continuous'?'↔️ Modo Contínuo':'🔄 Modo Pulsante','info');
   update();
 }
+
+let timerRemaining=0;
+let timerInterval2=null;
 
 function startTimer(){
   const n=Number($('minutes').value);
@@ -422,14 +465,45 @@ function startTimer(){
   }
   
   clearTimeout(timer);
+  clearInterval(timerInterval2);
+  timerRemaining=n*60;
   $('timerText').textContent='Ativo por '+n+' minuto(s)';
+  $('timerPopup').style.display='block';
+  $('modePopup').style.display='none';
   notify('⏱️ Timer iniciado por '+n+'min','success');
   
+  const updateTimer=()=>{
+    const m=Math.floor(timerRemaining/60);
+    const s=timerRemaining%60;
+    $('timerText2').textContent=m+'m '+s.toString().padStart(2,'0')+'s';
+    timerRemaining--;
+    
+    if(timerRemaining<0){
+      clearInterval(timerInterval2);
+      pump(false);
+      $('timerPopup').style.display='none';
+      $('timerText').textContent='Nenhum timer ativo';
+      $('modePopup').style.display='block';
+      notify('⏰ Timer expirou!','warning');
+    }
+  };
+  
+  updateTimer();
+  timerInterval2=setInterval(updateTimer,1000);
+  
   timer=setTimeout(()=>{
-    pump(false);
-    $('timerText').textContent='Nenhum timer ativo';
-    notify('⏰ Timer expirou!','warning');
-  },n*60000);
+    clearInterval(timerInterval2);
+  },n*60000+1000);
+}
+
+function cancelTimer(){
+  clearTimeout(timer);
+  clearInterval(timerInterval2);
+  pump(false);
+  $('timerPopup').style.display='none';
+  $('timerText').textContent='Nenhum timer ativo';
+  $('modePopup').style.display='block';
+  notify('⏹️ Timer cancelado','info');
 }
 
 function saveEsp(){
@@ -506,10 +580,12 @@ function draw(){
 
 function drawer(t){
   if(!t){$('drawer').classList.remove('on');return;}
+  $('userMenuPopup').style.display='none';
   $('drawerTitle').textContent=t==='settings'?'Configurações':'Notificações';
   if(t==='settings'){
     $('drawerBody').innerHTML='<p>IP do ESP32</p><input class="input" value="'+base()+'" onchange="localStorage.setItem(\'ecoflux_esp_url\',this.value);poll()"><p class="muted">GPIO 22: bomba / GPIO 23: modo</p>';
   }else{
+    $('notifBadge').style.display='none';
     $('drawerBody').innerHTML=notifications.length?notifications.map(n=>'<p style="margin:8px 0;color:var(--text)">'+n.msg+'<br><span class="muted" style="font-size:10px">'+n.time+'</span></p>').join(''):'<p>Nenhuma notificação.</p>';
   }
   $('drawer').classList.add('on');
@@ -534,6 +610,14 @@ function loadAdmin(){
   if(count>1)$('adminTable').style.display='';
   $('noAccounts').style.display=count>1?'none':'';
 }
+
+document.addEventListener('click',(e)=>{
+  const menu=$('userMenuPopup');
+  const avatar=$('avatar');
+  if(!avatar.contains(e.target)&&!menu.contains(e.target)){
+    menu.style.display='none';
+  }
+});
 
 window.addEventListener('load',()=>{
   const saved=localStorage.getItem('ecoflux_user');
