@@ -1,6 +1,9 @@
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN
+});
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -21,13 +24,17 @@ export default async function handler(req, res) {
       });
     }
 
-    const auth = req.headers.authorization || "";
+    const authorization = req.headers.authorization || "";
 
     /*
-      ESP32 envia o status.
-    */
+     * =====================================================
+     * ESP32 ENVIANDO STATUS
+     * =====================================================
+     */
+
     if (req.method === "POST") {
-      if (auth !== `Bearer ${deviceToken}`) {
+
+      if (authorization !== `Bearer ${deviceToken}`) {
         return res.status(401).json({
           ok: false,
           error: "Não autorizado"
@@ -38,16 +45,33 @@ export default async function handler(req, res) {
 
       const status = {
         pump: !!body.pump,
-        mode: body.mode === "pulse" ? "pulse" : "continuous",
-        bucket: Number(body.bucket) || 0,
-        batt: Number(body.batt) || 0,
-        volt: Number(body.volt) || 0,
-        hours: Number(body.hours) || 0,
+
+        mode:
+          body.mode === "pulse"
+            ? "pulse"
+            : "continuous",
+
+        bucket:
+          Number(body.bucket) || 0,
+
+        batt:
+          Number(body.batt) || 0,
+
+        volt:
+          Number(body.volt) || 0,
+
+        hours:
+          Number(body.hours) || 0,
+
         online: true,
+
         time: Date.now()
       };
 
-      await redis.set("ecoflux:status", status);
+      await redis.set(
+        "ecoflux:status",
+        status
+      );
 
       return res.status(200).json({
         ok: true
@@ -55,12 +79,18 @@ export default async function handler(req, res) {
     }
 
     /*
-      Site consulta o status.
-    */
+     * =====================================================
+     * SITE CONSULTANDO STATUS
+     * =====================================================
+     */
+
     if (req.method === "GET") {
-      const status = await redis.get("ecoflux:status");
+
+      let status =
+        await redis.get("ecoflux:status");
 
       if (!status) {
+
         return res.status(200).json({
           ok: true,
           online: false,
@@ -73,17 +103,12 @@ export default async function handler(req, res) {
         });
       }
 
-      /*
-        Se o ESP32 não envia status há mais de 10 segundos,
-        consideramos offline.
-      */
-      const age = Date.now() - Number(status.time || 0);
+      const age =
+        Date.now() -
+        Number(status.time || 0);
 
-      if (age > 10000) {
-        status.online = false;
-      } else {
-        status.online = true;
-      }
+      status.online =
+        age <= 10000;
 
       return res.status(200).json(status);
     }
@@ -94,11 +119,12 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+
     console.error(error);
 
     return res.status(500).json({
       ok: false,
-      error: "Erro interno"
+      error: "Erro interno da API"
     });
   }
 }
