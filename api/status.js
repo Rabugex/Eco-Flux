@@ -5,46 +5,81 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN
 });
 
+const STATUS_KEY = "ecoflux:status";
+
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,OPTIONS"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
   try {
-    const deviceToken = process.env.ECOFLUX_DEVICE_TOKEN;
+
+    const deviceToken =
+      process.env.ECOFLUX_DEVICE_TOKEN;
 
     if (!deviceToken) {
       return res.status(500).json({
         ok: false,
-        error: "ECOFLUX_DEVICE_TOKEN não configurado"
+        error:
+          "ECOFLUX_DEVICE_TOKEN não configurado"
       });
     }
 
-    const authorization = req.headers.authorization || "";
+    const authorization =
+      req.headers.authorization || "";
 
     /*
      * =====================================================
-     * ESP32 ENVIANDO STATUS
+     * ESP32 ENVIA TELEMETRIA
      * =====================================================
      */
 
     if (req.method === "POST") {
 
-      if (authorization !== `Bearer ${deviceToken}`) {
+      if (
+        authorization !==
+        `Bearer ${deviceToken}`
+      ) {
         return res.status(401).json({
           ok: false,
           error: "Não autorizado"
         });
       }
 
-      const body = req.body || {};
+      let body = req.body || {};
+
+      if (typeof body === "string") {
+        try {
+          body = JSON.parse(body);
+        } catch {
+          return res.status(400).json({
+            ok: false,
+            error: "JSON inválido"
+          });
+        }
+      }
 
       const status = {
-        pump: !!body.pump,
+
+        pump:
+          body.pump === true ||
+          body.pump === 1,
 
         mode:
           body.mode === "pulse"
@@ -69,8 +104,11 @@ export default async function handler(req, res) {
       };
 
       await redis.set(
-        "ecoflux:status",
-        status
+        STATUS_KEY,
+        status,
+        {
+          ex: 20
+        }
       );
 
       return res.status(200).json({
@@ -80,26 +118,35 @@ export default async function handler(req, res) {
 
     /*
      * =====================================================
-     * SITE CONSULTANDO STATUS
+     * SITE CONSULTA TELEMETRIA
      * =====================================================
      */
 
     if (req.method === "GET") {
 
       let status =
-        await redis.get("ecoflux:status");
+        await redis.get(STATUS_KEY);
 
       if (!status) {
 
         return res.status(200).json({
+
           ok: true,
+
           online: false,
+
           pump: false,
+
           mode: "continuous",
+
           bucket: 0,
+
           batt: 0,
+
           volt: 0,
+
           hours: 0
+
         });
       }
 
@@ -120,7 +167,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Erro em /api/status:",
+      error
+    );
 
     return res.status(500).json({
       ok: false,
