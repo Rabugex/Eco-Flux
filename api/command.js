@@ -5,48 +5,65 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN
 });
 
+const COMMAND_KEY = "ecoflux:command";
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
   try {
-    const deviceToken = process.env.ECOFLUX_DEVICE_TOKEN;
+    const deviceToken =
+      process.env.ECOFLUX_DEVICE_TOKEN;
 
     if (!deviceToken) {
       return res.status(500).json({
         ok: false,
-        error: "ECOFLUX_DEVICE_TOKEN não configurado"
+        error:
+          "ECOFLUX_DEVICE_TOKEN não configurado"
       });
     }
 
-    const authorization = req.headers.authorization || "";
+    const authorization =
+      req.headers.authorization || "";
 
     /*
      * =====================================================
-     * ESP32 CONSULTANDO COMANDOS
+     * ESP32 CONSULTA COMANDOS
      * =====================================================
      */
 
     if (req.method === "GET") {
-      if (authorization !== `Bearer ${deviceToken}`) {
+
+      if (
+        authorization !==
+        `Bearer ${deviceToken}`
+      ) {
         return res.status(401).json({
           ok: false,
           error: "Não autorizado"
         });
       }
 
-      let command = await redis.get("ecoflux:command");
+      let command =
+        await redis.get(COMMAND_KEY);
 
       if (!command) {
         command = {
           pump: false,
           mode: "continuous",
-          id: 0
+          id: 0,
+          time: 0
         };
       }
 
@@ -58,17 +75,32 @@ export default async function handler(req, res) {
 
     /*
      * =====================================================
-     * SITE ENVIANDO COMANDO
+     * SITE ENVIA COMANDO
      * =====================================================
      */
 
     if (req.method === "POST") {
-      const body = req.body || {};
 
-      if (typeof body.pump !== "boolean") {
+      let body = req.body || {};
+
+      if (typeof body === "string") {
+        try {
+          body = JSON.parse(body);
+        } catch {
+          return res.status(400).json({
+            ok: false,
+            error: "JSON inválido"
+          });
+        }
+      }
+
+      if (
+        typeof body.pump !== "boolean"
+      ) {
         return res.status(400).json({
           ok: false,
-          error: "Valor da bomba inválido"
+          error:
+            "Valor da bomba inválido"
         });
       }
 
@@ -82,7 +114,8 @@ export default async function handler(req, res) {
         });
       }
 
-      let oldCommand = await redis.get("ecoflux:command");
+      let oldCommand =
+        await redis.get(COMMAND_KEY);
 
       let id = 1;
 
@@ -96,13 +129,16 @@ export default async function handler(req, res) {
       const command = {
         pump: body.pump,
         mode: body.mode,
-        id: id,
+        id,
         time: Date.now()
       };
 
       await redis.set(
-        "ecoflux:command",
-        command
+        COMMAND_KEY,
+        command,
+        {
+          ex: 60
+        }
       );
 
       return res.status(200).json({
@@ -118,7 +154,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Erro em /api/command:",
+      error
+    );
 
     return res.status(500).json({
       ok: false,
