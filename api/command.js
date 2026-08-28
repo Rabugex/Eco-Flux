@@ -1,6 +1,9 @@
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN
+});
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -17,62 +20,90 @@ export default async function handler(req, res) {
     if (!deviceToken) {
       return res.status(500).json({
         ok: false,
-        error: "ECOFLUX_DEVICE_TOKEN não configurado na Vercel"
+        error: "ECOFLUX_DEVICE_TOKEN não configurado"
       });
     }
 
-    /*
-      ESP32:
-      usa Authorization: Bearer TOKEN
-      para ler os comandos.
-    */
-    const auth = req.headers.authorization || "";
-
-    if (auth === `Bearer ${deviceToken}`) {
-      const command = await redis.get("ecoflux:command");
-
-      return res.status(200).json({
-        ok: true,
-        command: command || {
-          pump: false,
-          mode: "continuous",
-          id: 0
-        }
-      });
-    }
+    const authorization = req.headers.authorization || "";
 
     /*
-      Site:
-      envia comandos para o ESP32.
-    */
-    if (req.method === "POST") {
-      const body = req.body || {};
+     * =====================================================
+     * ESP32 CONSULTANDO COMANDOS
+     * =====================================================
+     */
 
-      if (
-        typeof body.pump !== "boolean" ||
-        (body.mode !== "continuous" && body.mode !== "pulse")
-      ) {
-        return res.status(400).json({
+    if (req.method === "GET") {
+      if (authorization !== `Bearer ${deviceToken}`) {
+        return res.status(401).json({
           ok: false,
-          error: "Comando inválido"
+          error: "Não autorizado"
         });
       }
 
-      const oldCommand = await redis.get("ecoflux:command");
+      let command = await redis.get("ecoflux:command");
 
-      const id =
-        oldCommand && typeof oldCommand.id === "number"
-          ? oldCommand.id + 1
-          : 1;
+      if (!command) {
+        command = {
+          pump: false,
+          mode: "continuous",
+          id: 0
+        };
+      }
+
+      return res.status(200).json({
+        ok: true,
+        command
+      });
+    }
+
+    /*
+     * =====================================================
+     * SITE ENVIANDO COMANDO
+     * =====================================================
+     */
+
+    if (req.method === "POST") {
+      const body = req.body || {};
+
+      if (typeof body.pump !== "boolean") {
+        return res.status(400).json({
+          ok: false,
+          error: "Valor da bomba inválido"
+        });
+      }
+
+      if (
+        body.mode !== "continuous" &&
+        body.mode !== "pulse"
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error: "Modo inválido"
+        });
+      }
+
+      let oldCommand = await redis.get("ecoflux:command");
+
+      let id = 1;
+
+      if (
+        oldCommand &&
+        typeof oldCommand.id === "number"
+      ) {
+        id = oldCommand.id + 1;
+      }
 
       const command = {
         pump: body.pump,
         mode: body.mode,
-        id,
+        id: id,
         time: Date.now()
       };
 
-      await redis.set("ecoflux:command", command);
+      await redis.set(
+        "ecoflux:command",
+        command
+      );
 
       return res.status(200).json({
         ok: true,
@@ -86,11 +117,12 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+
     console.error(error);
 
     return res.status(500).json({
       ok: false,
-      error: "Erro interno"
+      error: "Erro interno da API"
     });
   }
 }
