@@ -1739,7 +1739,7 @@ async function sendCommand(
 
   try{
 
-    const response=
+    const response =
       await fetch(
         '/api/command',
         {
@@ -1751,32 +1751,44 @@ async function sendCommand(
           },
 
           body:JSON.stringify({
+
             pump:
               !!pumpValue,
 
             mode:
-              modeValue==='pulse'
+              modeValue === 'pulse'
                 ? 'pulse'
                 : 'continuous'
+
           })
         }
       );
 
-    if(!response.ok)
+    if(!response.ok){
+
       throw new Error(
         'HTTP '+response.status
       );
 
-    const data=
+    }
+
+    const data =
       await response.json();
 
-    if(!data.ok)
+    if(!data.ok){
+
       throw new Error(
         data.error ||
         'Erro'
       );
 
-    setConn(true);
+    }
+
+    /*
+     * O comando foi salvo na nuvem.
+     * A conexão real com o ESP32 é
+     * verificada pela função poll().
+     */
 
     return data;
 
@@ -1786,8 +1798,6 @@ async function sendCommand(
       'Erro ao enviar comando:',
       error
     );
-
-    setConn(false);
 
     return null;
 
