@@ -65,19 +65,23 @@ button{cursor:pointer}
 .btns{display:flex;gap:8px;flex-wrap:wrap}
 .btn{border:1px solid transparent;border-radius:9px;padding:11px 14px;color:#07131f;font-weight:750;background:var(--cyan);transition:.2s}
 .btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 .btn.off{background:transparent;color:var(--red);border-color:#ff687d66}
 .btn.alt{background:#19394b;color:var(--text);border-color:var(--line)}
 .btn.active{outline:2px solid var(--lime);outline-offset:2px}
 .input{width:100%;background:#071522;border:1px solid var(--line);border-radius:8px;padding:11px;color:var(--text);outline:0}
 .input:focus{border-color:var(--cyan)}
+.input:disabled{opacity:0.6;cursor:not-allowed}
 .row{display:flex;gap:9px;align-items:center}
 .table{width:100%;border-collapse:collapse}
 .table th,.table td{text-align:left;padding:15px 10px;border-bottom:1px solid var(--line)}
 .table th{color:var(--muted);font-size:11px;text-transform:uppercase}
 .pill{color:var(--lime);background:#b8f36b15;border:1px solid #b8f36b40;border-radius:20px;padding:5px 9px;font-size:11px}
+.pill.warning{color:var(--orange);border-color:#ffad6640;background:#ffad6615}
+.pill.error{color:var(--red);border-color:#ff687d40;background:#ff687d15}
 .toast{position:fixed;right:24px;bottom:24px;padding:15px 18px;border:1px solid var(--cyan);background:#0d2938;color:var(--text);border-radius:10px;box-shadow:var(--shadow);transform:translateY(130px);transition:.3s;z-index:5}
 .toast.show{transform:none}
-.drawer{position:fixed;right:20px;top:20px;width:min(370px,calc(100% - 40px));padding:24px;background:#0b1e2e;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:4;display:none}
+.drawer{position:fixed;right:20px;top:20px;width:min(370px,calc(100% - 40px));padding:24px;background:#0b1e2e;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:4;display:none;max-height:80vh;overflow-y:auto}
 .drawer.on{display:block}
 .close{float:right;background:transparent;color:var(--muted);border:0;font-size:20px;cursor:pointer}
 .auth{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,#12434b,#07131f 48%)}
@@ -99,6 +103,8 @@ button{cursor:pointer}
 .notif-toast.success{border-left:4px solid var(--lime);background:#0a1b15;color:var(--lime);border:1px solid var(--lime)}
 .notif-toast.error{border-left:4px solid var(--red);background:#1b0a0a;color:var(--red);border:1px solid var(--red)}
 .notif-toast.warning{border-left:4px solid var(--orange);background:#1b1208;color:var(--orange);border:1px solid var(--orange)}
+.offline-banner{background:#ff687d15;border:1px solid #ff687d40;padding:12px 16px;border-radius:10px;margin-bottom:20px;color:var(--red);font-size:12px;display:none}
+.offline-banner.show{display:block}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes wave{to{transform:translateX(80px) rotate(2deg)}}
 @media(max-width:1000px){
@@ -386,6 +392,10 @@ Sair
 class="view on"
 id="dashboard">
 
+<div class="offline-banner" id="offlineBanner">
+⚠️ ESP32 OFFLINE - Mostrando últimos dados conhecidos
+</div>
+
 <div class="metrics">
 
 <div
@@ -496,7 +506,7 @@ Fluxo do coletor
 </h2>
 
 <span class="muted">
-últimos registros
+últimos 55 registros
 </span>
 
 </div>
@@ -518,7 +528,7 @@ height="235">
 Reservatório
 </h2>
 
-<span class="signal ok">
+<span class="signal ok" id="waterSignal">
 telemetria
 </span>
 
@@ -552,6 +562,10 @@ CAPACIDADE UTILIZADA
 class="view"
 id="control">
 
+<div class="offline-banner" id="offlineBanner2">
+⚠️ ESP32 OFFLINE - Comandos podem não ser processados
+</div>
+
 <div class="panel">
 
 <div class="panel-head">
@@ -561,7 +575,7 @@ Comandos da operação
 </h2>
 
 <span class="muted">
-GPIO 22 / GPIO 23
+GPIO 22 (Bomba) / GPIO 13 (Sensor)
 </span>
 
 </div>
@@ -578,12 +592,14 @@ Bomba
 
 <button
 class="btn"
+id="btnPumpOn"
 onclick="pump(true)">
 Ligar bomba
 </button>
 
 <button
 class="btn off"
+id="btnPumpOff"
 onclick="pump(false)">
 Desligar
 </button>
@@ -610,6 +626,7 @@ value="30">
 
 <button
 class="btn alt"
+id="btnTimer"
 onclick="startTimer()">
 Iniciar
 </button>
@@ -673,8 +690,8 @@ offline
 </div>
 
 <p class="muted">
-O site se comunica com o ESP32 pela nuvem.
-O celular ou computador pode estar em outra rede Wi-Fi.
+O site se comunica com o ESP32 pela nuvem (Vercel + Upstash).
+Se o ESP32 está offline, nenhum comando será processado.
 </p>
 
 <div class="row">
@@ -682,11 +699,12 @@ O celular ou computador pode estar em outra rede Wi-Fi.
 <input
 class="input"
 id="espIp"
-placeholder="Comunicação pela nuvem">
+placeholder="Status da conexão"
+disabled>
 
 <button
 class="btn"
-onclick="saveEsp()">
+onclick="testConnection()">
 Testar conexão
 </button>
 
@@ -696,8 +714,8 @@ Testar conexão
 class="muted"
 style="font-size:12px">
 
-A comunicação principal utiliza Vercel + Upstash.
-O IP local do ESP32 não é necessário.
+Você também pode acessar a página local do ESP32 em:
+<br><strong>http://ecoflux.local</strong> (se estiver na mesma rede)
 
 </p>
 
@@ -767,7 +785,7 @@ Bomba
 500 h
 </td>
 
-<td>
+<td id="pumpStatus2">
 <span class="pill">
 Bom
 </span>
@@ -781,7 +799,7 @@ Bom
 Bateria
 </td>
 
-<td>
+<td id="batteryHours">
 0.00 ciclos
 </td>
 
@@ -789,7 +807,7 @@ Bateria
 300 ciclos
 </td>
 
-<td>
+<td id="batteryStatus2">
 <span class="pill">
 Bom
 </span>
@@ -803,7 +821,7 @@ Bom
 Filtro
 </td>
 
-<td>
+<td id="filterHours">
 0.00 h
 </td>
 
@@ -811,7 +829,7 @@ Filtro
 100 h
 </td>
 
-<td>
+<td id="filterStatus2">
 <span class="pill">
 Bom
 </span>
@@ -957,15 +975,18 @@ const ADMIN_EMAIL='admin@gmail.com';
 
 const ADMIN_PASS='admin';
 
+const VERCEL_API='https://eco-flux-mu.vercel.app/api';
+
 let state={
   pump:false,
   mode:'continuous',
-  bucket:18,
+  bucket:0,
   battery:86,
   voltage:12.4,
   hours:0,
   history:[],
-  connected:false
+  connected:false,
+  lastUpdate:0
 };
 
 let timer=null;
@@ -1442,6 +1463,20 @@ function update(){
           : 'bad'
       );
 
+  $('waterSignal')
+    .className=
+      'signal '+
+      (
+        state.connected
+          ? 'ok'
+          : 'bad'
+      );
+
+  $('waterSignal').textContent=
+    state.connected
+      ? 'telemetria'
+      : 'sem telemetria';
+
   $('continuous')
     .classList.toggle(
       'active',
@@ -1459,6 +1494,77 @@ function update(){
       Number(state.hours)
         .toFixed(2)+' h';
 
+  // Status de manutenção
+  updateMaintenanceStatus();
+
+  // Banners offline
+  const offlineBanners=
+    document.querySelectorAll(
+      '.offline-banner'
+    );
+
+  offlineBanners.forEach(b=>{
+    b.classList.toggle(
+      'show',
+      !state.connected
+    );
+  });
+
+  // Desabilita botões se offline
+  $('btnPumpOn').disabled=
+    !state.connected;
+
+  $('btnPumpOff').disabled=
+    !state.connected;
+
+  $('btnTimer').disabled=
+    !state.connected;
+
+  $('minutes').disabled=
+    !state.connected;
+
+  $('continuous').disabled=
+    !state.connected;
+
+  $('pulse').disabled=
+    !state.connected;
+
+}
+
+function updateMaintenanceStatus(){
+  // Bomba: 500h
+  const pumpPercent=(state.hours/500)*100;
+  let pumpPill=
+    pumpPercent<80
+      ? '<span class="pill">Bom</span>'
+      : pumpPercent<95
+      ? '<span class="pill warning">Aviso</span>'
+      : '<span class="pill error">Crítico</span>';
+
+  $('pumpStatus2').innerHTML=pumpPill;
+
+  // Filtro: 100h
+  const filterPercent=(state.hours/100)*100;
+  let filterPill=
+    filterPercent<80
+      ? '<span class="pill">Bom</span>'
+      : filterPercent<95
+      ? '<span class="pill warning">Aviso</span>'
+      : '<span class="pill error">Crítico</span>';
+
+  $('filterStatus2').innerHTML=filterPill;
+  $('filterHours').textContent=
+    Number(state.hours).toFixed(2)+' h';
+
+  // Bateria: 300 ciclos (estimado)
+  const batteryPercent=
+    ((13.8-state.voltage)/(13.8-10.5))*100;
+  let batteryPill=
+    state.battery>20
+      ? '<span class="pill">Bom</span>'
+      : '<span class="pill warning">Aviso</span>';
+
+  $('batteryStatus2').innerHTML=batteryPill;
 }
 
 
@@ -1468,9 +1574,11 @@ function update(){
 
 async function pump(on){
 
-  /*
-   * Atualização imediata da interface.
-   */
+  if(!state.connected){
+    notify('❌ ESP32 offline',
+    'error');
+    return;
+  }
 
   state.pump=on;
 
@@ -1495,10 +1603,6 @@ async function pump(on){
 
   }
 
-  /*
-   * Envia para Vercel/Upstash.
-   */
-
   const result=
     await sendCommand(
       on,
@@ -1519,7 +1623,7 @@ async function pump(on){
   }else{
 
     notify(
-      '❌ Não foi possível enviar o comando',
+      '❌ Falha ao enviar comando',
       'error'
     );
 
@@ -1533,6 +1637,12 @@ async function pump(on){
    ========================================================= */
 
 async function setMode(m){
+
+  if(!state.connected){
+    notify('❌ ESP32 offline',
+    'error');
+    return;
+  }
 
   state.mode=m;
 
@@ -1561,7 +1671,7 @@ async function setMode(m){
   }else{
 
     notify(
-      '❌ Não foi possível alterar o modo',
+      '❌ Falha ao alterar modo',
       'error'
     );
 
@@ -1580,6 +1690,12 @@ function startTimer(){
     Number(
       $('minutes').value
     );
+
+  if(!state.connected){
+    notify('❌ ESP32 offline',
+    'error');
+    return;
+  }
 
   if(!state.pump){
 
@@ -1729,7 +1845,7 @@ function cancelTimer(){
 
 
 /* =========================================================
-   CONEXÃO CLOUD
+   COMANDOS
    ========================================================= */
 
 async function sendCommand(
@@ -1741,7 +1857,7 @@ async function sendCommand(
 
     const response =
       await fetch(
-        '/api/command',
+        VERCEL_API+'/command',
         {
           method:'POST',
 
@@ -1775,22 +1891,7 @@ async function sendCommand(
     const data =
       await response.json();
 
-    if(!data.ok){
-
-      throw new Error(
-        data.error ||
-        'Erro'
-      );
-
-    }
-
-    /*
-     * O comando foi salvo na nuvem.
-     * A conexão real com o ESP32 é
-     * verificada pela função poll().
-     */
-
-    return data;
+    return data.ok;
 
   }catch(error){
 
@@ -1799,7 +1900,7 @@ async function sendCommand(
       error
     );
 
-    return null;
+    return false;
 
   }
 
@@ -1810,7 +1911,7 @@ async function sendCommand(
    TESTAR CONEXÃO
    ========================================================= */
 
-function saveEsp(){
+function testConnection(){
 
   notify(
     '☁️ Testando conexão com o ESP32...',
@@ -1823,7 +1924,7 @@ function saveEsp(){
 
 
 /* =========================================================
-   STATUS
+   TELEMETRIA
    ========================================================= */
 
 async function poll(){
@@ -1832,7 +1933,7 @@ async function poll(){
 
     const response=
       await fetch(
-        '/api/status',
+        VERCEL_API+'/status',
         {
           method:'GET',
           cache:'no-store'
@@ -1877,6 +1978,9 @@ async function poll(){
       state.hours=
         Number(s.hours)||0;
 
+      state.lastUpdate=
+        Date.now();
+
       setConn(true);
 
       update();
@@ -1893,10 +1997,6 @@ async function poll(){
     setConn(false);
 
   }
-
-  /*
-   * Histórico do gráfico.
-   */
 
   state.history.push(
     state.bucket
@@ -1937,18 +2037,6 @@ function setConn(ok){
           ? 'ok'
           : 'bad'
       );
-
-  if(!ok){
-
-    $('signal')
-      .textContent=
-      'ESP32 offline';
-
-    $('signal')
-      .className=
-      'signal bad';
-
-  }
 
 }
 
@@ -2117,12 +2205,20 @@ function drawer(t){
 
     $('drawerBody')
       .innerHTML=
-        '<p>Comunicação</p>'+
+        '<p><strong>Comunicação</strong></p>'+
         '<p class="muted">'+
         'Vercel + Upstash + ESP32'+
         '</p>'+
         '<p class="muted">'+
-        'GPIO 22: bomba / GPIO 23: modo'+
+        'GPIO 22: Relé da Bomba<br>'+
+        'GPIO 12: TRIG Sensor<br>'+
+        'GPIO 13: ECHO Sensor<br>'+
+        'GPIO 35: Tensão Bateria'+
+        '</p>'+
+        '<p><strong>Acesso Local</strong></p>'+
+        '<p class="muted">'+
+        'Se estiver na mesma rede do ESP32:<br>'+
+        '<a href="http://ecoflux.local" style="color:var(--cyan)" target="_blank">http://ecoflux.local</a>'+
         '</p>';
 
   }else{
@@ -2219,7 +2315,7 @@ function loadAdmin(){
 
 
 /* =========================================================
-   PROTEÇÃO DO ADMIN
+   PROTEÇÃO
    ========================================================= */
 
 function escapeHtml(value){
@@ -2250,7 +2346,7 @@ function escapeHtml(value){
 
 
 /* =========================================================
-   CLIQUE FORA DO MENU
+   EVENT LISTENERS
    ========================================================= */
 
 document.addEventListener(
@@ -2275,20 +2371,10 @@ document.addEventListener(
   }
 );
 
-
-/* =========================================================
-   REDIMENSIONAMENTO
-   ========================================================= */
-
 window.addEventListener(
   'resize',
   draw
 );
-
-
-/* =========================================================
-   LOAD
-   ========================================================= */
 
 window.addEventListener(
   'load',
