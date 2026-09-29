@@ -252,7 +252,7 @@ id="registerError">
 <i></i>ECOFLUX
 </div>
 
-<small>
+<small id="statusBrand">
 Coleta Automática / 01
 </small>
 
@@ -652,7 +652,7 @@ style="margin-top:16px">
 <div class="panel-head">
 
 <h2>
-Conexão
+Conectar a um Roteador
 </h2>
 
 <span
@@ -664,34 +664,38 @@ offline
 </div>
 
 <p class="muted">
-O site se comunica com o ESP32 pela nuvem (Vercel + Upstash).
-Se o ESP32 está offline, nenhum comando será processado.
+<strong>Via Celular (Hotspot):</strong>
 </p>
 
-<div class="row">
+<ol style="color:var(--muted);font-size:12px;margin:12px 0;padding-left:20px">
+<li>Vá às <strong>Configurações Avançadas do Roteador</strong></li>
+<li>Procure por <strong>MAC Address Cloning</strong> ou <strong>MAC Aleatório</strong></li>
+<li>Mude de <strong>MAC Aleatório</strong> para usar o <strong>MAC do seu telefone</strong></li>
+<li>Altere a <strong>Banda WiFi</strong> de <strong>5GHz para 2.4GHz</strong> (melhor estabilidade)</li>
+<li>Conecte o ESP32 normalmente à rede</li>
+</ol>
 
+<p class="muted">
+<strong>Acesso Local:</strong>
+</p>
+
+<div class="row" style="margin:12px 0">
 <input
 class="input"
-id="espIp"
-placeholder="Status da conexão"
-disabled>
-
-<button
-class="btn"
-onclick="testConnection()">
-Testar conexão
-</button>
-
+value="http://ecoflux.local"
+style="background:#071522;cursor:text"
+readonly>
 </div>
 
 <p
 class="muted"
-style="font-size:12px">
-
-Você também pode acessar a página local do ESP32 em:
-<br><strong>http://ecoflux.local</strong> (se estiver na mesma rede)
-
+style="font-size:11px;margin:12px 0">
+Use esse endereço se estiver na mesma rede do ESP32.
 </p>
+
+<div style="background:#ff687d15;border:1px solid #ff687d40;padding:12px;border-radius:8px;margin-top:16px;font-size:11px;color:var(--red)">
+<strong>🔒 Privacidade:</strong> Nenhum dos dados (leituras da bomba, bateria, sensor) é compartilhado com terceiros. Tudo é armazenado localmente no seu dispositivo e sincronizado apenas via sua conexão pessoal com o servidor Vercel/Upstash que você controla.
+</div>
 
 </div>
 
@@ -1439,14 +1443,10 @@ function update(){
       )+'%';
 
   if(state.connected){
-    $('signal')
-      .textContent=
-        on
-          ? 'bomba em operação'
-          : 'sistema em espera';
-
-    $('signal')
-      .className='signal ok';
+    $('statusBrand').textContent=
+      on
+        ? '✓ Operacional'
+        : 'Coleta Automática / 01';
 
     $('waterSignal')
       .className='signal ok';
@@ -1459,12 +1459,8 @@ function update(){
     $('voltageWarning').style.display='none';
 
   }else{
-    $('signal')
-      .textContent=
-        'ESP32 offline';
-
-    $('signal')
-      .className='signal bad';
+    $('statusBrand').textContent=
+      '⚠️ ESP32 offline';
 
     $('waterSignal')
       .className='signal bad';
@@ -1475,8 +1471,6 @@ function update(){
     $('pumpWarning').style.display='block';
     $('batteryWarning').style.display='block';
     $('voltageWarning').style.display='block';
-
-    notify('⚠️ ESP32 desconectado','error');
   }
 
   $('continuous')
