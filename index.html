@@ -394,7 +394,7 @@ class="view on"
 id="dashboard">
 
 <div class="offline-banner" id="offlineBanner">
-⚠️ ESP32 OFFLINE - Mostrando últimos dados conhecidos
+⚠️ OFFLINE - Mostrando últimos dados conhecidos
 </div>
 
 <div class="metrics">
@@ -411,12 +411,6 @@ Estado da bomba
 class="metric-value"
 id="pumpStatus">
 Desligada
-</div>
-
-<div
-class="signal"
-id="signal">
-aguardando ESP32
 </div>
 
 <div
@@ -502,9 +496,7 @@ height="235">
 Reservatório
 </h2>
 
-<span class="signal ok" id="waterSignal">
-telemetria
-</span>
+<span class="signal ok" id="waterSignal" style="display:none"></span>
 
 </div>
 
@@ -537,7 +529,7 @@ class="view"
 id="control">
 
 <div class="offline-banner" id="offlineBanner2">
-⚠️ ESP32 OFFLINE - Comandos podem não ser processados
+⚠️ OFFLINE - Comandos podem não ser processados
 </div>
 
 <div class="panel">
@@ -652,16 +644,22 @@ style="margin-top:16px">
 <div class="panel-head">
 
 <h2>
-Conectar a um Roteador
+Conexão
 </h2>
 
-<span
-class="signal bad"
-id="connection">
-offline
-</span>
-
 </div>
+
+<p class="muted">
+<strong>Conexão Inicial:</strong>
+</p>
+
+<ol style="color:var(--muted);font-size:12px;margin:12px 0;padding-left:20px">
+<li>Procure a rede WiFi do dispositivo (começa com "EcoFlux-Setup")</li>
+<li>Se não aparecer, segure o botão BOOT do dispositivo por 5 segundos</li>
+<li>Conecte a essa rede WiFi</li>
+<li>Abra um navegador e acesse <strong>http://192.168.4.1</strong></li>
+<li>Configure o WiFi do seu roteador nas configurações do dispositivo</li>
+</ol>
 
 <p class="muted">
 <strong>Via Celular (Hotspot):</strong>
@@ -669,32 +667,14 @@ offline
 
 <ol style="color:var(--muted);font-size:12px;margin:12px 0;padding-left:20px">
 <li>Vá às <strong>Configurações Avançadas do Roteador</strong></li>
-<li>Procure por <strong>MAC Address Cloning</strong> ou <strong>MAC Aleatório</strong></li>
+<li>Procure por <strong>tipo de endereço MAC</strong></li>
 <li>Mude de <strong>MAC Aleatório</strong> para usar o <strong>MAC do seu telefone</strong></li>
 <li>Altere a <strong>Banda WiFi</strong> de <strong>5GHz para 2.4GHz</strong> (melhor estabilidade)</li>
-<li>Conecte o ESP32 normalmente à rede</li>
+<li>Conecte o dispositivo normalmente à rede</li>
 </ol>
 
-<p class="muted">
-<strong>Acesso Local:</strong>
-</p>
-
-<div class="row" style="margin:12px 0">
-<input
-class="input"
-value="http://ecoflux.local"
-style="background:#071522;cursor:text"
-readonly>
-</div>
-
-<p
-class="muted"
-style="font-size:11px;margin:12px 0">
-Use esse endereço se estiver na mesma rede do ESP32.
-</p>
-
 <div style="background:#ff687d15;border:1px solid #ff687d40;padding:12px;border-radius:8px;margin-top:16px;font-size:11px;color:var(--red)">
-<strong>🔒 Privacidade:</strong> Nenhum dos dados (leituras da bomba, bateria, sensor) é compartilhado com terceiros. Tudo é armazenado localmente no seu dispositivo e sincronizado apenas via sua conexão pessoal com o servidor Vercel/Upstash que você controla.
+<strong>🔒 Privacidade:</strong> Sua senha e dados de WiFi nunca são compartilhados com ninguém. Ficam apenas no seu navegador.
 </div>
 
 </div>
@@ -1448,11 +1428,17 @@ function update(){
         ? '✓ Operacional'
         : 'Coleta Automática / 01';
 
+      '● online';
+
+      'var(--lime)';
+
+      'block';
+
     $('waterSignal')
       .className='signal ok';
 
     $('waterSignal').textContent=
-      'telemetria';
+      '';
 
     $('pumpWarning').style.display='none';
     $('batteryWarning').style.display='none';
@@ -1460,13 +1446,19 @@ function update(){
 
   }else{
     $('statusBrand').textContent=
-      '⚠️ ESP32 offline';
+      '⚠️ offline';
+
+      '● offline';
+
+      'var(--red)';
+
+      'block';
 
     $('waterSignal')
       .className='signal bad';
 
     $('waterSignal').textContent=
-      'sem telemetria';
+      '';
 
     $('pumpWarning').style.display='block';
     $('batteryWarning').style.display='block';
@@ -1565,7 +1557,7 @@ function updateMaintenanceStatus(){
 async function pump(on){
 
   if(!state.connected){
-    notify('❌ ESP32 offline',
+    notify('❌ Sistema offline',
     'error');
     return;
   }
@@ -1626,7 +1618,7 @@ async function pump(on){
 async function setMode(m){
 
   if(!state.connected){
-    notify('❌ ESP32 offline',
+    notify('❌ Sistema offline',
     'error');
     return;
   }
@@ -1679,7 +1671,7 @@ function startTimer(){
     );
 
   if(!state.connected){
-    notify('❌ ESP32 offline',
+    notify('❌ Sistema offline',
     'error');
     return;
   }
@@ -1880,7 +1872,7 @@ async function sendCommand(
 function testConnection(){
 
   notify(
-    '☁️ Testando conexão com o ESP32...',
+    '☁️ Testando conexão...',
     'info'
   );
 
@@ -2173,18 +2165,7 @@ function drawer(t){
       .innerHTML=
         '<p><strong>Comunicação</strong></p>'+
         '<p class="muted">'+
-        'Vercel + Upstash + ESP32'+
-        '</p>'+
-        '<p class="muted">'+
-        'GPIO 22: Relé da Bomba<br>'+
-        'GPIO 12: TRIG Sensor<br>'+
-        'GPIO 13: ECHO Sensor<br>'+
-        'GPIO 35: Tensão Bateria'+
-        '</p>'+
-        '<p><strong>Acesso Local</strong></p>'+
-        '<p class="muted">'+
-        'Se estiver na mesma rede do ESP32:<br>'+
-        '<a href="http://ecoflux.local" style="color:var(--cyan)" target="_blank">http://ecoflux.local</a>'+
+        'Nuvem (Vercel + Upstash)'+
         '</p>';
 
   }else{
