@@ -252,8 +252,8 @@ id="registerError">
 <i></i>ECOFLUX
 </div>
 
-<small id="statusBrand">
-online
+<small id="statusBrand" style="color:var(--red)">
+offline
 </small>
 
 </div>
@@ -1426,6 +1426,9 @@ function update(){
     $('statusBrand').textContent=
       'online';
 
+    $('statusBrand').style.color=
+      'var(--lime)';
+
     $('waterSignal')
       .className='signal ok';
 
@@ -1438,7 +1441,10 @@ function update(){
 
   }else{
     $('statusBrand').textContent=
-      'desconectado';
+      'offline';
+
+    $('statusBrand').style.color=
+      'var(--red)';
 
     $('waterSignal')
       .className='signal bad';
@@ -1899,6 +1905,8 @@ async function poll(){
 
       setConn(false);
 
+      update();
+
     }else{
 
       state.pump=
@@ -1939,6 +1947,8 @@ async function poll(){
     );
 
     setConn(false);
+
+    update();
 
   }
 
