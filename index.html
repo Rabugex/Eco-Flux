@@ -253,7 +253,7 @@ id="registerError">
 </div>
 
 <small id="statusBrand">
-Coleta Automática / 01
+online
 </small>
 
 </div>
@@ -394,7 +394,7 @@ class="view on"
 id="dashboard">
 
 <div class="offline-banner" id="offlineBanner">
-⚠️ OFFLINE - Mostrando últimos dados conhecidos
+⚠️ Sistema desconectado · Mostrando os últimos dados coletados
 </div>
 
 <div class="metrics">
@@ -644,7 +644,7 @@ style="margin-top:16px">
 <div class="panel-head">
 
 <h2>
-Conexão
+Guia de Conexão
 </h2>
 
 </div>
@@ -674,7 +674,7 @@ Conexão
 </ol>
 
 <div style="background:#ff687d15;border:1px solid #ff687d40;padding:12px;border-radius:8px;margin-top:16px;font-size:11px;color:var(--red)">
-<strong>🔒 Privacidade:</strong> Sua senha e dados de WiFi nunca são compartilhados com ninguém. Ficam apenas no seu navegador.
+<strong>🔒 Privacidade:</strong> Sua senha de usuário e dados de WiFi ficam apenas no seu navegador. Nunca são enviados para servidores externos.
 </div>
 
 </div>
@@ -1424,15 +1424,7 @@ function update(){
 
   if(state.connected){
     $('statusBrand').textContent=
-      on
-        ? '✓ Operacional'
-        : 'Coleta Automática / 01';
-
-      '● online';
-
-      'var(--lime)';
-
-      'block';
+      'online';
 
     $('waterSignal')
       .className='signal ok';
@@ -1446,13 +1438,7 @@ function update(){
 
   }else{
     $('statusBrand').textContent=
-      '⚠️ offline';
-
-      '● offline';
-
-      'var(--red)';
-
-      'block';
+      'desconectado';
 
     $('waterSignal')
       .className='signal bad';
