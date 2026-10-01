@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // POST - ESP32 envia telemetria
+    // POST: ESP32 envia telemetria
     if (req.method === "POST") {
       let body = req.body || {};
 
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // GET - Site busca telemetria
+    // GET: Site busca telemetria
     if (req.method === "GET") {
       let status = await redis.get(STATUS_KEY);
 
