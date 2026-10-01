@@ -133,7 +133,6 @@ button{cursor:pointer}
 
 <body>
 
-<!-- AUTH SCREEN -->
 <section class="auth" id="auth">
 
 <div class="auth-box">
@@ -239,8 +238,6 @@ id="registerError">
 
 </div>
 </section>
-
-<!-- MAIN APP -->
 
 <div class="shell" id="shell">
 
@@ -387,8 +384,6 @@ Sair
 
 </header>
 
-<!-- DASHBOARD -->
-
 <section
 class="view on"
 id="dashboard">
@@ -521,8 +516,6 @@ CAPACIDADE UTILIZADA
 </div>
 
 </section>
-
-<!-- CONTROL -->
 
 <section
 class="view"
@@ -681,8 +674,6 @@ Guia de Conexão
 
 </section>
 
-<!-- MAINTENANCE -->
-
 <section
 class="view"
 id="maintenance">
@@ -706,23 +697,10 @@ Uso aumenta enquanto sistema está em operação
 <thead>
 
 <tr>
-
-<th>
-Componente
-</th>
-
-<th>
-Uso
-</th>
-
-<th>
-Limite
-</th>
-
-<th>
-Status
-</th>
-
+<th>Componente</th>
+<th>Uso</th>
+<th>Limite</th>
+<th>Status</th>
 </tr>
 
 </thead>
@@ -730,10 +708,7 @@ Status
 <tbody>
 
 <tr>
-
-<td>
-Bomba
-</td>
+<td>Bomba</td>
 
 <td id="pumpHours">
 0.00 h
@@ -803,8 +778,6 @@ Bom
 
 </section>
 
-<!-- ADMIN -->
-
 <section
 class="view"
 id="admin">
@@ -833,23 +806,10 @@ style="display:none">
 <thead>
 
 <tr>
-
-<th>
-Nome
-</th>
-
-<th>
-Email
-</th>
-
-<th>
-Tipo
-</th>
-
-<th>
-Data
-</th>
-
+<th>Nome</th>
+<th>Email</th>
+<th>Tipo</th>
+<th>Data</th>
 </tr>
 
 </thead>
@@ -893,8 +853,6 @@ Manutenção
 
 </div>
 
-<!-- DRAWER -->
-
 <div
 class="drawer"
 id="drawer">
@@ -917,11 +875,7 @@ Nenhuma notificação.
 
 </div>
 
-<!-- NOTIFICATIONS -->
-
 <div id="notificationsContainer"></div>
-
-<!-- TOAST -->
 
 <div id="toast"></div>
 
@@ -948,19 +902,12 @@ let state={
 };
 
 let timer=null;
-
 let pollInterval=null;
-
 let currentUser=null;
-
 let isAdmin=false;
-
 let notifications=[];
-
 let timerRemaining=0;
-
 let timerInterval2=null;
-
 let currentView='dashboard';
 
 const $=id=>document.getElementById(id);
@@ -971,6 +918,7 @@ const subtitles={
   maintenance:'Acompanhe o uso dos componentes e planeje manutenção.',
   admin:'Gerencia as contas de acesso do sistema.'
 };
+
 
 /* =========================================================
    USUÁRIOS
@@ -999,37 +947,38 @@ function users(){
 
 function notify(msg,type='info'){
 
-  const div=
-    document.createElement('div');
+  const container=$('notificationsContainer');
 
-  div.className=
-    `notif-toast ${type} show`;
+  if(!container)
+    return;
+
+  const div=document.createElement('div');
+
+  div.className=`notif-toast ${type} show`;
 
   div.textContent=msg;
 
-  $('notificationsContainer')
-    .appendChild(div);
+  container.appendChild(div);
 
   setTimeout(
     ()=>div.remove(),
     3000
   );
 
-  if(
-    notifications.length>10
-  ){
+  if(notifications.length>=10){
     notifications.shift();
   }
 
   notifications.push({
     msg,
     type,
-    time:new Date()
-      .toLocaleTimeString()
+    time:new Date().toLocaleTimeString()
   });
 
-  $('notifBadge')
-    .style.display='block';
+  const badge=$('notifBadge');
+
+  if(badge)
+    badge.style.display='block';
 
 }
 
@@ -1068,13 +1017,9 @@ function login(e){
   e.preventDefault();
 
   const email=
-    $('le')
-      .value
-      .trim()
-      .toLowerCase();
+    $('le').value.trim().toLowerCase();
 
-  const pass=
-    $('lp').value;
+  const pass=$('lp').value;
 
   if(
     email===ADMIN_EMAIL &&
@@ -1106,8 +1051,7 @@ function login(e){
     d[email].password!==pass
   ){
 
-    $('loginError')
-      .textContent=
+    $('loginError').textContent=
       'Acesso não encontrado.';
 
     return;
@@ -1142,15 +1086,11 @@ function register(e){
   const d=users();
 
   const email=
-    $('re')
-      .value
-      .trim()
-      .toLowerCase();
+    $('re').value.trim().toLowerCase();
 
   if(d[email]){
 
-    $('registerError')
-      .textContent=
+    $('registerError').textContent=
       'Este e-mail já está cadastrado.';
 
     return;
@@ -1210,23 +1150,25 @@ function boot(){
 
   if(isAdmin){
 
-    $('adminNav')
-      .style.display='block';
+    $('adminNav').style.display='block';
 
     loadAdmin();
 
   }else{
 
-    $('adminNav')
-      .style.display='none';
+    $('adminNav').style.display='none';
 
   }
 
-  $('espIp').value=
-    '☁️ Comunicação pela nuvem';
+  /*
+    REMOVIDO:
+    $('espIp').value='☁️ Comunicação pela nuvem';
 
-  $('modePopup')
-    .style.display='none';
+    Esse elemento não existe no HTML e causava
+    "Cannot set properties of null".
+  */
+
+  $('modePopup').style.display='none';
 
   $('modeText').textContent=
     state.mode==='continuous'
@@ -1242,11 +1184,10 @@ function boot(){
   if(pollInterval)
     clearInterval(pollInterval);
 
-  pollInterval=
-    setInterval(
-      poll,
-      2500
-    );
+  pollInterval=setInterval(
+    poll,
+    2500
+  );
 
   notify(
     `Bem-vindo, ${currentUser.name}!`,
@@ -1262,8 +1203,10 @@ function boot(){
 
 function toggleUserMenu(){
 
-  const menu=
-    $('userMenuPopup');
+  const menu=$('userMenuPopup');
+
+  if(!menu)
+    return;
 
   menu.style.display=
     menu.style.display==='none'
@@ -1280,7 +1223,6 @@ function logout(){
   );
 
   currentUser=null;
-
   isAdmin=false;
 
   if(pollInterval)
@@ -1292,28 +1234,23 @@ function logout(){
   if(timerInterval2)
     clearInterval(timerInterval2);
 
+  pollInterval=null;
+  timer=null;
+  timerInterval2=null;
+
   $('auth').style.display='grid';
 
-  $('shell')
-    .classList.remove('on');
+  $('shell').classList.remove('on');
 
-  $('userMenuPopup')
-    .style.display='none';
+  $('userMenuPopup').style.display='none';
 
-  $('loginError')
-    .textContent='';
-
-  $('registerError')
-    .textContent='';
+  $('loginError').textContent='';
+  $('registerError').textContent='';
 
   $('le').value='';
-
   $('lp').value='';
-
   $('rn').value='';
-
   $('re').value='';
-
   $('rp').value='';
 
   authTab('login');
@@ -1353,7 +1290,9 @@ function view(id,b){
 
 }
 
+
 function updateContextBar(){
+
   const names={
     dashboard:'visão geral',
     control:'controle',
@@ -1361,11 +1300,17 @@ function updateContextBar(){
     admin:'admin'
   };
 
-  $('eyebrow').textContent=
-    'ecoflux / '+names[currentView];
+  const eyebrow=$('eyebrow');
+  const subtitle=$('subtitle');
 
-  $('subtitle').textContent=
-    subtitles[currentView];
+  if(eyebrow)
+    eyebrow.textContent=
+      'ecoflux / '+names[currentView];
+
+  if(subtitle)
+    subtitle.textContent=
+      subtitles[currentView];
+
 }
 
 
@@ -1377,104 +1322,182 @@ function update(){
 
   const on=state.pump;
 
-  $('pumpStatus')
-    .textContent=
+  const pumpStatus=$('pumpStatus');
+
+  if(pumpStatus){
+
+    pumpStatus.textContent=
       on
         ? 'Ligada'
         : 'Desligada';
 
-  $('pumpStatus')
-    .style.color=
+    pumpStatus.style.color=
       on
         ? 'var(--lime)'
         : 'var(--red)';
 
-  $('waterValue')
-    .textContent=
-      Math.round(state.bucket)+'%';
-
-  $('batteryLevel')
-    .textContent=
-      Math.round(state.battery);
-
-  $('batteryVoltage')
-    .textContent=
-      Number(state.voltage)
-        .toFixed(2);
-
-  $('bucketProgress')
-    .style.width=
-      Math.max(
-        0,
-        Math.min(
-          100,
-          state.bucket
-        )
-      )+'%';
-
-  $('batteryProgress')
-    .style.width=
-      Math.max(
-        0,
-        Math.min(
-          100,
-          state.battery
-        )
-      )+'%';
-
-  if(state.connected){
-    $('statusBrand').textContent=
-      'online';
-
-    $('statusBrand').style.color=
-      'var(--lime)';
-
-    $('waterSignal')
-      .className='signal ok';
-
-    $('waterSignal').textContent=
-      '';
-
-    $('pumpWarning').style.display='none';
-    $('batteryWarning').style.display='none';
-    $('voltageWarning').style.display='none';
-
-  }else{
-    $('statusBrand').textContent=
-      'offline';
-
-    $('statusBrand').style.color=
-      'var(--red)';
-
-    $('waterSignal')
-      .className='signal bad';
-
-    $('waterSignal').textContent=
-      '';
-
-    $('pumpWarning').style.display='block';
-    $('batteryWarning').style.display='block';
-    $('voltageWarning').style.display='block';
   }
 
-  $('continuous')
-    .classList.toggle(
+
+  const waterValue=$('waterValue');
+
+  if(waterValue){
+
+    waterValue.textContent=
+      Math.round(Number(state.bucket)||0)+'%';
+
+  }
+
+
+  const batteryLevel=$('batteryLevel');
+
+  if(batteryLevel){
+
+    batteryLevel.textContent=
+      Math.round(Number(state.battery)||0);
+
+  }
+
+
+  const batteryVoltage=$('batteryVoltage');
+
+  if(batteryVoltage){
+
+    batteryVoltage.textContent=
+      Number(state.voltage||0).toFixed(2);
+
+  }
+
+
+  /*
+    Não existe bucketProgress no HTML.
+    Portanto ele não pode ser acessado diretamente.
+  */
+
+  const bucketProgress=$('bucketProgress');
+
+  if(bucketProgress){
+
+    bucketProgress.style.width=
+      Math.max(
+        0,
+        Math.min(
+          100,
+          Number(state.bucket)||0
+        )
+      )+'%';
+
+  }
+
+
+  const batteryProgress=$('batteryProgress');
+
+  if(batteryProgress){
+
+    batteryProgress.style.width=
+      Math.max(
+        0,
+        Math.min(
+          100,
+          Number(state.battery)||0
+        )
+      )+'%';
+
+  }
+
+
+  const statusBrand=$('statusBrand');
+
+  if(statusBrand){
+
+    statusBrand.textContent=
+      state.connected
+        ? 'online'
+        : 'offline';
+
+    statusBrand.style.color=
+      state.connected
+        ? 'var(--lime)'
+        : 'var(--red)';
+
+  }
+
+
+  const waterSignal=$('waterSignal');
+
+  if(waterSignal){
+
+    waterSignal.className=
+      'signal '+
+      (
+        state.connected
+          ? 'ok'
+          : 'bad'
+      );
+
+    waterSignal.textContent='';
+
+  }
+
+
+  const pumpWarning=$('pumpWarning');
+  const batteryWarning=$('batteryWarning');
+  const voltageWarning=$('voltageWarning');
+
+  if(pumpWarning)
+    pumpWarning.style.display=
+      state.connected
+        ? 'none'
+        : 'block';
+
+  if(batteryWarning)
+    batteryWarning.style.display=
+      state.connected
+        ? 'none'
+        : 'block';
+
+  if(voltageWarning)
+    voltageWarning.style.display=
+      state.connected
+        ? 'none'
+        : 'block';
+
+
+  const continuous=$('continuous');
+  const pulse=$('pulse');
+
+  if(continuous){
+
+    continuous.classList.toggle(
       'active',
       state.mode==='continuous'
     );
 
-  $('pulse')
-    .classList.toggle(
+  }
+
+  if(pulse){
+
+    pulse.classList.toggle(
       'active',
       state.mode==='pulse'
     );
 
-  $('pumpHours')
-    .textContent=
-      Number(state.hours)
+  }
+
+
+  const pumpHours=$('pumpHours');
+
+  if(pumpHours){
+
+    pumpHours.textContent=
+      Number(state.hours||0)
         .toFixed(2)+' h';
 
+  }
+
+
   updateMaintenanceStatus();
+
 
   const offlineBanners=
     document.querySelectorAll(
@@ -1482,34 +1505,52 @@ function update(){
     );
 
   offlineBanners.forEach(b=>{
+
     b.classList.toggle(
       'show',
       !state.connected
     );
+
   });
 
-  $('btnPumpOn').disabled=
-    !state.connected;
 
-  $('btnPumpOff').disabled=
-    !state.connected;
+  const btnPumpOn=$('btnPumpOn');
+  const btnPumpOff=$('btnPumpOff');
+  const btnTimer=$('btnTimer');
+  const minutes=$('minutes');
 
-  $('btnTimer').disabled=
-    !state.connected;
+  if(btnPumpOn)
+    btnPumpOn.disabled=
+      !state.connected;
 
-  $('minutes').disabled=
-    !state.connected;
+  if(btnPumpOff)
+    btnPumpOff.disabled=
+      !state.connected;
 
-  $('continuous').disabled=
-    !state.connected;
+  if(btnTimer)
+    btnTimer.disabled=
+      !state.connected;
 
-  $('pulse').disabled=
-    !state.connected;
+  if(minutes)
+    minutes.disabled=
+      !state.connected;
+
+  if(continuous)
+    continuous.disabled=
+      !state.connected;
+
+  if(pulse)
+    pulse.disabled=
+      !state.connected;
 
 }
 
+
 function updateMaintenanceStatus(){
-  const pumpPercent=(state.hours/500)*100;
+
+  const pumpPercent=
+    (Number(state.hours)||0)/500*100;
+
   let pumpPill=
     pumpPercent<80
       ? '<span class="pill">Bom</span>'
@@ -1517,9 +1558,15 @@ function updateMaintenanceStatus(){
       ? '<span class="pill warning">Aviso</span>'
       : '<span class="pill error">Crítico</span>';
 
-  $('pumpStatus2').innerHTML=pumpPill;
+  const pumpStatus2=$('pumpStatus2');
 
-  const filterPercent=(state.hours/100)*100;
+  if(pumpStatus2)
+    pumpStatus2.innerHTML=pumpPill;
+
+
+  const filterPercent=
+    (Number(state.hours)||0)/100*100;
+
   let filterPill=
     filterPercent<80
       ? '<span class="pill">Bom</span>'
@@ -1527,18 +1574,34 @@ function updateMaintenanceStatus(){
       ? '<span class="pill warning">Aviso</span>'
       : '<span class="pill error">Crítico</span>';
 
-  $('filterStatus2').innerHTML=filterPill;
-  $('filterHours').textContent=
-    Number(state.hours).toFixed(2)+' h';
+  const filterStatus2=$('filterStatus2');
 
-  const batteryPercent=
-    ((13.8-state.voltage)/(13.8-10.5))*100;
-  let batteryPill=
-    state.battery>20
-      ? '<span class="pill">Bom</span>'
-      : '<span class="pill warning">Aviso</span>';
+  if(filterStatus2)
+    filterStatus2.innerHTML=filterPill;
 
-  $('batteryStatus2').innerHTML=batteryPill;
+
+  const filterHours=$('filterHours');
+
+  if(filterHours)
+    filterHours.textContent=
+      Number(state.hours||0)
+        .toFixed(2)+' h';
+
+
+  const batteryStatus2=$('batteryStatus2');
+
+  if(batteryStatus2){
+
+    const batteryPill=
+      Number(state.battery)>20
+        ? '<span class="pill">Bom</span>'
+        : '<span class="pill warning">Aviso</span>';
+
+    batteryStatus2.innerHTML=
+      batteryPill;
+
+  }
+
 }
 
 
@@ -1549,8 +1612,12 @@ function updateMaintenanceStatus(){
 async function pump(on){
 
   if(!state.connected){
-    notify('❌ Sistema offline',
-    'error');
+
+    notify(
+      '❌ Sistema offline',
+      'error'
+    );
+
     return;
   }
 
@@ -1558,19 +1625,15 @@ async function pump(on){
 
   update();
 
+  const modePopup=$('modePopup');
+
   if(!timerInterval2){
 
-    if(on){
-
-      $('modePopup')
-        .style.display='block';
-
-    }else{
-
-      $('modePopup')
-        .style.display='none';
-
-    }
+    if(modePopup)
+      modePopup.style.display=
+        on
+          ? 'block'
+          : 'none';
 
   }
 
@@ -1610,17 +1673,27 @@ async function pump(on){
 async function setMode(m){
 
   if(!state.connected){
-    notify('❌ Sistema offline',
-    'error');
+
+    notify(
+      '❌ Sistema offline',
+      'error'
+    );
+
     return;
   }
 
   state.mode=m;
 
-  $('modeText').textContent=
-    m==='continuous'
-      ? 'Contínuo'
-      : 'Pulsante';
+  const modeText=$('modeText');
+
+  if(modeText){
+
+    modeText.textContent=
+      m==='continuous'
+        ? 'Contínuo'
+        : 'Pulsante';
+
+  }
 
   update();
 
@@ -1657,14 +1730,23 @@ async function setMode(m){
 
 function startTimer(){
 
+  const minutesInput=$('minutes');
+
+  if(!minutesInput)
+    return;
+
   const n=
     Number(
-      $('minutes').value
+      minutesInput.value
     );
 
   if(!state.connected){
-    notify('❌ Sistema offline',
-    'error');
+
+    notify(
+      '❌ Sistema offline',
+      'error'
+    );
+
     return;
   }
 
@@ -1692,14 +1774,18 @@ function startTimer(){
 
   clearInterval(timerInterval2);
 
-  timerRemaining=
-    n*60;
+  timerRemaining=n*60;
 
-  $('timerText')
-    .textContent=
+  const timerText=$('timerText');
+
+  if(timerText){
+
+    timerText.textContent=
       'Ativo por '+
       n+
       ' minuto(s)';
+
+  }
 
   notify(
     '⏱️ Timer iniciado por '+
@@ -1718,6 +1804,17 @@ function startTimer(){
     const s=
       timerRemaining%60;
 
+    if(timerText){
+
+      timerText.textContent=
+        'Restante: '+
+        m+
+        'm '+
+        String(s).padStart(2,'0')+
+        's';
+
+    }
+
     timerRemaining--;
 
     if(timerRemaining<0){
@@ -1726,14 +1823,18 @@ function startTimer(){
         timerInterval2
       );
 
+      timerInterval2=null;
+
       pump(false);
 
-      $('timerText')
-        .textContent=
-        'Nenhum timer ativo';
+      if(timerText)
+        timerText.textContent=
+          'Nenhum timer ativo';
 
-      $('modePopup')
-        .style.display='block';
+      const modePopup=$('modePopup');
+
+      if(modePopup)
+        modePopup.style.display='block';
 
       notify(
         '⏰ Timer expirou!',
@@ -1758,12 +1859,20 @@ function startTimer(){
         clearInterval(
           timerInterval2
         );
+
+        timerInterval2=null;
+        timer=null;
+
       },
       n*60000+1000
     );
 
 }
 
+
+/* =========================================================
+   CANCELAR TIMER
+   ========================================================= */
 
 function cancelTimer(){
 
@@ -1774,17 +1883,20 @@ function cancelTimer(){
   );
 
   timer=null;
-
   timerInterval2=null;
 
   pump(false);
 
-  $('timerText')
-    .textContent=
-    'Nenhum timer ativo';
+  const timerText=$('timerText');
 
-  $('modePopup')
-    .style.display='block';
+  if(timerText)
+    timerText.textContent=
+      'Nenhum timer ativo';
+
+  const modePopup=$('modePopup');
+
+  if(modePopup)
+    modePopup.style.display='block';
 
   notify(
     '⏹️ Timer cancelado',
@@ -1805,7 +1917,7 @@ async function sendCommand(
 
   try{
 
-    const response =
+    const response=
       await fetch(
         VERCEL_API+'/command',
         {
@@ -1822,7 +1934,7 @@ async function sendCommand(
               !!pumpValue,
 
             mode:
-              modeValue === 'pulse'
+              modeValue==='pulse'
                 ? 'pulse'
                 : 'continuous'
 
@@ -1838,10 +1950,10 @@ async function sendCommand(
 
     }
 
-    const data =
+    const data=
       await response.json();
 
-    return data.ok;
+    return data.ok===true;
 
   }catch(error){
 
@@ -1890,13 +2002,22 @@ async function poll(){
         }
       );
 
-    if(!response.ok)
+    if(!response.ok){
+
       throw new Error(
         'HTTP '+response.status
       );
 
+    }
+
     const s=
       await response.json();
+
+    console.log(
+      '[EcoFlux] Status recebido:',
+      s
+    );
+
 
     if(
       !s ||
@@ -1952,6 +2073,7 @@ async function poll(){
 
   }
 
+
   state.history.push(
     state.bucket
   );
@@ -1975,22 +2097,33 @@ async function poll(){
 
 function setConn(ok){
 
-  state.connected=ok;
+  state.connected=!!ok;
 
-  $('connection')
-    .textContent=
-      ok
-        ? 'conectado'
+  /*
+    O código antigo tentava acessar:
+    $('connection')
+
+    Esse elemento não existe no HTML.
+
+    Agora usamos diretamente o elemento
+    statusBrand, que realmente existe.
+  */
+
+  const statusBrand=$('statusBrand');
+
+  if(statusBrand){
+
+    statusBrand.textContent=
+      state.connected
+        ? 'online'
         : 'offline';
 
-  $('connection')
-    .className=
-      'signal '+
-      (
-        ok
-          ? 'ok'
-          : 'bad'
-      );
+    statusBrand.style.color=
+      state.connected
+        ? 'var(--lime)'
+        : 'var(--red)';
+
+  }
 
 }
 
@@ -2001,8 +2134,7 @@ function setConn(ok){
 
 function draw(){
 
-  const c=
-    $('chart');
+  const c=$('chart');
 
   if(!c)
     return;
@@ -2011,8 +2143,7 @@ function draw(){
     c.getBoundingClientRect();
 
   const ratio=
-    window.devicePixelRatio ||
-    1;
+    window.devicePixelRatio||1;
 
   const w=
     Math.max(
@@ -2031,11 +2162,13 @@ function draw(){
     );
 
   c.width=w;
-
   c.height=h;
 
   const x=
     c.getContext('2d');
+
+  if(!x)
+    return;
 
   x.clearRect(
     0,
@@ -2047,8 +2180,7 @@ function draw(){
   x.strokeStyle=
     '#1d4053';
 
-  x.lineWidth=
-    2;
+  x.lineWidth=2;
 
   for(
     let y=25;
@@ -2113,14 +2245,12 @@ function draw(){
   x.strokeStyle=
     '#48e6d0';
 
-  x.lineWidth=
-    6;
+  x.lineWidth=6;
 
   x.shadowColor=
     '#48e6d0';
 
-  x.shadowBlur=
-    18;
+  x.shadowBlur=18;
 
   x.stroke();
 
@@ -2135,42 +2265,46 @@ function draw(){
 
 function drawer(t){
 
+  const drawerElement=$('drawer');
+
+  if(!drawerElement)
+    return;
+
   if(!t){
 
-    $('drawer')
+    drawerElement
       .classList
       .remove('on');
 
     return;
   }
 
-  $('userMenuPopup')
-    .style.display='none';
+  const userMenu=$('userMenuPopup');
 
-  $('drawerTitle')
-    .textContent=
-      t==='settings'
-        ? 'Configurações'
-        : 'Notificações';
+  if(userMenu)
+    userMenu.style.display='none';
 
-  if(
+  $('drawerTitle').textContent=
     t==='settings'
-  ){
+      ? 'Configurações'
+      : 'Notificações';
 
-    $('drawerBody')
-      .innerHTML=
-        '<p><strong>Comunicação</strong></p>'+
-        '<p class="muted">'+
-        'Nuvem (Vercel + Upstash)'+
-        '</p>';
+  if(t==='settings'){
+
+    $('drawerBody').innerHTML=
+      '<p><strong>Comunicação</strong></p>'+
+      '<p class="muted">'+
+      'Nuvem (Vercel + Upstash)'+
+      '</p>';
 
   }else{
 
-    $('notifBadge')
-      .style.display='none';
+    const badge=$('notifBadge');
 
-    $('drawerBody')
-      .innerHTML=
+    if(badge)
+      badge.style.display='none';
+
+    $('drawerBody').innerHTML=
       notifications.length
         ?
         notifications
@@ -2188,7 +2322,7 @@ function drawer(t){
 
   }
 
-  $('drawer')
+  drawerElement
     .classList
     .add('on');
 
@@ -2206,12 +2340,10 @@ function loadAdmin(){
   const count=
     Object.keys(d).length+1;
 
-  $('accountCount')
-    .textContent=
-      count+' contas';
+  $('accountCount').textContent=
+    count+' contas';
 
-  const tbody=
-    $('accounts');
+  const tbody=$('accounts');
 
   tbody.innerHTML='';
 
@@ -2245,14 +2377,12 @@ function loadAdmin(){
     );
 
   if(count>1)
-    $('adminTable')
-      .style.display='';
+    $('adminTable').style.display='';
 
-  $('noAccounts')
-    .style.display=
-      count>1
-        ? 'none'
-        : '';
+  $('noAccounts').style.display=
+    count>1
+      ? 'none'
+      : '';
 
 }
 
@@ -2303,6 +2433,8 @@ document.addEventListener(
       $('avatar');
 
     if(
+      menu &&
+      avatar &&
       !avatar.contains(e.target) &&
       !menu.contains(e.target)
     ){
@@ -2314,10 +2446,12 @@ document.addEventListener(
   }
 );
 
+
 window.addEventListener(
   'resize',
   draw
 );
+
 
 window.addEventListener(
   'load',
