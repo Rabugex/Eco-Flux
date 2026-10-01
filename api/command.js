@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // GET - ESP32 busca comandos
+    // GET: ESP32 busca comandos
     if (req.method === "GET") {
       let command = await redis.get(COMMAND_KEY);
 
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // POST - Site envia comando
+    // POST: Site envia comando
     if (req.method === "POST") {
       let body = req.body || {};
 
