@@ -17,11 +17,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    // GET: ESP32 busca comandos
+    // ESP32 busca o comando atual
     if (req.method === "GET") {
       let command = await redis.get(COMMAND_KEY);
 
-      if (!command) {
+      if (!command || typeof command !== "object") {
         command = {
           pump: false,
           mode: "continuous",
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // POST: Site envia comando
+    // Site envia um novo comando
     if (req.method === "POST") {
       let body = req.body || {};
 
@@ -65,7 +65,8 @@ export default async function handler(req, res) {
         });
       }
 
-      let oldCommand = await redis.get(COMMAND_KEY);
+      const oldCommand = await redis.get(COMMAND_KEY);
+
       let id = 1;
 
       if (oldCommand && typeof oldCommand.id === "number") {
@@ -79,7 +80,8 @@ export default async function handler(req, res) {
         time: Date.now()
       };
 
-      await redis.set(COMMAND_KEY, command, { ex: 60 });
+      // NÃO expira mais depois de 60 segundos
+      await redis.set(COMMAND_KEY, command);
 
       return res.status(200).json({
         ok: true,
