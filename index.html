@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EcoFlux // Central de Operações</title>
-
 <style>
 :root{--bg:#07131f;--panel:#0d1e2d;--panel2:#10283b;--line:#1d4053;--text:#e8f7f5;--muted:#7896a4;--cyan:#48e6d0;--lime:#b8f36b;--orange:#ffad66;--red:#ff687d;--shadow:0 24px 70px #0006}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}
 button,input{font:inherit}
 button{cursor:pointer}
+.muted{color:var(--muted)}
 .shell{display:none;min-height:100vh;grid-template-columns:245px 1fr}
 .shell.on{display:grid}
 .sidebar{padding:28px 18px;border-right:1px solid var(--line);background:#091a29;display:flex;flex-direction:column;gap:24px}
 .brand{padding:4px 12px 30px;border-bottom:1px solid var(--line)}
 .brand-mark{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.12em;color:var(--cyan);font-size:18px}
 .brand-mark i{width:29px;height:29px;border:2px solid var(--cyan);display:block;border-radius:10px 10px 10px 3px;transform:rotate(-18deg);box-shadow:0 0 20px #48e6d055}
-.brand small{display:block;color:var(--muted);margin-top:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.brand small{display:block;margin-top:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
 .nav{display:grid;gap:7px}
 .nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:13px 14px;border-radius:10px;transition:.2s;display:flex;gap:11px;align-items:center}
 .nav button:hover,.nav button.active{color:var(--text);background:linear-gradient(90deg,#48e6d018,transparent);box-shadow:inset 3px 0 var(--cyan)}
@@ -26,11 +26,14 @@ button{cursor:pointer}
 .topbar{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:36px}
 .eyebrow{color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:.18em}
 .topbar h1{font-size:30px;letter-spacing:-.05em;margin:8px 0}
-.topbar p{color:var(--muted);margin:0;font-size:14px}
+.topbar p{color:var(--muted);margin:0}
 .top-actions{display:flex;align-items:center;gap:10px}
-.round{border:1px solid var(--line);background:var(--panel);color:var(--text);width:40px;height:40px;border-radius:50%}
+.round{border:1px solid var(--line);background:var(--panel);color:var(--text);width:40px;height:40px;border-radius:50%;position:relative}
 .round:hover{background:var(--panel2);color:var(--cyan)}
-.avatar{background:var(--lime);color:#16230b;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800}
+.avatar{background:var(--lime);color:#16230b;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;cursor:pointer}
+.avatar:hover{filter:brightness(1.2)}
+#userMenuPopup{position:absolute;top:60px;right:20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:150px;display:none;z-index:10;box-shadow:var(--shadow)}
+#userMenuPopup.on{display:block}
 .view{display:none}
 .view.on{display:block;animation:rise .35s ease}
 .metrics{display:grid;grid-template-columns:2fr 1.5fr 1.5fr;gap:14px;margin-bottom:16px}
@@ -43,16 +46,14 @@ button{cursor:pointer}
 .metric-value em{font-style:normal;font-size:13px;color:var(--cyan);letter-spacing:0}
 .meter{height:5px;background:#07131f;border-radius:10px;margin-top:20px;overflow:hidden}
 .meter b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--lime));border-radius:inherit;transition:width .5s}
-.offline-warning{position:absolute;top:8px;right:8px;font-size:18px;color:var(--red)}
+#modePopup{position:absolute;top:12px;right:12px;background:#48e6d033;border:1px solid #48e6d080;border-radius:6px;padding:6px 10px;font-size:10px;color:var(--cyan);display:none;white-space:nowrap}
+.warn{display:none;position:absolute;top:8px;right:8px;font-size:18px;font-style:normal}
+.banner{display:none;background:#ff687d15;border:1px solid #ff687d40;padding:12px 16px;border-radius:10px;margin-bottom:20px;color:var(--red);font-size:12px}
+body.off .warn,body.off .banner{display:block}
 .layout{display:grid;grid-template-columns:1.4fr .8fr;gap:16px}
 .panel{padding:24px}
 .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .panel h2{font-size:15px;margin:0}
-.muted{color:var(--muted)}
-.signal{font-size:11px;color:var(--orange);display:flex;gap:7px;align-items:center}
-.signal:before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
-.signal.ok{color:var(--lime)}
-.signal.bad{color:var(--red)}
 .chart{height:235px;width:100%;display:block}
 .water{height:235px;position:relative;display:grid;place-items:center;overflow:hidden;border-radius:14px;background:linear-gradient(#0c2537,#071622)}
 .water:before,.water:after{content:'';position:absolute;width:170%;height:85px;border-radius:45%;border:1px solid #48e6d055;left:-35%;top:52%;animation:wave 5s linear infinite}
@@ -66,13 +67,13 @@ button{cursor:pointer}
 .btns{display:flex;gap:8px;flex-wrap:wrap}
 .btn{border:1px solid transparent;border-radius:9px;padding:11px 14px;color:#07131f;font-weight:750;background:var(--cyan);transition:.2s}
 .btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
-.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn.off{background:transparent;color:var(--red);border-color:#ff687d66}
 .btn.alt{background:#19394b;color:var(--text);border-color:var(--line)}
 .btn.active{outline:2px solid var(--lime);outline-offset:2px}
 .input{width:100%;background:#071522;border:1px solid var(--line);border-radius:8px;padding:11px;color:var(--text);outline:0}
 .input:focus{border-color:var(--cyan)}
-.input:disabled{opacity:0.6;cursor:not-allowed}
+.input:disabled{opacity:.6;cursor:not-allowed}
 .row{display:flex;gap:9px;align-items:center}
 .table{width:100%;border-collapse:collapse}
 .table th,.table td{text-align:left;padding:15px 10px;border-bottom:1px solid var(--line)}
@@ -80,32 +81,29 @@ button{cursor:pointer}
 .pill{color:var(--lime);background:#b8f36b15;border:1px solid #b8f36b40;border-radius:20px;padding:5px 9px;font-size:11px}
 .pill.warning{color:var(--orange);border-color:#ffad6640;background:#ffad6615}
 .pill.error{color:var(--red);border-color:#ff687d40;background:#ff687d15}
-.toast{position:fixed;right:24px;bottom:24px;padding:15px 18px;border:1px solid var(--cyan);background:#0d2938;color:var(--text);border-radius:10px;box-shadow:var(--shadow);transform:translateY(130px);transition:.3s;z-index:5}
-.toast.show{transform:none}
+.guide{color:var(--muted);font-size:12px;margin:12px 0;padding-left:20px}
 .drawer{position:fixed;right:20px;top:20px;width:min(370px,calc(100% - 40px));padding:24px;background:#0b1e2e;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:4;display:none;max-height:80vh;overflow-y:auto}
 .drawer.on{display:block}
-.close{float:right;background:transparent;color:var(--muted);border:0;font-size:20px;cursor:pointer}
+.close{float:right;background:transparent;color:var(--muted);border:0;font-size:20px}
 .auth{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,#12434b,#07131f 48%)}
 .auth-box{width:min(430px,100%);padding:38px;border:1px solid var(--line);border-radius:22px;background:#0b1f2d;box-shadow:var(--shadow)}
 .auth-box h1{font-size:34px;margin:0;color:var(--cyan);letter-spacing:-.08em}
 .auth-box p{color:var(--muted);margin:8px 0 30px}
 .auth-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px}
-.auth-tabs button{flex:1;padding:12px;background:transparent;border:0;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:.2s}
+.auth-tabs button{flex:1;padding:12px;background:transparent;border:0;color:var(--muted);border-bottom:2px solid transparent;transition:.2s}
 .auth-tabs button.active{color:var(--cyan);border-color:var(--cyan)}
 .auth-form{display:none}
 .auth-form.on{display:block}
 .field{margin-bottom:14px}
 .field label{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
 .error{color:var(--red);font-size:12px;margin-top:12px}
+#toasts{position:fixed;top:24px;right:24px;z-index:5;display:grid;gap:8px;max-width:300px}
+.notif-toast{padding:15px 18px;border-radius:10px;box-shadow:var(--shadow);font-size:12px;background:#0d2938;color:var(--c);border:1px solid var(--c);border-left-width:4px;animation:rise .3s}
+.notif-toast.info{--c:var(--cyan)}
+.notif-toast.success{--c:var(--lime)}
+.notif-toast.error{--c:var(--red)}
+.notif-toast.warning{--c:var(--orange)}
 .mobile-nav{display:none}
-.notif-toast{position:fixed;top:24px;right:24px;padding:15px 18px;border-radius:10px;box-shadow:var(--shadow);transform:translateX(400px);transition:.3s;z-index:5;max-width:300px;font-size:12px}
-.notif-toast.show{transform:none}
-.notif-toast.info{border-left:4px solid var(--cyan);background:#0d2938;border:1px solid var(--cyan)}
-.notif-toast.success{border-left:4px solid var(--lime);background:#0a1b15;color:var(--lime);border:1px solid var(--lime)}
-.notif-toast.error{border-left:4px solid var(--red);background:#1b0a0a;color:var(--red);border:1px solid var(--red)}
-.notif-toast.warning{border-left:4px solid var(--orange);background:#1b1208;color:var(--orange);border:1px solid var(--orange)}
-.offline-banner{background:#ff687d15;border:1px solid #ff687d40;padding:12px 16px;border-radius:10px;margin-bottom:20px;color:var(--red);font-size:12px;display:none}
-.offline-banner.show{display:block}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes wave{to{transform:translateX(80px) rotate(2deg)}}
 @media(max-width:1000px){
@@ -119,2375 +117,445 @@ button{cursor:pointer}
 .sidebar{display:none}
 .main{padding:20px 15px 80px}
 .topbar h1{font-size:24px}
-.metrics{grid-template-columns:1fr 1fr;gap:10px}
-.metric,.metric.feature{grid-column:span 1;min-height:125px;padding:15px}
-.metric.feature{grid-column:span 2}
+.metrics{gap:10px}
+.metric{min-height:125px;padding:15px}
 .metric-value{font-size:29px}
 .control-grid{grid-template-columns:1fr}
 .mobile-nav{display:flex;position:fixed;z-index:3;bottom:12px;left:12px;right:12px;padding:7px;background:#0b2131ee;border:1px solid var(--line);border-radius:14px;justify-content:space-around}
-.mobile-nav button{background:transparent;border:0;color:var(--muted);padding:9px;font-size:11px;cursor:pointer}
+.mobile-nav button{background:transparent;border:0;color:var(--muted);padding:9px;font-size:11px}
 .mobile-nav button.active{color:var(--cyan)}
 }
 </style>
 </head>
-
-<body>
+<body class="off">
 
 <section class="auth" id="auth">
-
 <div class="auth-box">
-
 <h1>ECOFLUX</h1>
-
-<p>
-Limpeza automática inteligente de rios.
-</p>
-
+<p>Limpeza automática inteligente de rios.</p>
 <div class="auth-tabs">
-
-<button class="active"
-onclick="authTab('login')">
-Entrar
-</button>
-
-<button onclick="authTab('register')">
-Criar acesso
-</button>
-
+<button class="active" onclick="authTab('login')">Entrar</button>
+<button onclick="authTab('register')">Criar acesso</button>
 </div>
-
-<form class="auth-form on"
-id="login"
-onsubmit="login(event)">
-
-<div class="field">
-<label>E-mail</label>
-<input
-class="input"
-id="le"
-required
-type="email">
-</div>
-
-<div class="field">
-<label>Senha</label>
-<input
-class="input"
-id="lp"
-required
-type="password">
-</div>
-
-<button
-class="btn"
-style="width:100%;margin-top:8px">
-Acessar central
-</button>
-
-<div
-class="error"
-id="loginError">
-</div>
-
+<form class="auth-form on" id="login" onsubmit="login(event)">
+<div class="field"><label>E-mail</label><input class="input" id="le" required type="email"></div>
+<div class="field"><label>Senha</label><input class="input" id="lp" required type="password"></div>
+<button class="btn" style="width:100%;margin-top:8px">Acessar central</button>
+<div class="error" id="loginError"></div>
 </form>
-
-<form
-class="auth-form"
-id="register"
-onsubmit="register(event)">
-
-<div class="field">
-<label>Nome</label>
-<input
-class="input"
-id="rn"
-required>
-</div>
-
-<div class="field">
-<label>E-mail</label>
-<input
-class="input"
-id="re"
-required
-type="email">
-</div>
-
-<div class="field">
-<label>Senha</label>
-<input
-class="input"
-id="rp"
-required
-minlength="6"
-type="password">
-</div>
-
-<button
-class="btn"
-style="width:100%;margin-top:8px">
-Criar acesso
-</button>
-
-<div
-class="error"
-id="registerError">
-</div>
-
+<form class="auth-form" id="register" onsubmit="register(event)">
+<div class="field"><label>Nome</label><input class="input" id="rn" required></div>
+<div class="field"><label>E-mail</label><input class="input" id="re" required type="email"></div>
+<div class="field"><label>Senha</label><input class="input" id="rp" required minlength="6" type="password"></div>
+<button class="btn" style="width:100%;margin-top:8px">Criar acesso</button>
+<div class="error" id="registerError"></div>
 </form>
-
 </div>
 </section>
 
 <div class="shell" id="shell">
 
 <aside class="sidebar">
-
 <div class="brand">
-
-<div class="brand-mark">
-<i></i>ECOFLUX
+<div class="brand-mark"><i></i>ECOFLUX</div>
+<small id="statusBrand">offline</small>
 </div>
-
-<small id="statusBrand" style="color:var(--red)">
-offline
-</small>
-
-</div>
-
 <nav class="nav">
-
-<button
-class="active"
-onclick="view('dashboard',this)">
-◈ Visão geral
-</button>
-
-<button
-onclick="view('control',this)">
-◉ Controle
-</button>
-
-<button
-onclick="view('maintenance',this)">
-⌁ Manutenção
-</button>
-
-<button
-id="adminNav"
-style="display:none"
-onclick="view('admin',this)">
-▦ Admin
-</button>
-
+<button class="active" data-v="dashboard" onclick="view('dashboard')">◈ Visão geral</button>
+<button data-v="control" onclick="view('control')">◉ Controle</button>
+<button data-v="maintenance" onclick="view('maintenance')">⌁ Manutenção</button>
+<button data-v="admin" id="adminNav" style="display:none" onclick="view('admin')">▦ Admin</button>
 </nav>
-
-<div class="sidebar-foot">
-
-Lixeira Aquática
-
-<br>
-
-<span class="muted">
-Dados salvos neste dispositivo
-</span>
-
-</div>
-
+<div class="sidebar-foot">Lixeira Aquática<br><span class="muted">Dados salvos neste dispositivo</span></div>
 </aside>
 
 <main class="main">
 
 <header class="topbar">
-
 <div>
-
-<div class="eyebrow" id="eyebrow">
-ecoflux / visão geral
+<div class="eyebrow" id="eyebrow">ecoflux / visão geral</div>
+<h1>Olá, <span id="userName">operador</span>.</h1>
+<p id="subtitle">Monitore o status do sistema em tempo real.</p>
 </div>
-
-<h1>
-Olá, <span id="userName">operador</span>.
-</h1>
-
-<p id="subtitle">
-Monitore o status do sistema em tempo real.
-</p>
-
-</div>
-
 <div class="top-actions">
-
-<button
-class="round"
-onclick="drawer('notifications')"
-title="Notificações"
-style="position:relative">
-
-♢
-
-<span
-id="notifBadge"
-style="position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--orange);border-radius:50%;display:none">
-</span>
-
-</button>
-
-<button
-class="round"
-onclick="drawer('settings')"
-title="Configurações">
-⚙
-</button>
-
-<div
-class="avatar"
-id="avatar"
-onclick="toggleUserMenu()"
-style="cursor:pointer;transition:.2s"
-onmouseover="this.style.filter='brightness(1.2)'"
-onmouseout="this.style.filter='brightness(1)'">
-OP
+<button class="round" onclick="drawer('notifications')" title="Notificações">♢<span id="notifBadge" style="position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--orange);border-radius:50%;display:none"></span></button>
+<button class="round" onclick="drawer('settings')" title="Configurações">⚙</button>
+<div class="avatar" id="avatar" onclick="$('userMenuPopup').classList.toggle('on')">OP</div>
 </div>
-
+<div id="userMenuPopup">
+<div style="font-size:12px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--line)">
+<strong id="userMenuName">User</strong><br><span class="muted" style="font-size:10px" id="userMenuEmail"></span>
 </div>
-
-<div
-id="userMenuPopup"
-style="position:absolute;top:60px;right:20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:150px;display:none;z-index:10;box-shadow:var(--shadow)">
-
-<div
-style="color:var(--text);font-size:12px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--line)">
-
-<strong id="userMenuName">
-User
-</strong>
-
-<br>
-
-<span
-class="muted"
-style="font-size:10px"
-id="userMenuEmail">
-email@test.com
-</span>
-
+<button onclick="logout()" style="width:100%;padding:8px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;font-size:11px;font-weight:600">Sair</button>
 </div>
-
-<button
-onclick="logout()"
-style="width:100%;padding:8px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">
-Sair
-</button>
-
-</div>
-
 </header>
 
-<section
-class="view on"
-id="dashboard">
-
-<div class="offline-banner" id="offlineBanner">
-⚠️ Sistema desconectado · Mostrando os últimos dados coletados
-</div>
-
+<section class="view on" id="dashboard">
+<div class="banner">⚠️ Sistema desconectado · Mostrando os últimos dados coletados</div>
 <div class="metrics">
-
-<div
-class="metric feature"
-style="position:relative">
-
-<div class="metric-label">
-Estado da bomba
+<div class="metric feature">
+<div class="metric-label">Estado da bomba</div>
+<div class="metric-value" id="pumpStatus">Desligada</div>
+<div id="modePopup"><strong id="modeText">Contínuo</strong></div>
+<i class="warn">⚠️</i>
 </div>
-
-<div
-class="metric-value"
-id="pumpStatus">
-Desligada
-</div>
-
-<div
-id="modePopup"
-style="position:absolute;top:12px;right:12px;background:rgba(72,230,208,0.2);border:1px solid rgba(72,230,208,0.5);border-radius:6px;padding:6px 10px;font-size:10px;color:var(--cyan);display:none;white-space:nowrap">
-
-<strong id="modeText">
-Contínuo
-</strong>
-
-</div>
-
-<div class="offline-warning" id="pumpWarning" style="display:none">⚠️</div>
-
-</div>
-
 <div class="metric">
-
-<div class="metric-label">
-Bateria
+<div class="metric-label">Bateria</div>
+<div class="metric-value"><span id="batteryLevel">0</span> <em>%</em></div>
+<div class="meter"><b id="batteryProgress"></b></div>
+<i class="warn">⚠️</i>
 </div>
-
-<div class="metric-value">
-<span id="batteryLevel">86</span>
-<em>%</em>
-</div>
-
-<div class="meter">
-<b id="batteryProgress"></b>
-</div>
-
-<div class="offline-warning" id="batteryWarning" style="display:none">⚠️</div>
-
-</div>
-
 <div class="metric">
-
-<div class="metric-label">
-Tensão
+<div class="metric-label">Tensão</div>
+<div class="metric-value"><span id="batteryVoltage">0.00</span> <em>V</em></div>
+<i class="warn">⚠️</i>
 </div>
-
-<div class="metric-value">
-<span id="batteryVoltage">12.40</span>
-<em>V</em>
 </div>
-
-<div class="offline-warning" id="voltageWarning" style="display:none">⚠️</div>
-
-</div>
-
-</div>
-
 <div class="layout">
-
 <div class="panel">
-
-<div class="panel-head">
-
-<h2>
-Fluxo do coletor
-</h2>
-
-<span class="muted">
-últimos 55 registros
-</span>
-
+<div class="panel-head"><h2>Fluxo do coletor</h2><span class="muted">últimos 55 registros</span></div>
+<canvas id="chart" class="chart"></canvas>
 </div>
-
-<canvas
-id="chart"
-class="chart"
-width="900"
-height="235">
-</canvas>
-
-</div>
-
 <div class="panel">
-
-<div class="panel-head">
-
-<h2>
-Reservatório
-</h2>
-
-<span class="signal ok" id="waterSignal" style="display:none"></span>
-
+<div class="panel-head"><h2>Reservatório</h2></div>
+<div class="water"><div class="water-core"><strong id="waterValue">0%</strong><span>CAPACIDADE UTILIZADA</span></div></div>
 </div>
-
-<div class="water">
-
-<div class="water-core">
-
-<strong id="waterValue">
-0%
-</strong>
-
-<span>
-CAPACIDADE UTILIZADA
-</span>
-
 </div>
-
-</div>
-
-</div>
-
-</div>
-
 </section>
 
-<section
-class="view"
-id="control">
-
-<div class="offline-banner" id="offlineBanner2">
-⚠️ OFFLINE - Comandos podem não ser processados
-</div>
-
+<section class="view" id="control">
+<div class="banner">⚠️ OFFLINE - Comandos indisponíveis</div>
 <div class="panel">
-
-<div class="panel-head">
-
-<h2>
-Comandos da operação
-</h2>
-
-<span class="muted">
-Sistema de controle remoto
-</span>
-
-</div>
-
+<div class="panel-head"><h2>Comandos da operação</h2><span class="muted">Sistema de controle remoto</span></div>
 <div class="control-grid">
-
 <div class="control-card">
-
-<h3>
-Bomba
-</h3>
-
+<h3>Bomba</h3>
 <div class="btns">
-
-<button
-class="btn"
-id="btnPumpOn"
-onclick="pump(true)">
-Ligar bomba
-</button>
-
-<button
-class="btn off"
-id="btnPumpOff"
-onclick="pump(false)">
-Desligar
-</button>
-
+<button class="btn" onclick="pump(true)">Ligar bomba</button>
+<button class="btn off" onclick="pump(false)">Desligar</button>
 </div>
-
 </div>
-
 <div class="control-card">
-
-<h3>
-Temporizador
-</h3>
-
+<h3>Temporizador</h3>
 <div class="row">
-
-<input
-class="input"
-id="minutes"
-type="number"
-min="1"
-max="1440"
-value="30">
-
-<button
-class="btn alt"
-id="btnTimer"
-onclick="startTimer()">
-Iniciar
-</button>
-
+<input class="input" id="minutes" type="number" min="1" max="1440" value="30">
+<button class="btn alt" onclick="startTimer()">Iniciar</button>
 </div>
-
-<p
-class="muted"
-id="timerText">
-Nenhum timer ativo
-</p>
-
+<p class="muted" id="timerText">Nenhum timer ativo</p>
 </div>
-
 <div class="control-card">
-
-<h3>
-Modo de trabalho
-</h3>
-
+<h3>Modo de trabalho</h3>
 <div class="btns">
-
-<button
-class="btn alt"
-id="continuous"
-onclick="setMode('continuous')">
-Contínuo
-</button>
-
-<button
-class="btn alt"
-id="pulse"
-onclick="setMode('pulse')">
-Pulsante
-</button>
-
+<button class="btn alt" id="continuous" onclick="setMode('continuous')">Contínuo</button>
+<button class="btn alt" id="pulse" onclick="setMode('pulse')">Pulsante</button>
 </div>
-
 </div>
-
 </div>
-
 </div>
-
-<div
-class="panel"
-style="margin-top:16px">
-
-<div class="panel-head">
-
-<h2>
-Guia de Conexão
-</h2>
-
-</div>
-
-<p class="muted">
-<strong>Conexão Inicial:</strong>
-</p>
-
-<ol style="color:var(--muted);font-size:12px;margin:12px 0;padding-left:20px">
-<li>Procure a rede WiFi do dispositivo (começa com "EcoFlux-Setup")</li>
-<li>Se não aparecer, segure o botão BOOT do dispositivo por 5 segundos</li>
-<li>Conecte a essa rede WiFi</li>
-<li>Abra um navegador e acesse <strong>http://192.168.4.1</strong></li>
-<li>Configure o WiFi do seu roteador nas configurações do dispositivo</li>
+<div class="panel" style="margin-top:16px">
+<div class="panel-head"><h2>Guia de Conexão</h2></div>
+<p class="muted"><strong>Conexão inicial:</strong></p>
+<ol class="guide">
+<li>Segure o botão BOOT do dispositivo por 3 segundos</li>
+<li>Conecte à rede WiFi <strong>EcoFlux-Setup</strong></li>
+<li>Abra <strong>http://192.168.4.1</strong> e escolha o WiFi do seu roteador</li>
 </ol>
-
-<p class="muted">
-<strong>Via Celular (Hotspot):</strong>
-</p>
-
-<ol style="color:var(--muted);font-size:12px;margin:12px 0;padding-left:20px">
-<li>Vá às <strong>Configurações Avançadas do Roteador</strong></li>
-<li>Procure por <strong>tipo de endereço MAC</strong></li>
-<li>Mude de <strong>MAC Aleatório</strong> para usar o <strong>MAC do seu telefone</strong></li>
-<li>Altere a <strong>Banda WiFi</strong> de <strong>5GHz para 2.4GHz</strong> (melhor estabilidade)</li>
-<li>Conecte o dispositivo normalmente à rede</li>
+<p class="muted"><strong>Via celular (hotspot):</strong></p>
+<ol class="guide">
+<li>Nas configurações avançadas do roteador, mude o <strong>tipo de endereço MAC</strong> de aleatório para o MAC do telefone</li>
+<li>Altere a banda de <strong>5GHz</strong> para <strong>2.4GHz</strong> (o ESP32 não usa 5GHz)</li>
 </ol>
-
-<div style="background:#ff687d15;border:1px solid #ff687d40;padding:12px;border-radius:8px;margin-top:16px;font-size:11px;color:var(--red)">
-<strong>🔒 Privacidade:</strong> Sua senha de usuário e dados de WiFi ficam apenas no seu navegador. Nunca são enviados para servidores externos.
 </div>
-
-</div>
-
 </section>
 
-<section
-class="view"
-id="maintenance">
-
+<section class="view" id="maintenance">
 <div class="panel">
-
-<div class="panel-head">
-
-<h2>
-Vida dos componentes
-</h2>
-
-<span class="muted">
-Uso aumenta enquanto sistema está em operação
-</span>
-
-</div>
-
+<div class="panel-head"><h2>Vida dos componentes</h2><span class="muted">Uso aumenta enquanto a bomba está ligada</span></div>
 <table class="table">
-
-<thead>
-
-<tr>
-<th>Componente</th>
-<th>Uso</th>
-<th>Limite</th>
-<th>Status</th>
-</tr>
-
-</thead>
-
+<thead><tr><th>Componente</th><th>Uso</th><th>Limite</th><th>Status</th></tr></thead>
 <tbody>
-
-<tr>
-<td>Bomba</td>
-
-<td id="pumpHours">
-0.00 h
-</td>
-
-<td>
-500 h
-</td>
-
-<td id="pumpStatus2">
-<span class="pill">
-Bom
-</span>
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-Bateria
-</td>
-
-<td id="batteryHours">
-0.00 ciclos
-</td>
-
-<td>
-300 ciclos
-</td>
-
-<td id="batteryStatus2">
-<span class="pill">
-Bom
-</span>
-</td>
-
-</tr>
-
-<tr>
-
-<td>
-Filtro
-</td>
-
-<td id="filterHours">
-0.00 h
-</td>
-
-<td>
-100 h
-</td>
-
-<td id="filterStatus2">
-<span class="pill">
-Bom
-</span>
-</td>
-
-</tr>
-
+<tr><td>Bomba</td><td id="pumpHours">0.00 h</td><td>500 h</td><td id="pumpStatus2"></td></tr>
+<tr><td>Bateria</td><td>0.00 ciclos</td><td>300 ciclos</td><td id="batteryStatus2"></td></tr>
+<tr><td>Filtro</td><td id="filterHours">0.00 h</td><td>100 h</td><td id="filterStatus2"></td></tr>
 </tbody>
-
 </table>
-
 </div>
-
 </section>
 
-<section
-class="view"
-id="admin">
-
+<section class="view" id="admin">
 <div class="panel">
-
-<div class="panel-head">
-
-<h2>
-Contas cadastradas
-</h2>
-
-<span
-class="muted"
-id="accountCount">
-0 contas
-</span>
-
-</div>
-
-<table
-class="table"
-id="adminTable"
-style="display:none">
-
-<thead>
-
-<tr>
-<th>Nome</th>
-<th>Email</th>
-<th>Tipo</th>
-<th>Data</th>
-</tr>
-
-</thead>
-
-<tbody id="accounts">
-</tbody>
-
+<div class="panel-head"><h2>Contas cadastradas</h2><span class="muted" id="accountCount">0 contas</span></div>
+<table class="table" id="adminTable" style="display:none">
+<thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Data</th></tr></thead>
+<tbody id="accounts"></tbody>
 </table>
-
-<div
-id="noAccounts"
-style="padding:20px;text-align:center;color:var(--muted)">
-Nenhuma conta cadastrada
+<div id="noAccounts" style="padding:20px;text-align:center;color:var(--muted)">Nenhuma conta cadastrada</div>
 </div>
-
-</div>
-
 </section>
 
 </main>
 
 <nav class="mobile-nav">
-
-<button
-class="active"
-onclick="view('dashboard',this)">
-Visão
-</button>
-
-<button
-onclick="view('control',this)">
-Controle
-</button>
-
-<button
-onclick="view('maintenance',this)">
-Manutenção
-</button>
-
+<button class="active" data-v="dashboard" onclick="view('dashboard')">Visão</button>
+<button data-v="control" onclick="view('control')">Controle</button>
+<button data-v="maintenance" onclick="view('maintenance')">Manutenção</button>
 </nav>
 
 </div>
 
-<div
-class="drawer"
-id="drawer">
-
-<button
-class="close"
-onclick="drawer()">
-×
-</button>
-
-<h2 id="drawerTitle">
-Notificações
-</h2>
-
-<div
-id="drawerBody"
-class="muted">
-Nenhuma notificação.
+<div class="drawer" id="drawer">
+<button class="close" onclick="drawer()">×</button>
+<h2 id="drawerTitle">Notificações</h2>
+<div id="drawerBody" class="muted"></div>
 </div>
 
-</div>
-
-<div id="notificationsContainer"></div>
-
-<div id="toast"></div>
+<div id="toasts"></div>
 
 <script>
+const $=id=>document.getElementById(id),
+  API='https://eco-flux-mu.vercel.app/api',
+  USERS='ecoflux_users_v7',
+  SESSION='ecoflux_user',
+  ADMIN={name:'Admin',email:'admin@gmail.com',isAdmin:true},
+  PAGES={
+    dashboard:['visão geral','Monitore o status do sistema em tempo real.'],
+    control:['controle','Controle remoto da bomba e configurações de operação.'],
+    maintenance:['manutenção','Acompanhe o uso dos componentes e planeje manutenção.'],
+    admin:['admin','Gerencia as contas de acesso do sistema.']
+  };
 
-const KEY='ecoflux_users_v7';
+const st={pump:false,mode:'continuous',bucket:0,batt:0,volt:0,hours:0,history:[],on:false,hold:0};
+let user=null,poller=null,timerId=null,notes=[];
 
-const ADMIN_EMAIL='admin@gmail.com';
+const users=()=>{try{return JSON.parse(localStorage[USERS]||'{}')}catch{return{}}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const pct=v=>Math.max(0,Math.min(100,+v||0));
+const pill=p=>p<80?'<span class="pill">Bom</span>':p<95?'<span class="pill warning">Aviso</span>':'<span class="pill error">Crítico</span>';
 
-const ADMIN_PASS='admin';
-
-const VERCEL_API='https://eco-flux-mu.vercel.app/api';
-
-let state={
-  pump:false,
-  mode:'continuous',
-  bucket:0,
-  battery:86,
-  voltage:12.4,
-  hours:0,
-  history:[],
-  connected:false,
-  lastUpdate:0
-};
-
-let timer=null;
-let pollInterval=null;
-let currentUser=null;
-let isAdmin=false;
-let notifications=[];
-let timerRemaining=0;
-let timerInterval2=null;
-let currentView='dashboard';
-
-const $=id=>document.getElementById(id);
-
-const subtitles={
-  dashboard:'Monitore o status do sistema em tempo real.',
-  control:'Controle remoto da bomba e configurações de operação.',
-  maintenance:'Acompanhe o uso dos componentes e planeje manutenção.',
-  admin:'Gerencia as contas de acesso do sistema.'
-};
-
-
-/* =========================================================
-   USUÁRIOS
-   ========================================================= */
-
-function users(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(KEY)||'{}'
-    );
-
-  }catch{
-
-    return {};
-
-  }
-
-}
-
-
-/* =========================================================
-   NOTIFICAÇÕES
-   ========================================================= */
-
+/* Notificações */
 function notify(msg,type='info'){
-
-  const container=$('notificationsContainer');
-
-  if(!container)
-    return;
-
-  const div=document.createElement('div');
-
-  div.className=`notif-toast ${type} show`;
-
-  div.textContent=msg;
-
-  container.appendChild(div);
-
-  setTimeout(
-    ()=>div.remove(),
-    3000
-  );
-
-  if(notifications.length>=10){
-    notifications.shift();
-  }
-
-  notifications.push({
-    msg,
-    type,
-    time:new Date().toLocaleTimeString()
-  });
-
-  const badge=$('notifBadge');
-
-  if(badge)
-    badge.style.display='block';
-
+  const d=document.createElement('div');
+  d.className='notif-toast '+type;
+  d.textContent=msg;
+  $('toasts').append(d);
+  setTimeout(()=>d.remove(),3000);
+  notes=[...notes.slice(-9),{msg,time:new Date().toLocaleTimeString()}];
+  $('notifBadge').style.display='block';
 }
 
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
+/* Login */
 function authTab(x){
-
-  document
-    .querySelectorAll('.auth-tabs button')
-    .forEach((b,i)=>
-      b.classList.toggle(
-        'active',
-        x==='login'
-          ? i===0
-          : i===1
-      )
-    );
-
-  document
-    .querySelectorAll('.auth-form')
-    .forEach(f=>
-      f.classList.toggle(
-        'on',
-        f.id===x
-      )
-    );
-
+  document.querySelectorAll('.auth-tabs button').forEach((b,i)=>b.classList.toggle('active',(x==='login')===(i===0)));
+  document.querySelectorAll('.auth-form').forEach(f=>f.classList.toggle('on',f.id===x));
 }
 
+function enter(u){
+  user=u;
+  localStorage[SESSION]=JSON.stringify(u);
+  boot();
+}
 
 function login(e){
-
   e.preventDefault();
-
-  const email=
-    $('le').value.trim().toLowerCase();
-
-  const pass=$('lp').value;
-
-  if(
-    email===ADMIN_EMAIL &&
-    pass===ADMIN_PASS
-  ){
-
-    currentUser={
-      name:'Admin',
-      email,
-      isAdmin:true
-    };
-
-    isAdmin=true;
-
-    localStorage.setItem(
-      'ecoflux_user',
-      JSON.stringify(currentUser)
-    );
-
-    boot();
-
-    return;
-  }
-
-  const d=users();
-
-  if(
-    !d[email] ||
-    d[email].password!==pass
-  ){
-
-    $('loginError').textContent=
-      'Acesso não encontrado.';
-
-    return;
-  }
-
-  currentUser={
-    name:d[email].name,
-    email,
-    isAdmin:false
-  };
-
-  isAdmin=false;
-
-  localStorage.setItem(
-    'ecoflux_user',
-    JSON.stringify(currentUser)
-  );
-
-  boot();
-
+  const email=$('le').value.trim().toLowerCase(),pass=$('lp').value,u=users()[email];
+  if(email===ADMIN.email&&pass==='admin')return enter(ADMIN);
+  if(!u||u.password!==pass)return void($('loginError').textContent='Acesso não encontrado.');
+  enter({name:u.name,email,isAdmin:false});
 }
-
-
-/* =========================================================
-   CADASTRO
-   ========================================================= */
 
 function register(e){
-
   e.preventDefault();
-
-  const d=users();
-
-  const email=
-    $('re').value.trim().toLowerCase();
-
-  if(d[email]){
-
-    $('registerError').textContent=
-      'Este e-mail já está cadastrado.';
-
-    return;
-  }
-
-  d[email]={
-    name:$('rn').value,
-    password:$('rp').value
-  };
-
-  localStorage.setItem(
-    KEY,
-    JSON.stringify(d)
-  );
-
-  currentUser={
-    name:d[email].name,
-    email,
-    isAdmin:false
-  };
-
-  isAdmin=false;
-
-  localStorage.setItem(
-    'ecoflux_user',
-    JSON.stringify(currentUser)
-  );
-
-  boot();
-
+  const d=users(),email=$('re').value.trim().toLowerCase();
+  if(d[email]||email===ADMIN.email)return void($('registerError').textContent='Este e-mail já está cadastrado.');
+  d[email]={name:$('rn').value,password:$('rp').value};
+  localStorage[USERS]=JSON.stringify(d);
+  enter({name:d[email].name,email,isAdmin:false});
 }
-
-
-/* =========================================================
-   BOOT
-   ========================================================= */
 
 function boot(){
-
   $('auth').style.display='none';
-
   $('shell').classList.add('on');
-
-  $('userName').textContent=
-    currentUser.name;
-
-  $('avatar').textContent=
-    currentUser.name
-      .slice(0,2)
-      .toUpperCase();
-
-  $('userMenuName').textContent=
-    currentUser.name;
-
-  $('userMenuEmail').textContent=
-    currentUser.email;
-
-  if(isAdmin){
-
-    $('adminNav').style.display='block';
-
-    loadAdmin();
-
-  }else{
-
-    $('adminNav').style.display='none';
-
-  }
-
-  /*
-    REMOVIDO:
-    $('espIp').value='☁️ Comunicação pela nuvem';
-
-    Esse elemento não existe no HTML e causava
-    "Cannot set properties of null".
-  */
-
-  $('modePopup').style.display='none';
-
-  $('modeText').textContent=
-    state.mode==='continuous'
-      ? 'Contínuo'
-      : 'Pulsante';
-
+  $('userName').textContent=$('userMenuName').textContent=user.name;
+  $('userMenuEmail').textContent=user.email;
+  $('avatar').textContent=user.name.slice(0,2).toUpperCase();
+  $('adminNav').style.display=user.isAdmin?'block':'none';
+  if(user.isAdmin)loadAdmin();
   update();
-
-  draw();
-
   poll();
-
-  if(pollInterval)
-    clearInterval(pollInterval);
-
-  pollInterval=setInterval(
-    poll,
-    2500
-  );
-
-  notify(
-    `Bem-vindo, ${currentUser.name}!`,
-    'success'
-  );
-
+  clearInterval(poller);
+  poller=setInterval(poll,2500);
+  notify(`Bem-vindo, ${user.name}!`,'success');
 }
-
-
-/* =========================================================
-   MENU
-   ========================================================= */
-
-function toggleUserMenu(){
-
-  const menu=$('userMenuPopup');
-
-  if(!menu)
-    return;
-
-  menu.style.display=
-    menu.style.display==='none'
-      ? 'block'
-      : 'none';
-
-}
-
 
 function logout(){
-
-  localStorage.removeItem(
-    'ecoflux_user'
-  );
-
-  currentUser=null;
-  isAdmin=false;
-
-  if(pollInterval)
-    clearInterval(pollInterval);
-
-  if(timer)
-    clearTimeout(timer);
-
-  if(timerInterval2)
-    clearInterval(timerInterval2);
-
-  pollInterval=null;
-  timer=null;
-  timerInterval2=null;
-
+  localStorage.removeItem(SESSION);
+  user=null;
+  clearInterval(poller);
+  clearTimer();
   $('auth').style.display='grid';
-
   $('shell').classList.remove('on');
-
-  $('userMenuPopup').style.display='none';
-
-  $('loginError').textContent='';
-  $('registerError').textContent='';
-
-  $('le').value='';
-  $('lp').value='';
-  $('rn').value='';
-  $('re').value='';
-  $('rp').value='';
-
+  $('userMenuPopup').classList.remove('on');
+  document.querySelectorAll('.auth input').forEach(i=>i.value='');
+  document.querySelectorAll('.error').forEach(e=>e.textContent='');
   authTab('login');
-
 }
 
-
-/* =========================================================
-   NAVEGAÇÃO
-   ========================================================= */
-
-function view(id,b){
-
-  currentView=id;
-
-  document
-    .querySelectorAll('.view')
-    .forEach(v=>
-      v.classList.toggle(
-        'on',
-        v.id===id
-      )
-    );
-
-  document
-    .querySelectorAll(
-      '.nav button,.mobile-nav button'
-    )
-    .forEach(x=>
-      x.classList.remove('active')
-    );
-
-  if(b)
-    b.classList.add('active');
-
-  updateContextBar();
-
+/* Navegação */
+function view(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id));
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===id));
+  $('eyebrow').textContent='ecoflux / '+PAGES[id][0];
+  $('subtitle').textContent=PAGES[id][1];
 }
 
-
-function updateContextBar(){
-
-  const names={
-    dashboard:'visão geral',
-    control:'controle',
-    maintenance:'manutenção',
-    admin:'admin'
-  };
-
-  const eyebrow=$('eyebrow');
-  const subtitle=$('subtitle');
-
-  if(eyebrow)
-    eyebrow.textContent=
-      'ecoflux / '+names[currentView];
-
-  if(subtitle)
-    subtitle.textContent=
-      subtitles[currentView];
-
-}
-
-
-/* =========================================================
-   ATUALIZAR TELA
-   ========================================================= */
-
+/* Tela */
 function update(){
-
-  const on=state.pump;
-
-  const pumpStatus=$('pumpStatus');
-
-  if(pumpStatus){
-
-    pumpStatus.textContent=
-      on
-        ? 'Ligada'
-        : 'Desligada';
-
-    pumpStatus.style.color=
-      on
-        ? 'var(--lime)'
-        : 'var(--red)';
-
-  }
-
-
-  const waterValue=$('waterValue');
-
-  if(waterValue){
-
-    waterValue.textContent=
-      Math.round(Number(state.bucket)||0)+'%';
-
-  }
-
-
-  const batteryLevel=$('batteryLevel');
-
-  if(batteryLevel){
-
-    batteryLevel.textContent=
-      Math.round(Number(state.battery)||0);
-
-  }
-
-
-  const batteryVoltage=$('batteryVoltage');
-
-  if(batteryVoltage){
-
-    batteryVoltage.textContent=
-      Number(state.voltage||0).toFixed(2);
-
-  }
-
-
-  /*
-    Não existe bucketProgress no HTML.
-    Portanto ele não pode ser acessado diretamente.
-  */
-
-  const bucketProgress=$('bucketProgress');
-
-  if(bucketProgress){
-
-    bucketProgress.style.width=
-      Math.max(
-        0,
-        Math.min(
-          100,
-          Number(state.bucket)||0
-        )
-      )+'%';
-
-  }
-
-
-  const batteryProgress=$('batteryProgress');
-
-  if(batteryProgress){
-
-    batteryProgress.style.width=
-      Math.max(
-        0,
-        Math.min(
-          100,
-          Number(state.battery)||0
-        )
-      )+'%';
-
-  }
-
-
-  const statusBrand=$('statusBrand');
-
-  if(statusBrand){
-
-    statusBrand.textContent=
-      state.connected
-        ? 'online'
-        : 'offline';
-
-    statusBrand.style.color=
-      state.connected
-        ? 'var(--lime)'
-        : 'var(--red)';
-
-  }
-
-
-  const waterSignal=$('waterSignal');
-
-  if(waterSignal){
-
-    waterSignal.className=
-      'signal '+
-      (
-        state.connected
-          ? 'ok'
-          : 'bad'
-      );
-
-    waterSignal.textContent='';
-
-  }
-
-
-  const pumpWarning=$('pumpWarning');
-  const batteryWarning=$('batteryWarning');
-  const voltageWarning=$('voltageWarning');
-
-  if(pumpWarning)
-    pumpWarning.style.display=
-      state.connected
-        ? 'none'
-        : 'block';
-
-  if(batteryWarning)
-    batteryWarning.style.display=
-      state.connected
-        ? 'none'
-        : 'block';
-
-  if(voltageWarning)
-    voltageWarning.style.display=
-      state.connected
-        ? 'none'
-        : 'block';
-
-
-  const continuous=$('continuous');
-  const pulse=$('pulse');
-
-  if(continuous){
-
-    continuous.classList.toggle(
-      'active',
-      state.mode==='continuous'
-    );
-
-  }
-
-  if(pulse){
-
-    pulse.classList.toggle(
-      'active',
-      state.mode==='pulse'
-    );
-
-  }
-
-
-  const pumpHours=$('pumpHours');
-
-  if(pumpHours){
-
-    pumpHours.textContent=
-      Number(state.hours||0)
-        .toFixed(2)+' h';
-
-  }
-
-
-  updateMaintenanceStatus();
-
-
-  const offlineBanners=
-    document.querySelectorAll(
-      '.offline-banner'
-    );
-
-  offlineBanners.forEach(b=>{
-
-    b.classList.toggle(
-      'show',
-      !state.connected
-    );
-
-  });
-
-
-  const btnPumpOn=$('btnPumpOn');
-  const btnPumpOff=$('btnPumpOff');
-  const btnTimer=$('btnTimer');
-  const minutes=$('minutes');
-
-  if(btnPumpOn)
-    btnPumpOn.disabled=
-      !state.connected;
-
-  if(btnPumpOff)
-    btnPumpOff.disabled=
-      !state.connected;
-
-  if(btnTimer)
-    btnTimer.disabled=
-      !state.connected;
-
-  if(minutes)
-    minutes.disabled=
-      !state.connected;
-
-  if(continuous)
-    continuous.disabled=
-      !state.connected;
-
-  if(pulse)
-    pulse.disabled=
-      !state.connected;
-
+  const {pump,mode,bucket,batt,volt,hours,on}=st;
+  $('pumpStatus').textContent=pump?'Ligada':'Desligada';
+  $('pumpStatus').style.color=pump?'var(--lime)':'var(--red)';
+  $('modePopup').style.display=pump?'block':'none';
+  $('modeText').textContent=mode==='pulse'?'Pulsante':'Contínuo';
+  $('waterValue').textContent=bucket<0?'--':Math.round(bucket)+'%';
+  $('batteryLevel').textContent=Math.round(batt);
+  $('batteryProgress').style.width=pct(batt)+'%';
+  $('batteryVoltage').textContent=volt.toFixed(2);
+  $('statusBrand').textContent=on?'online':'offline';
+  $('statusBrand').style.color=on?'var(--lime)':'var(--red)';
+  document.body.classList.toggle('off',!on);
+  $('continuous').classList.toggle('active',mode==='continuous');
+  $('pulse').classList.toggle('active',mode==='pulse');
+  document.querySelectorAll('#control button,#control input').forEach(e=>e.disabled=!on);
+  $('pumpHours').textContent=$('filterHours').textContent=hours.toFixed(2)+' h';
+  $('pumpStatus2').innerHTML=pill(hours/5);
+  $('filterStatus2').innerHTML=pill(hours);
+  $('batteryStatus2').innerHTML=pill(batt>20?0:80);
 }
 
-
-function updateMaintenanceStatus(){
-
-  const pumpPercent=
-    (Number(state.hours)||0)/500*100;
-
-  let pumpPill=
-    pumpPercent<80
-      ? '<span class="pill">Bom</span>'
-      : pumpPercent<95
-      ? '<span class="pill warning">Aviso</span>'
-      : '<span class="pill error">Crítico</span>';
-
-  const pumpStatus2=$('pumpStatus2');
-
-  if(pumpStatus2)
-    pumpStatus2.innerHTML=pumpPill;
-
-
-  const filterPercent=
-    (Number(state.hours)||0)/100*100;
-
-  let filterPill=
-    filterPercent<80
-      ? '<span class="pill">Bom</span>'
-      : filterPercent<95
-      ? '<span class="pill warning">Aviso</span>'
-      : '<span class="pill error">Crítico</span>';
-
-  const filterStatus2=$('filterStatus2');
-
-  if(filterStatus2)
-    filterStatus2.innerHTML=filterPill;
-
-
-  const filterHours=$('filterHours');
-
-  if(filterHours)
-    filterHours.textContent=
-      Number(state.hours||0)
-        .toFixed(2)+' h';
-
-
-  const batteryStatus2=$('batteryStatus2');
-
-  if(batteryStatus2){
-
-    const batteryPill=
-      Number(state.battery)>20
-        ? '<span class="pill">Bom</span>'
-        : '<span class="pill warning">Aviso</span>';
-
-    batteryStatus2.innerHTML=
-      batteryPill;
-
-  }
-
+/* Comandos */
+async function send(pump,mode){
+  st.hold=Date.now()+6000; // evita que a telemetria antiga sobrescreva o comando
+  try{
+    const r=await fetch(API+'/command',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pump,mode})});
+    return (await r.json()).ok===true;
+  }catch{return false}
 }
-
-
-/* =========================================================
-   BOMBA
-   ========================================================= */
 
 async function pump(on){
-
-  if(!state.connected){
-
-    notify(
-      '❌ Sistema offline',
-      'error'
-    );
-
-    return;
-  }
-
-  state.pump=on;
-
+  if(!st.on)return notify('❌ Sistema offline','error');
+  if(!on)clearTimer();
+  st.pump=on;
   update();
-
-  const modePopup=$('modePopup');
-
-  if(!timerInterval2){
-
-    if(modePopup)
-      modePopup.style.display=
-        on
-          ? 'block'
-          : 'none';
-
-  }
-
-  const result=
-    await sendCommand(
-      on,
-      state.mode
-    );
-
-  if(result){
-
-    notify(
-      on
-        ? '✅ Bomba ligada'
-        : '⏹️ Bomba desligada',
-      on
-        ? 'success'
-        : 'info'
-    );
-
-  }else{
-
-    notify(
-      '❌ Falha ao enviar comando',
-      'error'
-    );
-
-  }
-
+  const ok=await send(on,st.mode);
+  notify(ok?(on?'✅ Bomba ligada':'⏹️ Bomba desligada'):'❌ Falha ao enviar comando',ok?(on?'success':'info'):'error');
 }
-
-
-/* =========================================================
-   MODO
-   ========================================================= */
 
 async function setMode(m){
-
-  if(!state.connected){
-
-    notify(
-      '❌ Sistema offline',
-      'error'
-    );
-
-    return;
-  }
-
-  state.mode=m;
-
-  const modeText=$('modeText');
-
-  if(modeText){
-
-    modeText.textContent=
-      m==='continuous'
-        ? 'Contínuo'
-        : 'Pulsante';
-
-  }
-
+  if(!st.on)return notify('❌ Sistema offline','error');
+  st.mode=m;
   update();
-
-  const result=
-    await sendCommand(
-      state.pump,
-      m
-    );
-
-  if(result){
-
-    notify(
-      m==='continuous'
-        ? '↔️ Modo Contínuo'
-        : '🔄 Modo Pulsante',
-      'info'
-    );
-
-  }else{
-
-    notify(
-      '❌ Falha ao alterar modo',
-      'error'
-    );
-
-  }
-
+  const ok=await send(st.pump,m);
+  notify(ok?(m==='pulse'?'🔄 Modo Pulsante':'↔️ Modo Contínuo'):'❌ Falha ao alterar modo',ok?'info':'error');
 }
 
-
-/* =========================================================
-   TIMER
-   ========================================================= */
+/* Timer */
+function clearTimer(){
+  clearInterval(timerId);
+  timerId=null;
+  $('timerText').textContent='Nenhum timer ativo';
+}
 
 function startTimer(){
-
-  const minutesInput=$('minutes');
-
-  if(!minutesInput)
-    return;
-
-  const n=
-    Number(
-      minutesInput.value
-    );
-
-  if(!state.connected){
-
-    notify(
-      '❌ Sistema offline',
-      'error'
-    );
-
-    return;
-  }
-
-  if(!state.pump){
-
-    notify(
-      '❌ Ligue a bomba primeiro',
-      'error'
-    );
-
-    return;
-  }
-
-  if(!n || n<1){
-
-    notify(
-      '❌ Tempo inválido',
-      'error'
-    );
-
-    return;
-  }
-
-  clearTimeout(timer);
-
-  clearInterval(timerInterval2);
-
-  timerRemaining=n*60;
-
-  const timerText=$('timerText');
-
-  if(timerText){
-
-    timerText.textContent=
-      'Ativo por '+
-      n+
-      ' minuto(s)';
-
-  }
-
-  notify(
-    '⏱️ Timer iniciado por '+
-    n+
-    'min',
-    'success'
-  );
-
-  const updateTimer=()=>{
-
-    const m=
-      Math.floor(
-        timerRemaining/60
-      );
-
-    const s=
-      timerRemaining%60;
-
-    if(timerText){
-
-      timerText.textContent=
-        'Restante: '+
-        m+
-        'm '+
-        String(s).padStart(2,'0')+
-        's';
-
-    }
-
-    timerRemaining--;
-
-    if(timerRemaining<0){
-
-      clearInterval(
-        timerInterval2
-      );
-
-      timerInterval2=null;
-
+  const n=+$('minutes').value;
+  if(!st.on)return notify('❌ Sistema offline','error');
+  if(!st.pump)return notify('❌ Ligue a bomba primeiro','error');
+  if(!(n>=1))return notify('❌ Tempo inválido','error');
+  clearInterval(timerId);
+  const end=Date.now()+n*60000;
+  const tick=()=>{
+    const s=Math.max(0,Math.round((end-Date.now())/1000));
+    if(!s){
       pump(false);
-
-      if(timerText)
-        timerText.textContent=
-          'Nenhum timer ativo';
-
-      const modePopup=$('modePopup');
-
-      if(modePopup)
-        modePopup.style.display='block';
-
-      notify(
-        '⏰ Timer expirou!',
-        'warning'
-      );
-
+      return notify('⏰ Timer expirou!','warning');
     }
-
+    $('timerText').textContent=`Restante: ${Math.floor(s/60)}m ${String(s%60).padStart(2,'0')}s`;
   };
-
-  updateTimer();
-
-  timerInterval2=
-    setInterval(
-      updateTimer,
-      1000
-    );
-
-  timer=
-    setTimeout(
-      ()=>{
-        clearInterval(
-          timerInterval2
-        );
-
-        timerInterval2=null;
-        timer=null;
-
-      },
-      n*60000+1000
-    );
-
+  timerId=setInterval(tick,1000);
+  tick();
+  notify(`⏱️ Timer iniciado por ${n}min`,'success');
 }
 
-
-/* =========================================================
-   CANCELAR TIMER
-   ========================================================= */
-
-function cancelTimer(){
-
-  clearTimeout(timer);
-
-  clearInterval(
-    timerInterval2
-  );
-
-  timer=null;
-  timerInterval2=null;
-
-  pump(false);
-
-  const timerText=$('timerText');
-
-  if(timerText)
-    timerText.textContent=
-      'Nenhum timer ativo';
-
-  const modePopup=$('modePopup');
-
-  if(modePopup)
-    modePopup.style.display='block';
-
-  notify(
-    '⏹️ Timer cancelado',
-    'info'
-  );
-
-}
-
-
-/* =========================================================
-   COMANDOS
-   ========================================================= */
-
-async function sendCommand(
-  pumpValue,
-  modeValue
-){
-
-  try{
-
-    const response=
-      await fetch(
-        VERCEL_API+'/command',
-        {
-          method:'POST',
-
-          headers:{
-            'Content-Type':
-              'application/json'
-          },
-
-          body:JSON.stringify({
-
-            pump:
-              !!pumpValue,
-
-            mode:
-              modeValue==='pulse'
-                ? 'pulse'
-                : 'continuous'
-
-          })
-        }
-      );
-
-    if(!response.ok){
-
-      throw new Error(
-        'HTTP '+response.status
-      );
-
-    }
-
-    const data=
-      await response.json();
-
-    return data.ok===true;
-
-  }catch(error){
-
-    console.error(
-      'Erro ao enviar comando:',
-      error
-    );
-
-    return false;
-
-  }
-
-}
-
-
-/* =========================================================
-   TESTAR CONEXÃO
-   ========================================================= */
-
-function testConnection(){
-
-  notify(
-    '☁️ Testando conexão...',
-    'info'
-  );
-
-  poll();
-
-}
-
-
-/* =========================================================
-   TELEMETRIA
-   ========================================================= */
-
+/* Telemetria */
 async function poll(){
-
   try{
-
-    const response=
-      await fetch(
-        VERCEL_API+'/status',
-        {
-          method:'GET',
-          cache:'no-store'
-        }
-      );
-
-    if(!response.ok){
-
-      throw new Error(
-        'HTTP '+response.status
-      );
-
+    const r=await fetch(API+'/status',{cache:'no-store'});
+    if(!r.ok)throw 0;
+    const s=await r.json();
+    st.on=s.online===true;
+    if(st.on){
+      if(Date.now()>st.hold){
+        st.pump=!!s.pump;
+        st.mode=s.mode==='pulse'?'pulse':'continuous';
+      }
+      Object.assign(st,{bucket:+s.bucket,batt:+s.batt||0,volt:+s.volt||0,hours:+s.hours||0});
+      if(st.bucket>=0)st.history.push(st.bucket);
+      if(st.history.length>55)st.history.shift();
     }
-
-    const s=
-      await response.json();
-
-    console.log(
-      '[EcoFlux] Status recebido:',
-      s
-    );
-
-
-    if(
-      !s ||
-      s.online!==true
-    ){
-
-      setConn(false);
-
-      update();
-
-    }else{
-
-      state.pump=
-        s.pump===true ||
-        s.pump===1;
-
-      state.mode=
-        s.mode==='pulse'
-          ? 'pulse'
-          : 'continuous';
-
-      state.bucket=
-        Number(s.bucket)||0;
-
-      state.battery=
-        Number(s.batt)||0;
-
-      state.voltage=
-        Number(s.volt)||0;
-
-      state.hours=
-        Number(s.hours)||0;
-
-      state.lastUpdate=
-        Date.now();
-
-      setConn(true);
-
-      update();
-
-    }
-
-  }catch(error){
-
-    console.error(
-      'Erro de telemetria:',
-      error
-    );
-
-    setConn(false);
-
-    update();
-
-  }
-
-
-  state.history.push(
-    state.bucket
-  );
-
-  if(
-    state.history.length>55
-  ){
-
-    state.history.shift();
-
-  }
-
+  }catch{st.on=false}
+  update();
   draw();
-
 }
 
-
-/* =========================================================
-   CONEXÃO
-   ========================================================= */
-
-function setConn(ok){
-
-  state.connected=!!ok;
-
-  /*
-    O código antigo tentava acessar:
-    $('connection')
-
-    Esse elemento não existe no HTML.
-
-    Agora usamos diretamente o elemento
-    statusBrand, que realmente existe.
-  */
-
-  const statusBrand=$('statusBrand');
-
-  if(statusBrand){
-
-    statusBrand.textContent=
-      state.connected
-        ? 'online'
-        : 'offline';
-
-    statusBrand.style.color=
-      state.connected
-        ? 'var(--lime)'
-        : 'var(--red)';
-
-  }
-
-}
-
-
-/* =========================================================
-   GRÁFICO
-   ========================================================= */
-
+/* Gráfico */
 function draw(){
-
-  const c=$('chart');
-
-  if(!c)
-    return;
-
-  const rect=
-    c.getBoundingClientRect();
-
-  const ratio=
-    window.devicePixelRatio||1;
-
-  const w=
-    Math.max(
-      300,
-      Math.floor(
-        rect.width*ratio
-      )
-    );
-
-  const h=
-    Math.max(
-      150,
-      Math.floor(
-        rect.height*ratio
-      )
-    );
-
-  c.width=w;
-  c.height=h;
-
-  const x=
-    c.getContext('2d');
-
-  if(!x)
-    return;
-
-  x.clearRect(
-    0,
-    0,
-    w,
-    h
-  );
-
-  x.strokeStyle=
-    '#1d4053';
-
+  const c=$('chart'),r=window.devicePixelRatio||1,
+    w=c.width=Math.max(300,c.clientWidth*r|0),
+    h=c.height=Math.max(150,c.clientHeight*r|0),
+    x=c.getContext('2d'),d=st.history;
+  x.strokeStyle='#1d4053';
   x.lineWidth=2;
-
-  for(
-    let y=25;
-    y<h;
-    y+=55
-  ){
-
-    x.beginPath();
-
-    x.moveTo(
-      0,
-      y
-    );
-
-    x.lineTo(
-      w,
-      y
-    );
-
-    x.stroke();
-
-  }
-
-  if(
-    state.history.length<2
-  )
-    return;
-
+  for(let y=25;y<h;y+=55){x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}
+  if(d.length<2)return;
   x.beginPath();
-
-  state.history.forEach(
-    (v,i)=>{
-
-      const px=
-        i*w/
-        (
-          state.history.length-1
-        );
-
-      const py=
-        h-
-        20-
-        (
-          Number(v)/100*
-          (h-45)
-        );
-
-      if(i)
-        x.lineTo(
-          px,
-          py
-        );
-      else
-        x.moveTo(
-          px,
-          py
-        );
-
-    }
-  );
-
-  x.strokeStyle=
-    '#48e6d0';
-
+  d.forEach((v,i)=>x[i?'lineTo':'moveTo'](i*w/(d.length-1),h-20-v/100*(h-45)));
+  x.strokeStyle=x.shadowColor='#48e6d0';
   x.lineWidth=6;
-
-  x.shadowColor=
-    '#48e6d0';
-
   x.shadowBlur=18;
-
   x.stroke();
-
-  x.shadowBlur=0;
-
 }
 
-
-/* =========================================================
-   DRAWER
-   ========================================================= */
-
+/* Gaveta */
 function drawer(t){
-
-  const drawerElement=$('drawer');
-
-  if(!drawerElement)
-    return;
-
-  if(!t){
-
-    drawerElement
-      .classList
-      .remove('on');
-
-    return;
-  }
-
-  const userMenu=$('userMenuPopup');
-
-  if(userMenu)
-    userMenu.style.display='none';
-
-  $('drawerTitle').textContent=
-    t==='settings'
-      ? 'Configurações'
-      : 'Notificações';
-
+  $('drawer').classList.toggle('on',!!t);
+  if(!t)return;
+  $('userMenuPopup').classList.remove('on');
+  $('drawerTitle').textContent=t==='settings'?'Configurações':'Notificações';
   if(t==='settings'){
-
-    $('drawerBody').innerHTML=
-      '<p><strong>Comunicação</strong></p>'+
-      '<p class="muted">'+
-      'Nuvem (Vercel + Upstash)'+
-      '</p>';
-
+    $('drawerBody').innerHTML='<p><strong>Comunicação</strong></p><p class="muted">Nuvem (Vercel + Upstash)</p>';
   }else{
-
-    const badge=$('notifBadge');
-
-    if(badge)
-      badge.style.display='none';
-
-    $('drawerBody').innerHTML=
-      notifications.length
-        ?
-        notifications
-          .map(
-            n=>
-              '<p style="margin:8px 0;color:var(--text)">'+
-              n.msg+
-              '<br><span class="muted" style="font-size:10px">'+
-              n.time+
-              '</span></p>'
-          )
-          .join('')
-        :
-        '<p>Nenhuma notificação.</p>';
-
+    $('notifBadge').style.display='none';
+    $('drawerBody').innerHTML=notes.length
+      ?notes.map(n=>`<p style="margin:8px 0;color:var(--text)">${esc(n.msg)}<br><span class="muted" style="font-size:10px">${n.time}</span></p>`).join('')
+      :'<p>Nenhuma notificação.</p>';
   }
-
-  drawerElement
-    .classList
-    .add('on');
-
 }
 
-
-/* =========================================================
-   ADMIN
-   ========================================================= */
-
+/* Admin */
 function loadAdmin(){
-
-  const d=users();
-
-  const count=
-    Object.keys(d).length+1;
-
-  $('accountCount').textContent=
-    count+' contas';
-
-  const tbody=$('accounts');
-
-  tbody.innerHTML='';
-
-  const adminRow=
-    tbody.insertRow();
-
-  adminRow.innerHTML=
-    '<td>Admin</td>'+
-    '<td>'+ADMIN_EMAIL+'</td>'+
-    '<td><span class="pill">Admin</span></td>'+
-    '<td>-</td>';
-
-  Object.entries(d)
-    .forEach(
-      ([email,user])=>{
-
-        const row=
-          tbody.insertRow();
-
-        row.innerHTML=
-          '<td>'+
-          escapeHtml(user.name)+
-          '</td>'+
-          '<td>'+
-          escapeHtml(email)+
-          '</td>'+
-          '<td><span class="pill">User</span></td>'+
-          '<td>-</td>';
-
-      }
-    );
-
-  if(count>1)
-    $('adminTable').style.display='';
-
-  $('noAccounts').style.display=
-    count>1
-      ? 'none'
-      : '';
-
+  const rows=[[ADMIN.name,ADMIN.email,'Admin'],...Object.entries(users()).map(([e,u])=>[u.name,e,'User'])];
+  $('accountCount').textContent=rows.length+' contas';
+  $('accounts').innerHTML=rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td><span class="pill">${r[2]}</span></td><td>-</td></tr>`).join('');
+  $('adminTable').style.display=rows.length>1?'':'none';
+  $('noAccounts').style.display=rows.length>1?'none':'';
 }
 
-
-/* =========================================================
-   PROTEÇÃO
-   ========================================================= */
-
-function escapeHtml(value){
-
-  return String(value)
-    .replace(
-      /&/g,
-      '&amp;'
-    )
-    .replace(
-      /</g,
-      '&lt;'
-    )
-    .replace(
-      />/g,
-      '&gt;'
-    )
-    .replace(
-      /"/g,
-      '&quot;'
-    )
-    .replace(
-      /'/g,
-      '&#039;'
-    );
-
-}
-
-
-/* =========================================================
-   EVENT LISTENERS
-   ========================================================= */
-
-document.addEventListener(
-  'click',
-  (e)=>{
-
-    const menu=
-      $('userMenuPopup');
-
-    const avatar=
-      $('avatar');
-
-    if(
-      menu &&
-      avatar &&
-      !avatar.contains(e.target) &&
-      !menu.contains(e.target)
-    ){
-
-      menu.style.display='none';
-
-    }
-
-  }
-);
-
-
-window.addEventListener(
-  'resize',
-  draw
-);
-
-
-window.addEventListener(
-  'load',
-  ()=>{
-
-    const saved=
-      localStorage.getItem(
-        'ecoflux_user'
-      );
-
-    if(saved){
-
-      try{
-
-        currentUser=
-          JSON.parse(saved);
-
-        isAdmin=
-          currentUser.isAdmin===true;
-
-        boot();
-
-      }catch{
-
-        localStorage.removeItem(
-          'ecoflux_user'
-        );
-
-      }
-
-    }
-
-  }
-);
-
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#avatar,#userMenuPopup'))$('userMenuPopup').classList.remove('on');
+});
+addEventListener('resize',draw);
+addEventListener('load',()=>{
+  try{user=JSON.parse(localStorage[SESSION])}catch{}
+  if(user)boot();
+});
 </script>
-
 </body>
 </html>
