@@ -5,85 +5,67 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN
 });
 
-const STATUS_KEY = "ecoflux:status";
+const num = (v, d = 0) => (Number.isFinite(Number(v)) ? Number(v) : d);
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Cache-Control", "no-store");
 
-  if (req.method === "OPTIONS") {
-    return res.status(204).end();
-  }
+  if (req.method === "OPTIONS") return res.status(204).end();
 
   try {
-    // POST: ESP32 envia telemetria
+    // ESP32: envia telemetria e recebe o comando atual na mesma resposta
     if (req.method === "POST") {
-      let body = req.body || {};
+      const token = process.env.ECOFLUX_DEVICE_TOKEN;
+      if (!token || req.headers.authorization !== `Bearer ${token}`) {
+        return res.status(401).json({ ok: false, error: "Não autorizado" });
+      }
 
-      if (typeof body === "string") {
-        try {
-          body = JSON.parse(body);
-        } catch {
-          return res.status(400).json({
-            ok: false,
-            error: "JSON inválido"
-          });
+      let b = req.body || {};
+      if (typeof b === "string") {
+        try { b = JSON.parse(b); } catch {
+          return res.status(400).json({ ok: false, error: "JSON inválido" });
         }
       }
 
       const status = {
-        pump: body.pump === true || body.pump === 1,
-        mode: body.mode === "pulse" ? "pulse" : "continuous",
-        bucket: Number(body.bucket) || 0,
-        batt: Number(body.batt) || 0,
-        volt: Number(body.volt) || 0,
-        hours: Number(body.hours) || 0,
-        online: true,
+        pump: b.pump === true || b.pump === 1,
+        mode: b.mode === "pulse" ? "pulse" : "continuous",
+        bucket: num(b.bucket, -1),
+        batt: num(b.batt),
+        volt: num(b.volt),
+        hours: num(b.hours),
         time: Date.now()
       };
 
-      await redis.set(STATUS_KEY, status, { ex: 20 });
+      const [, command] = await Promise.all([
+        redis.set("ecoflux:status", status, { ex: 30 }),
+        redis.get("ecoflux:command")
+      ]);
 
       return res.status(200).json({
-        ok: true
+        ok: true,
+        command: command || { pump: false, mode: "continuous", id: 0, time: 0 }
       });
     }
 
-    // GET: Site busca telemetria
+    // Site: consulta telemetria
     if (req.method === "GET") {
-      let status = await redis.get(STATUS_KEY);
-
-      if (!status) {
+      const s = await redis.get("ecoflux:status");
+      if (!s) {
         return res.status(200).json({
-          ok: true,
-          online: false,
-          pump: false,
-          mode: "continuous",
-          bucket: 0,
-          batt: 0,
-          volt: 0,
-          hours: 0
+          ok: true, online: false, pump: false, mode: "continuous",
+          bucket: 0, batt: 0, volt: 0, hours: 0
         });
       }
-
-      const age = Date.now() - Number(status.time || 0);
-      status.online = age <= 10000;
-
-      return res.status(200).json(status);
+      return res.status(200).json({ ...s, online: Date.now() - num(s.time) <= 15000 });
     }
 
-    return res.status(405).json({
-      ok: false,
-      error: "Método não permitido"
-    });
-
+    return res.status(405).json({ ok: false, error: "Método não permitido" });
   } catch (error) {
     console.error("Erro em /api/status:", error);
-
-    return res.status(500).json({
-      ok: false,
-      error: "Erro interno da API"
-    });
+    return res.status(500).json({ ok: false, error: "Erro interno da API" });
   }
 }
